@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour, IPlayer
     private Vector2 _lookInput;
     private bool _jumpInput;
 
+    private IMovingPlatform _currentPlatform;
+
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private float mouseSensitivity = 3f;
 
@@ -44,7 +46,10 @@ public class PlayerController : MonoBehaviour, IPlayer
 
     private void FixedUpdate()
     {
-        Move(_moveInput);
+        Vector3 platformVelocity = _currentPlatform?.Velocity ?? Vector3.zero;
+
+        Move(_moveInput, platformVelocity);
+
         if (_jumpInput)
         {
             Jump();
@@ -62,14 +67,35 @@ public class PlayerController : MonoBehaviour, IPlayer
         cameraTarget.localRotation = Quaternion.Euler(_cameraPitch, 0f, 0f);
     }
 
-    public void Move(Vector2 direction)
+    public void Move(Vector2 direction, Vector3 platformVelocity)
     {
-        Vector3 move = (transform.forward * direction.y + transform.right * direction.x) * _config.moveSpeed * Time.fixedDeltaTime;
-        _rb.MovePosition(_rb.position + move);
+        Vector3 move = (transform.forward * direction.y + transform.right * direction.x)
+                       * _config.moveSpeed * Time.fixedDeltaTime;
+
+        Vector3 totalMove = move + platformVelocity * Time.fixedDeltaTime;
+
+        _rb.MovePosition(_rb.position + totalMove);
     }
 
     public void Jump()
     {
         _rb.AddForce(Vector3.up * _config.jumpForce, ForceMode.Impulse);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.TryGetComponent<IMovingPlatform>(out var platform))
+        {
+            _currentPlatform = platform;
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.collider.TryGetComponent<IMovingPlatform>(out var platform) 
+            && _currentPlatform == platform)
+        {
+            _currentPlatform = null;
+        }
     }
 }
