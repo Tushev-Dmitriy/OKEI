@@ -37,6 +37,13 @@ public class PlayerController : MonoBehaviour, IPlayer
 
         _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
         _inputActions.Player.Look.canceled += ctx => _lookInput = Vector2.zero;
+
+        _inputActions.Player.Cursor.performed += ctx => ToggleCursor();
+    }
+
+    private void Start()
+    {
+        ToggleCursor();
     }
 
     private void Update()
@@ -80,6 +87,20 @@ public class PlayerController : MonoBehaviour, IPlayer
     public void Jump()
     {
         _rb.AddForce(Vector3.up * _config.jumpForce, ForceMode.Impulse);
+    }
+
+    private void ToggleCursor()
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
