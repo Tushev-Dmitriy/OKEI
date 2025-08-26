@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc0205ded3d665943b2f620b02cee5a4, type: 3}
-  m_Name: Int Item
+  m_Name: String Item
   m_EditorClassIdentifier: 
-  itemName: Int
+  itemName: String
   icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  description: "\u0445\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
-    \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
-  type: 0
-  value: 5
-  displayColor: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  description: "\u0445\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+    (\"Hello\")"
+  type: 2
+  value: '"Hello"'
+  displayColor: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
   objectPrefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}

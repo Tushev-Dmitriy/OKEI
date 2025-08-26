@@ -1,6 +1,6 @@
 public enum VariableType
 {
-    Integer,
+    Int,
     Float,
     String,
     Bool
