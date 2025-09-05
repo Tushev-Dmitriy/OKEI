@@ -4,6 +4,7 @@ using UnityEngine;
 public class SpawnVariableItems : MonoBehaviour
 {
     [SerializeField] private List<VariableItem> _variableItems;
+    [SerializeField] private List<int> _randomRange = new List<int>();
     private List<Vector3> _itemsPos = new List<Vector3>();
 
     private void Awake()
@@ -18,14 +19,33 @@ public class SpawnVariableItems : MonoBehaviour
 
     private void SetRandomPosToSpawn()
     {
-        int x, z;
-
         for (int i = 0; i < _variableItems.Count; i++)
         {
-            x = Random.Range(-10, 10);
-            z = Random.Range(-10, 10);
-            _itemsPos.Add(new Vector3(x, 0.5f, z));
+            Vector3 spawnPos;
+            bool validPos = false;
+
+            do
+            {
+                float x = Random.Range(_randomRange[0], _randomRange[1]);
+                float z = Random.Range(_randomRange[2], _randomRange[3]);
+                spawnPos = new Vector3(x, 0.1f, z);
+
+                validPos = true;
+
+                foreach (Vector3 pos in _itemsPos)
+                {
+                    if (Vector3.Distance(pos, spawnPos) < 0.5f)
+                    {
+                        validPos = false;
+                        break;
+                    }
+                }
+
+            } while (!validPos);
+
+            _itemsPos.Add(spawnPos);
         }
+
     }
 
     private void SpawnItems()

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc0205ded3d665943b2f620b02cee5a4, type: 3}
+  m_Name: String Item 4
+  m_EditorClassIdentifier: 
+  itemName: String
+  icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
+  description: "\u0445\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+    (\"Hello\")"
+  type: 2
+  value: '"C#"'
+  displayColor: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  objectPrefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}

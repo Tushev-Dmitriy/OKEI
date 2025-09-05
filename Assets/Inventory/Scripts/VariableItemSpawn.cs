@@ -12,7 +12,15 @@ public class VariableItemSpawn : MonoBehaviour
             renderer.material.color = variableItem.displayColor;
         }
 
-        TextMeshPro textMesh = gameObject.GetComponentInChildren<TextMeshPro>();
-        textMesh.text = variableItem.value;
+        TextMeshPro objTextData = gameObject.transform.GetChild(1).GetComponent<TextMeshPro>();
+        objTextData.color = variableItem.displayColor;
+        objTextData.text = $"{(variableItem.type).ToString().ToLower()} name = {variableItem.value}; " +
+            $"{variableItem.description}";
+
+        for (int i = 2; i < gameObject.transform.childCount; i++)
+        {
+            TextMeshPro textMesh = gameObject.transform.GetChild(i).GetComponent<TextMeshPro>();
+            textMesh.text = variableItem.value;
+        }
     }
 }
