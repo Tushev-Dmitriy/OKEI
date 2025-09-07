@@ -179,7 +179,7 @@ namespace DevionGames.InventorySystem
             EditorGUILayout.BeginHorizontal();
             string before = search;
 
-            Rect rect = GUILayoutUtility.GetRect(GUIContent.none, "ToolbarSeachTextField", options);
+            Rect rect = GUILayoutUtility.GetRect(GUIContent.none, "ToolbarSearchTextField", options);
             rect.x += 2f;
             rect.width -= 2f;
             Rect buttonRect = rect;
@@ -198,7 +198,7 @@ namespace DevionGames.InventorySystem
             }
 
                 GUI.SetNextControlName("SearchTextFieldFocus");
-            GUIStyle style = new GUIStyle("ToolbarSeachTextField");
+            GUIStyle style = new GUIStyle("ToolbarSearchTextField");
             if (before == "Search...")
             {
                 style.normal.textColor = Color.gray;
@@ -208,7 +208,7 @@ namespace DevionGames.InventorySystem
             if(this.m_SelectedIndex == -1)
             EditorGUI.FocusTextInControl("SearchTextFieldFocus");
 
-            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSeachCancelButton" : "ToolbarSeachCancelButtonEmpty");
+            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSearchCancelButton" : "ToolbarSearchCancelButtonEmpty");
             EditorGUILayout.EndHorizontal();
             return after;
         }

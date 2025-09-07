@@ -29,7 +29,7 @@ namespace DevionGames{
             EditorGUILayout.BeginHorizontal();
             string before = search;
 
-            Rect rect = GUILayoutUtility.GetRect(GUIContent.none, "ToolbarSeachTextField", options);
+            Rect rect = GUILayoutUtility.GetRect(GUIContent.none, "ToolbarSearchTextField", options);
             rect.x += 2f;
             rect.width -= 2f;
             Rect buttonRect = rect;
@@ -47,7 +47,7 @@ namespace DevionGames{
 
             }
             GUI.SetNextControlName("SearchTextFieldFocus");
-            GUIStyle style = new GUIStyle("ToolbarSeachTextField");
+            GUIStyle style = new GUIStyle("ToolbarSearchTextField");
             if (before == "Search...")
             {
                 style.normal.textColor = Color.gray;
@@ -57,7 +57,7 @@ namespace DevionGames{
             if(focus)
                 EditorGUI.FocusTextInControl("SearchTextFieldFocus");
 
-            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSeachCancelButton" : "ToolbarSeachCancelButtonEmpty");
+            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSearchCancelButton" : "ToolbarSearchCancelButtonEmpty");
             EditorGUILayout.EndHorizontal();
             return after;
         }
@@ -73,7 +73,7 @@ namespace DevionGames{
 			string[] result = new string[]{filter,search};
 			string before = search;
 
-			Rect rect = GUILayoutUtility.GetRect (GUIContent.none,(GUIStyle)"ToolbarSeachTextFieldPopup",options);
+			Rect rect = GUILayoutUtility.GetRect (GUIContent.none,(GUIStyle)"ToolbarSearchTextFieldPopup",options);
             rect.x += 2f;
             rect.width -= 2f;
             Rect buttonRect = rect;
@@ -90,7 +90,7 @@ namespace DevionGames{
                 GUI.FocusControl(null);
             }
 
-            GUIStyle style = new GUIStyle("ToolbarSeachTextField");
+            GUIStyle style = new GUIStyle("ToolbarSearchTextField");
             if (before == "Search...")
             {
                 style.normal.textColor = Color.gray;
@@ -110,9 +110,9 @@ namespace DevionGames{
                     before = result[0];
                 }
             }
-            string after = EditorGUI.TextField(rect, "", before, (GUIStyle)"ToolbarSeachTextFieldPopup");
+            string after = EditorGUI.TextField(rect, "", before, (GUIStyle)"ToolbarSearchTextFieldPopup");
 
-            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSeachCancelButton" : "ToolbarSeachCancelButtonEmpty");
+            GUI.Button(buttonRect, GUIContent.none, (after != "" && after != "Search...") ? "ToolbarSearchCancelButton" : "ToolbarSearchCancelButtonEmpty");
             EditorGUILayout.EndHorizontal();
             result[1] = after;
             return result;

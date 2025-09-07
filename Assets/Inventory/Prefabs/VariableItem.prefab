@@ -1099,6 +1099,9 @@ GameObject:
   - component: {fileID: 3484934709561567387}
   - component: {fileID: 6780439941619785526}
   - component: {fileID: -6957944317257721566}
+  - component: {fileID: 6264413528166285124}
+  - component: {fileID: 4500695866280055410}
+  - component: {fileID: 7333083012317472442}
   m_Layer: 0
   m_Name: VariableItem
   m_TagString: Untagged
@@ -1242,6 +1245,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0673299b9ba4ac48b76c945037cc51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6264413528166285124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7089563499898678431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95ff8949b55037043a6183d61fd8dcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Title: Variable item
+  m_Instruction: Pickup
+--- !u!114 &4500695866280055410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7089563499898678431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e2a0650d79394740b1bdb39be00be6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delegates: []
+  useDistance: 1.2
+  triggerType: 11
+  key: 102
+  actionTemplate: {fileID: 11400000, guid: 4114e50432580d84b861b4d87c2a1c2a, type: 2}
+  actions: []
+  m_Interruptable: 0
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &7333083012317472442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7089563499898678431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68165cdf1896c89479a91b2478670c0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveable: 1
+  m_Items:
+  - {fileID: 8196198915584952920, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
+  m_Amounts: 01000000
+  m_Modifiers:
+  - modifiers: []
+  onChange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8097891523356225489
 GameObject:
   m_ObjectHideFlags: 0
