@@ -1,9 +1,10 @@
+using DevionGames.InventorySystem;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnVariableItems : MonoBehaviour
 {
-    [SerializeField] private List<VariableItem> _variableItems;
+    [SerializeField] private List<GameObject> _variableItems;
     [SerializeField] private List<int> _randomRange = new List<int>();
     private List<Vector3> _itemsPos = new List<Vector3>();
 
@@ -52,8 +53,8 @@ public class SpawnVariableItems : MonoBehaviour
     {
         for (int i = 0; i < _variableItems.Count; i++)
         {
-            GameObject tempItem = Instantiate(_variableItems[i].objectPrefab, _itemsPos[i], Quaternion.identity);
-            tempItem.GetComponent<VariableItemSpawn>().Spawn(_variableItems[i]);
+            GameObject tempItem = Instantiate(_variableItems[i], _itemsPos[i], Quaternion.identity);
+            tempItem.GetComponent<VariableItemSpawn>().Spawn();
         }
     }
 }

@@ -1102,7 +1102,7 @@ GameObject:
   - component: {fileID: -4812340807181913220}
   - component: {fileID: -1964232359203571125}
   m_Layer: 0
-  m_Name: VariableItem
+  m_Name: VariableItem 15
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1244,7 +1244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0673299b9ba4ac48b76c945037cc51e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _variableItem: {fileID: 11400000, guid: 9302cd2df1c6d124ea324808aa8cabfc, type: 2}
+  _variableItem: {fileID: 11400000, guid: 100ffe9d611a62a47ad6519ed8ca0967, type: 2}
 --- !u!114 &-4812340807181913220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1297,7 +1297,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveable: 1
   m_Items:
-  - {fileID: 8196198915584952920, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
+  - {fileID: 2826618755464862909, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
   m_Amounts: 01000000
   m_Modifiers:
   - modifiers: []

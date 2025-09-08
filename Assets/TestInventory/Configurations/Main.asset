@@ -17,7 +17,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 5e500015e7d26fc4ab3081e65c52b4a5, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -73,7 +73,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 5557224eaa9ac41498f1d3f1a48f2bc8, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -129,7 +129,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 4cca192de12a132488ebf9d4a15f7a8d, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -185,7 +185,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 484fd13fff0af3546b06c59c68e641a7, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 9dd5af73840900a4b9b9773ead501b44, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: f47e929cf290c1240b7e89506947c7eb, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -353,7 +353,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 1860fde30a2d02b489a7b432fb91705b, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -409,7 +409,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 3fc1751d94c9cf5449b3418310ab95fd, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -637,7 +637,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 2d39f69664bc1994083982283751331a, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -693,7 +693,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 35723b1be9b71aa4e9fd14cf5fe02635, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -749,7 +749,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: bf2865f9dd3f2df43a1ae60aa31c4d7e, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
@@ -806,7 +806,6 @@ MonoBehaviour:
   - {fileID: -3714927997075562859}
   - {fileID: -5147169058799103591}
   - {fileID: 5455709886084389810}
-  - {fileID: -6538246658270359037}
   - {fileID: -4162476345848493279}
   - {fileID: 2338208679362493921}
   - {fileID: -8392195397263867491}
@@ -816,6 +815,7 @@ MonoBehaviour:
   - {fileID: -528456422969061021}
   - {fileID: 3246189067452869579}
   - {fileID: 6723580484807366312}
+  - {fileID: -6538246658270359037}
   - {fileID: 2826618755464862909}
   - {fileID: -8760352954335720722}
   - {fileID: -5328712008217831995}
@@ -850,7 +850,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -796933782, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 14e9e8e6ae792754dbaf692ee75783de, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
     true \u0438\u043B\u0438 false"
   m_Category: {fileID: 1897360874325639717}
@@ -955,7 +955,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 8091dc8fa85a4e04a907add786efdbbe, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -1011,7 +1011,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 9423213a0cdbb2740b58bd5879b801ad, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
@@ -1067,7 +1067,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 7cfcc7263a0e66842a33e99a6bbfbb82, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
@@ -1123,7 +1123,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 4f31d34065051254584a6d4a25755c3c, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
@@ -1179,7 +1179,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: c0fd4ad706a67d1498cf79c529b685da, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
@@ -1252,7 +1252,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: f675872848a3b614f95809273a9ace63, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
@@ -1326,7 +1326,7 @@ MonoBehaviour:
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
     true \u0438\u043B\u0438 false"
   m_Category: {fileID: 1897360874325639717}
-  m_IsSellable: 1
+  m_IsSellable: 0
   m_BuyPrice: 0
   m_CanBuyBack: 1
   m_BuyCurrency: {fileID: 0}
@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
-  m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
+  m_Prefab: {fileID: 7089563499898678431, guid: 1559f2eea1c858f4ea8c777c3fe53f60, type: 3}
   m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}

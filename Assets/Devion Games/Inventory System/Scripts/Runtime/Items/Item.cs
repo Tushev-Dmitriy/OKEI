@@ -352,6 +352,8 @@ namespace DevionGames.InventorySystem
 		[SerializeField]
 		private List<ObjectProperty> properties = new List<ObjectProperty> ();
 
+        public List<ObjectProperty> GetAllProperties() => properties;
+
         public void AddProperty(string name, object value) {
             ObjectProperty property = new ObjectProperty();
             property.Name = name;
