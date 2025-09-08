@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: String3
   m_EditorClassIdentifier: 
   m_Id: e4f9d67f-a4aa-45f3-9e1c-0b3152836a5e
-  m_ItemName: String3
+  m_ItemName: '"Info"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 5e500015e7d26fc4ab3081e65c52b4a5, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -43,19 +43,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"Info"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &-8392195397263867491
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -69,12 +57,12 @@ MonoBehaviour:
   m_Name: Float6
   m_EditorClassIdentifier: 
   m_Id: 4f476c0b-28c1-4f4b-856a-273ad2d4f57e
-  m_ItemName: Float6
+  m_ItemName: 3.32
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 5557224eaa9ac41498f1d3f1a48f2bc8, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -99,19 +87,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 3.32
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &-6591986521453098479
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -125,12 +101,12 @@ MonoBehaviour:
   m_Name: String5
   m_EditorClassIdentifier: 
   m_Id: 3fab3979-e3bd-4b1a-a063-daeac3612435
-  m_ItemName: String5
+  m_ItemName: '"C#"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 4cca192de12a132488ebf9d4a15f7a8d, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -155,19 +131,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"C#"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &-6538246658270359037
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -181,12 +145,12 @@ MonoBehaviour:
   m_Name: String1
   m_EditorClassIdentifier: 
   m_Id: 06ccb321-6b55-4863-a669-3710a1d94dc9
-  m_ItemName: String1
+  m_ItemName: '"Hello"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 484fd13fff0af3546b06c59c68e641a7, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -211,19 +175,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"Hello"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &-5918636848074017355
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -237,12 +189,12 @@ MonoBehaviour:
   m_Name: Int3
   m_EditorClassIdentifier: 
   m_Id: 7185af81-29ce-4345-9834-608e3dbb00cf
-  m_ItemName: Int3
+  m_ItemName: -23
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 9dd5af73840900a4b9b9773ead501b44, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -267,19 +219,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: -23
-    floatValue: -23
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []
 --- !u!114 &-5328712008217831995
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -293,12 +233,12 @@ MonoBehaviour:
   m_Name: String4
   m_EditorClassIdentifier: 
   m_Id: 5e474983-3fd2-47f3-8e5c-b3ac8bbeb991
-  m_ItemName: String4
+  m_ItemName: '"Unity"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: f47e929cf290c1240b7e89506947c7eb, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -323,19 +263,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"Unity"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &-5147169058799103591
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -349,12 +277,12 @@ MonoBehaviour:
   m_Name: Float2
   m_EditorClassIdentifier: 
   m_Id: eadc6542-fbd2-4a6b-b17d-4139d71b8b43
-  m_ItemName: Float2
+  m_ItemName: 0.5
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 1860fde30a2d02b489a7b432fb91705b, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -379,19 +307,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 0.5
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &-4162476345848493279
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -405,12 +321,12 @@ MonoBehaviour:
   m_Name: Float4
   m_EditorClassIdentifier: 
   m_Id: 5fda6657-8d4b-4d6d-b793-c7c4bd876d81
-  m_ItemName: Float4
+  m_ItemName: 2.19
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 3fc1751d94c9cf5449b3418310ab95fd, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -435,19 +351,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 2.19
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &-3796042556163693534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -633,12 +537,12 @@ MonoBehaviour:
   m_Name: Float1
   m_EditorClassIdentifier: 
   m_Id: ac57b245-085a-4ae2-bcc3-16469669229e
-  m_ItemName: Float1
+  m_ItemName: 3.14
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 2d39f69664bc1994083982283751331a, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -663,19 +567,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 3.14
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &-3192546412361047428
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -689,12 +581,12 @@ MonoBehaviour:
   m_Name: String6
   m_EditorClassIdentifier: 
   m_Id: d25b6aa3-fecb-48a3-80da-5407eff74e9a
-  m_ItemName: String6
+  m_ItemName: '"Data"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 35723b1be9b71aa4e9fd14cf5fe02635, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -719,19 +611,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"Data"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &-528456422969061021
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -745,12 +625,12 @@ MonoBehaviour:
   m_Name: Int4
   m_EditorClassIdentifier: 
   m_Id: 7e2954ca-06ee-4084-a87f-468303bb396f
-  m_ItemName: Int4
+  m_ItemName: -11
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: bf2865f9dd3f2df43a1ae60aa31c4d7e, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -775,19 +655,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: -11
-    floatValue: -11
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -846,12 +714,12 @@ MonoBehaviour:
   m_Name: Bool2
   m_EditorClassIdentifier: 
   m_Id: e15babe6-7fb2-4abb-9703-a77d57c658fb
-  m_ItemName: Bool2
+  m_ItemName: False
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -796933782, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 14e9e8e6ae792754dbaf692ee75783de, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
+  m_Description: "Bool. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
     true \u0438\u043B\u0438 false"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -876,19 +744,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 1
-    stringValue: 
-    intValue: 0
-    floatValue: 0
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.34117648, b: 0.3803922, a: 0}
+  properties: []
 --- !u!114 &1053056797914124584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -901,7 +757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cefcd19cdc9839d449772c4dce1503f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoSave: 1
+  autoSave: 0
   savingKey: Player
   savingRate: 60
   provider: 0
@@ -915,11 +771,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a4abab319188bac4a8515c585b13ba9d, type: 3}
-  m_Name: VariableItem
+  m_Name: Variable Item
   m_EditorClassIdentifier: 
   m_Parent: {fileID: 0}
   name: Variable Item
-  m_EditorColor: {r: 0, g: 0, b: 0, a: 0}
+  m_EditorColor: {r: 1, g: 1, b: 1, a: 0}
   m_Cooldown: 1
 --- !u!114 &2131000939295214724
 MonoBehaviour:
@@ -951,12 +807,12 @@ MonoBehaviour:
   m_Name: Float5
   m_EditorClassIdentifier: 
   m_Id: 05bd4103-7937-4e0e-9880-295f87460629
-  m_ItemName: Float5
+  m_ItemName: 0.89
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 8091dc8fa85a4e04a907add786efdbbe, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -981,19 +837,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 0.89
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &2826618755464862909
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1007,12 +851,12 @@ MonoBehaviour:
   m_Name: String2
   m_EditorClassIdentifier: 
   m_Id: a9ee1d5b-5537-4928-809a-55535de5126c
-  m_ItemName: String2
+  m_ItemName: '"Text"'
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -868060341, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 9423213a0cdbb2740b58bd5879b801ad, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
+  m_Description: "String. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u0435\u043A\u0441\u0442
     (\"Hello\")"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1037,19 +881,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 0
-    stringValue: '"Text"'
-    intValue: 0
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0, g: 0.5294118, b: 0.8862746, a: 0}
+  properties: []
 --- !u!114 &3246189067452869579
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1063,12 +895,12 @@ MonoBehaviour:
   m_Name: Int5
   m_EditorClassIdentifier: 
   m_Id: 75bd6615-aaad-43ce-9245-e49763d26089
-  m_ItemName: Int5
+  m_ItemName: 40
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 7cfcc7263a0e66842a33e99a6bbfbb82, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1093,19 +925,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: 40
-    floatValue: 40
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []
 --- !u!114 &4307475002862682822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1119,12 +939,12 @@ MonoBehaviour:
   m_Name: Int2
   m_EditorClassIdentifier: 
   m_Id: 6e2ec54e-fb93-4c7a-91b7-e07a7995dc64
-  m_ItemName: Int2
+  m_ItemName: 15
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 4f31d34065051254584a6d4a25755c3c, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1149,19 +969,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: 15
-    floatValue: 15
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []
 --- !u!114 &5455709886084389810
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1175,12 +983,12 @@ MonoBehaviour:
   m_Name: Float3
   m_EditorClassIdentifier: 
   m_Id: b48f1829-9bab-4585-a63c-ca93ff6082b2
-  m_ItemName: Float3
+  m_ItemName: 1.23
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -338459665, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: c0fd4ad706a67d1498cf79c529b685da, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
+  m_Description: "Float. \u0425\u0440\u0430\u043D\u0438\u0442 \u0434\u0440\u043E\u0431\u043D\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (3.14, 0.5)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1205,19 +1013,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 3
-    stringValue: 
-    intValue: 0
-    floatValue: 1.23
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.6117647, b: 0.2901961, a: 0}
+  properties: []
 --- !u!114 &5925847494324580213
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1248,12 +1044,12 @@ MonoBehaviour:
   m_Name: Int6
   m_EditorClassIdentifier: 
   m_Id: 08b6a579-1782-4e78-b0ee-261b7fabd1d7
-  m_ItemName: Int6
+  m_ItemName: -78
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: f675872848a3b614f95809273a9ace63, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1278,19 +1074,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: -78
-    floatValue: -78
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []
 --- !u!114 &7008696625831533970
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1318,12 +1102,12 @@ MonoBehaviour:
   m_Name: Bool1
   m_EditorClassIdentifier: 
   m_Id: e750bdcb-5ad6-4239-9b3e-2497f206d63d
-  m_ItemName: Bool1
+  m_ItemName: True
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -796933782, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: c302335224c14dd4e8ef09774233d810, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
+  m_Description: "Bool. \u0425\u0440\u0430\u043D\u0438\u0442 \u0442\u043E\u043B\u044C\u043A\u043E
     true \u0438\u043B\u0438 false"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1348,19 +1132,7 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 1
-    stringValue: 
-    intValue: 0
-    floatValue: 0
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 1
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.85098046, g: 0.34117648, b: 0.3803922, a: 0}
+  properties: []
 --- !u!114 &8603438622479561411
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1374,12 +1146,12 @@ MonoBehaviour:
   m_Name: Int1
   m_EditorClassIdentifier: 
   m_Id: 06796b3a-d6f7-419c-b643-e68688162b99
-  m_ItemName: Int1
+  m_ItemName: 5
   m_UseItemNameAsDisplayName: 1
   m_DisplayName: New Item
   m_Icon: {fileID: -1907880445, guid: 2e5f4ece1e73023449dc10a3d6901ffd, type: 3}
   m_Prefab: {fileID: 7089563499898678431, guid: 1559f2eea1c858f4ea8c777c3fe53f60, type: 3}
-  m_Description: "\u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
+  m_Description: "Int. \u0425\u0440\u0430\u043D\u0438\u0442 \u0446\u0435\u043B\u044B\u0435
     \u0447\u0438\u0441\u043B\u0430 (5, 42, -10)"
   m_Category: {fileID: 1897360874325639717}
   m_IsSellable: 0
@@ -1404,16 +1176,4 @@ MonoBehaviour:
   m_CraftingModifier:
     modifiers: []
   ingredients: []
-  properties:
-  - name: Value
-    typeIndex: 5
-    stringValue: 
-    intValue: 5
-    floatValue: 5
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    boolValue: 0
-    objectReferenceValue: {fileID: 0}
-    vector2Value: {x: 0, y: 0}
-    vector3Value: {x: 0, y: 0, z: 0}
-    show: 0
-    color: {r: 0.011764707, g: 0.65882355, b: 0.25882354, a: 0}
+  properties: []

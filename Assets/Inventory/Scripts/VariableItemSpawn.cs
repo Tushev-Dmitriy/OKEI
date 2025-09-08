@@ -7,6 +7,12 @@ using UnityEngine;
 public class VariableItemSpawn : MonoBehaviour
 {
     [SerializeField] private VariableItem _variableItem;
+
+    private void OnEnable()
+    {
+        Spawn();
+    }
+
     public void Spawn()
     {
         Renderer renderer = gameObject.GetComponent<Renderer>();

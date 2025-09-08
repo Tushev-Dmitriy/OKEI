@@ -19,13 +19,21 @@ public class TooltipUI : MonoBehaviour
         _textMesh.alpha = 0;
         transform.localScale = Vector3.zero;
 
-        _textMesh.DOFade(1, _fadeDuration);
-        transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack);
+        _textMesh.DOFade(1, _fadeDuration).SetId(this);
+        transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack).SetId(this);
     }
 
     public void Hide()
     {
+        if (gameObject.GetComponent<RectTransform>() == null) return;
+
         _textMesh.DOFade(0, _fadeDuration);
         transform.DOScale(Vector3.zero, _scaleDuration).SetEase(Ease.InBack);
+    }
+
+
+    private void OnDestroy()
+    {
+        DOTween.Kill(this);
     }
 }

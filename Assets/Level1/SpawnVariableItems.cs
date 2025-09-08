@@ -53,8 +53,7 @@ public class SpawnVariableItems : MonoBehaviour
     {
         for (int i = 0; i < _variableItems.Count; i++)
         {
-            GameObject tempItem = Instantiate(_variableItems[i], _itemsPos[i], Quaternion.identity);
-            tempItem.GetComponent<VariableItemSpawn>().Spawn();
+            Instantiate(_variableItems[i], _itemsPos[i], Quaternion.identity);
         }
     }
 }
