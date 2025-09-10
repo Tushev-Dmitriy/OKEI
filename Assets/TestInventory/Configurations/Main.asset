@@ -698,7 +698,8 @@ MonoBehaviour:
   categories:
   - {fileID: 1897360874325639717}
   - {fileID: 4840591478713236798}
-  equipments: []
+  equipments:
+  - {fileID: 8910769837699162948}
   itemGroups: []
   settings:
   - {fileID: 5925847494324580213}
@@ -1351,6 +1352,19 @@ MonoBehaviour:
     modifiers: []
   ingredients: []
   properties: []
+--- !u!114 &8910769837699162948
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8f5f34ef39fbec438e689ea49ddb023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: RightHand
 --- !u!114 &8997365245746931105
 MonoBehaviour:
   m_ObjectHideFlags: 1
