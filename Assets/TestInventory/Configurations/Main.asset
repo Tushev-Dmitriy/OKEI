@@ -264,6 +264,60 @@ MonoBehaviour:
     modifiers: []
   ingredients: []
   properties: []
+--- !u!114 &-5227710255423711463
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6132cc3558d117f4bbad4651b2dbdba7, type: 3}
+  m_Name: StringCollector
+  m_EditorClassIdentifier: 
+  m_Id: 6818e352-996e-46c2-833a-3f66846adcfc
+  m_ItemName: StringCollector
+  m_UseItemNameAsDisplayName: 1
+  m_DisplayName: New Item
+  m_Icon: {fileID: 1451828026, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
+  m_Prefab: {fileID: 0}
+  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
+    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
+    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 bool"
+  m_Category: {fileID: 4840591478713236798}
+  m_IsSellable: 0
+  m_BuyPrice: 0
+  m_CanBuyBack: 1
+  m_BuyCurrency: {fileID: 0}
+  m_SellPrice: 0
+  m_SellCurrency: {fileID: 0}
+  m_Stack: 1
+  m_MaxStack: 1
+  m_IsDroppable: 0
+  m_DropSound: {fileID: 0}
+  m_OverridePrefab: {fileID: 0}
+  m_IsCraftable: 0
+  m_CraftingDuration: 2
+  m_UseCraftingSkill: 0
+  m_SkillWindow: Skills
+  m_CraftingSkill: {fileID: 0}
+  m_RemoveIngredientsWhenFailed: 0
+  m_MinCraftingSkillValue: 0
+  m_CraftingAnimatorState: Blacksmithy
+  m_CraftingModifier:
+    modifiers: []
+  ingredients: []
+  properties: []
+  m_UseCategoryCooldown: 1
+  m_Cooldown: 1
+  actions: []
+  m_OverrideEquipPrefab: {fileID: 0}
+  m_Region:
+  - {fileID: 8910769837699162948}
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &-5147169058799103591
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -612,6 +666,114 @@ MonoBehaviour:
     modifiers: []
   ingredients: []
   properties: []
+--- !u!114 &-3161534237308744085
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6132cc3558d117f4bbad4651b2dbdba7, type: 3}
+  m_Name: FloatCollector
+  m_EditorClassIdentifier: 
+  m_Id: e7a5fd5c-e163-4504-b8b3-2d39df2bf003
+  m_ItemName: FloatCollector
+  m_UseItemNameAsDisplayName: 1
+  m_DisplayName: New Item
+  m_Icon: {fileID: -928924453, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
+  m_Prefab: {fileID: 0}
+  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
+    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
+    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 bool"
+  m_Category: {fileID: 4840591478713236798}
+  m_IsSellable: 0
+  m_BuyPrice: 0
+  m_CanBuyBack: 1
+  m_BuyCurrency: {fileID: 0}
+  m_SellPrice: 0
+  m_SellCurrency: {fileID: 0}
+  m_Stack: 1
+  m_MaxStack: 1
+  m_IsDroppable: 0
+  m_DropSound: {fileID: 0}
+  m_OverridePrefab: {fileID: 0}
+  m_IsCraftable: 0
+  m_CraftingDuration: 2
+  m_UseCraftingSkill: 0
+  m_SkillWindow: Skills
+  m_CraftingSkill: {fileID: 0}
+  m_RemoveIngredientsWhenFailed: 0
+  m_MinCraftingSkillValue: 0
+  m_CraftingAnimatorState: Blacksmithy
+  m_CraftingModifier:
+    modifiers: []
+  ingredients: []
+  properties: []
+  m_UseCategoryCooldown: 1
+  m_Cooldown: 1
+  actions: []
+  m_OverrideEquipPrefab: {fileID: 0}
+  m_Region:
+  - {fileID: 8910769837699162948}
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &-1292243738994077795
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6132cc3558d117f4bbad4651b2dbdba7, type: 3}
+  m_Name: BoolCollector
+  m_EditorClassIdentifier: 
+  m_Id: cb3c3337-d084-47f5-9af6-a6276e982cef
+  m_ItemName: BoolCollector
+  m_UseItemNameAsDisplayName: 1
+  m_DisplayName: New Item
+  m_Icon: {fileID: 471589139, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
+  m_Prefab: {fileID: 3666987486565247795, guid: ea945a4e9a4d06143bc22a0ee176893f, type: 3}
+  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
+    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
+    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 bool"
+  m_Category: {fileID: 4840591478713236798}
+  m_IsSellable: 0
+  m_BuyPrice: 0
+  m_CanBuyBack: 1
+  m_BuyCurrency: {fileID: 0}
+  m_SellPrice: 0
+  m_SellCurrency: {fileID: 0}
+  m_Stack: 1
+  m_MaxStack: 1
+  m_IsDroppable: 0
+  m_DropSound: {fileID: 0}
+  m_OverridePrefab: {fileID: 0}
+  m_IsCraftable: 0
+  m_CraftingDuration: 2
+  m_UseCraftingSkill: 0
+  m_SkillWindow: Skills
+  m_CraftingSkill: {fileID: 0}
+  m_RemoveIngredientsWhenFailed: 0
+  m_MinCraftingSkillValue: 0
+  m_CraftingAnimatorState: Blacksmithy
+  m_CraftingModifier:
+    modifiers: []
+  ingredients: []
+  properties: []
+  m_UseCategoryCooldown: 1
+  m_Cooldown: 1
+  actions: []
+  m_OverrideEquipPrefab: {fileID: 0}
+  m_Region:
+  - {fileID: 8910769837699162948}
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &-528456422969061021
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -689,10 +851,10 @@ MonoBehaviour:
   - {fileID: -5328712008217831995}
   - {fileID: -6591986521453098479}
   - {fileID: -3192546412361047428}
-  - {fileID: 8997365245746931105}
-  - {fileID: 4227705642190280787}
-  - {fileID: 7479197891377055096}
-  - {fileID: 6458907998804796226}
+  - {fileID: -1292243738994077795}
+  - {fileID: -3161534237308744085}
+  - {fileID: 2889415073977578099}
+  - {fileID: -5227710255423711463}
   currencies: []
   raritys: []
   categories:
@@ -888,6 +1050,60 @@ MonoBehaviour:
     modifiers: []
   ingredients: []
   properties: []
+--- !u!114 &2889415073977578099
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6132cc3558d117f4bbad4651b2dbdba7, type: 3}
+  m_Name: IntCollector
+  m_EditorClassIdentifier: 
+  m_Id: b1ac8891-7b30-497d-9947-c29abe7b61df
+  m_ItemName: IntCollector
+  m_UseItemNameAsDisplayName: 1
+  m_DisplayName: New Item
+  m_Icon: {fileID: 480844567, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
+  m_Prefab: {fileID: 0}
+  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
+    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
+    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 bool"
+  m_Category: {fileID: 4840591478713236798}
+  m_IsSellable: 0
+  m_BuyPrice: 0
+  m_CanBuyBack: 1
+  m_BuyCurrency: {fileID: 0}
+  m_SellPrice: 0
+  m_SellCurrency: {fileID: 0}
+  m_Stack: 1
+  m_MaxStack: 1
+  m_IsDroppable: 0
+  m_DropSound: {fileID: 0}
+  m_OverridePrefab: {fileID: 0}
+  m_IsCraftable: 0
+  m_CraftingDuration: 2
+  m_UseCraftingSkill: 0
+  m_SkillWindow: Skills
+  m_CraftingSkill: {fileID: 0}
+  m_RemoveIngredientsWhenFailed: 0
+  m_MinCraftingSkillValue: 0
+  m_CraftingAnimatorState: Blacksmithy
+  m_CraftingModifier:
+    modifiers: []
+  ingredients: []
+  properties: []
+  m_UseCategoryCooldown: 1
+  m_Cooldown: 1
+  actions: []
+  m_OverrideEquipPrefab: {fileID: 0}
+  m_Region:
+  - {fileID: 8910769837699162948}
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &3246189067452869579
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -932,57 +1148,6 @@ MonoBehaviour:
     modifiers: []
   ingredients: []
   properties: []
---- !u!114 &4227705642190280787
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a78acd5557204d499bcf3420fd4ee78, type: 3}
-  m_Name: FloatCollector
-  m_EditorClassIdentifier: 
-  m_Id: 34ad0afb-e4b1-499b-98f4-ee01153852c8
-  m_ItemName: FloatCollector
-  m_UseItemNameAsDisplayName: 1
-  m_DisplayName: New Item
-  m_Icon: {fileID: -928924453, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
-  m_Prefab: {fileID: 2815548596131728226, guid: dbc1f42335e39d340810ed3188f99c96, type: 3}
-  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
-    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
-    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 float"
-  m_Category: {fileID: 4840591478713236798}
-  m_IsSellable: 0
-  m_BuyPrice: 0
-  m_CanBuyBack: 1
-  m_BuyCurrency: {fileID: 0}
-  m_SellPrice: 0
-  m_SellCurrency: {fileID: 0}
-  m_Stack: 1
-  m_MaxStack: 1
-  m_IsDroppable: 0
-  m_DropSound: {fileID: 0}
-  m_OverridePrefab: {fileID: 0}
-  m_IsCraftable: 0
-  m_CraftingDuration: 2
-  m_UseCraftingSkill: 0
-  m_SkillWindow: Skills
-  m_CraftingSkill: {fileID: 0}
-  m_RemoveIngredientsWhenFailed: 0
-  m_MinCraftingSkillValue: 0
-  m_CraftingAnimatorState: Blacksmithy
-  m_CraftingModifier:
-    modifiers: []
-  ingredients: []
-  properties: []
-  m_UseCategoryCooldown: 1
-  m_Cooldown: 1
-  actions: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &4307475002862682822
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1104,57 +1269,6 @@ MonoBehaviour:
   queriesHitTriggers: 0
   debugMessages: 1
   showAllComponents: 0
---- !u!114 &6458907998804796226
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a78acd5557204d499bcf3420fd4ee78, type: 3}
-  m_Name: StringCollector
-  m_EditorClassIdentifier: 
-  m_Id: 3d98d274-71f5-4020-9099-b2ed8771fe5e
-  m_ItemName: StringCollector
-  m_UseItemNameAsDisplayName: 1
-  m_DisplayName: New Item
-  m_Icon: {fileID: 1451828026, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
-  m_Prefab: {fileID: 2815548596131728226, guid: dbc1f42335e39d340810ed3188f99c96, type: 3}
-  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
-    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
-    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 string"
-  m_Category: {fileID: 4840591478713236798}
-  m_IsSellable: 0
-  m_BuyPrice: 0
-  m_CanBuyBack: 1
-  m_BuyCurrency: {fileID: 0}
-  m_SellPrice: 0
-  m_SellCurrency: {fileID: 0}
-  m_Stack: 1
-  m_MaxStack: 1
-  m_IsDroppable: 0
-  m_DropSound: {fileID: 0}
-  m_OverridePrefab: {fileID: 0}
-  m_IsCraftable: 0
-  m_CraftingDuration: 2
-  m_UseCraftingSkill: 0
-  m_SkillWindow: Skills
-  m_CraftingSkill: {fileID: 0}
-  m_RemoveIngredientsWhenFailed: 0
-  m_MinCraftingSkillValue: 0
-  m_CraftingAnimatorState: Blacksmithy
-  m_CraftingModifier:
-    modifiers: []
-  ingredients: []
-  properties: []
-  m_UseCategoryCooldown: 1
-  m_Cooldown: 1
-  actions: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &6723580484807366312
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1213,57 +1327,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unstackEvent: 3
   unstackKeyCode: 304
---- !u!114 &7479197891377055096
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a78acd5557204d499bcf3420fd4ee78, type: 3}
-  m_Name: IntCollector
-  m_EditorClassIdentifier: 
-  m_Id: 06a19791-ae10-4c1e-973a-fa6b4a96cfee
-  m_ItemName: IntCollector
-  m_UseItemNameAsDisplayName: 1
-  m_DisplayName: New Item
-  m_Icon: {fileID: 480844567, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
-  m_Prefab: {fileID: 2815548596131728226, guid: dbc1f42335e39d340810ed3188f99c96, type: 3}
-  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
-    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
-    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 int"
-  m_Category: {fileID: 4840591478713236798}
-  m_IsSellable: 0
-  m_BuyPrice: 0
-  m_CanBuyBack: 1
-  m_BuyCurrency: {fileID: 0}
-  m_SellPrice: 0
-  m_SellCurrency: {fileID: 0}
-  m_Stack: 1
-  m_MaxStack: 1
-  m_IsDroppable: 0
-  m_DropSound: {fileID: 0}
-  m_OverridePrefab: {fileID: 0}
-  m_IsCraftable: 0
-  m_CraftingDuration: 2
-  m_UseCraftingSkill: 0
-  m_SkillWindow: Skills
-  m_CraftingSkill: {fileID: 0}
-  m_RemoveIngredientsWhenFailed: 0
-  m_MinCraftingSkillValue: 0
-  m_CraftingAnimatorState: Blacksmithy
-  m_CraftingModifier:
-    modifiers: []
-  ingredients: []
-  properties: []
-  m_UseCategoryCooldown: 1
-  m_Cooldown: 1
-  actions: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &8196198915584952920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1362,57 +1425,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8f5f34ef39fbec438e689ea49ddb023, type: 3}
-  m_Name: 
+  m_Name: RightHand
   m_EditorClassIdentifier: 
   name: RightHand
---- !u!114 &8997365245746931105
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a78acd5557204d499bcf3420fd4ee78, type: 3}
-  m_Name: BoolCollector
-  m_EditorClassIdentifier: 
-  m_Id: 090c6cce-2c8c-4bd7-ae2a-88f328d5032c
-  m_ItemName: BoolCollector
-  m_UseItemNameAsDisplayName: 1
-  m_DisplayName: New Item
-  m_Icon: {fileID: 471589139, guid: 591e9a4bd5ae4ab47ab3b1ddb37dc6fe, type: 3}
-  m_Prefab: {fileID: 2815548596131728226, guid: dbc1f42335e39d340810ed3188f99c96, type: 3}
-  m_Description: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u0443\u0435\u0442\u0441\u044F
-    \u0434\u043B\u044F \u0441\u0431\u043E\u0440\u0430 \u0431\u043B\u043E\u043A\u043E\u0432
-    \u0434\u0430\u043D\u043D\u044B\u0445 \u0442\u0438\u043F\u0430 bool"
-  m_Category: {fileID: 4840591478713236798}
-  m_IsSellable: 0
-  m_BuyPrice: 0
-  m_CanBuyBack: 1
-  m_BuyCurrency: {fileID: 0}
-  m_SellPrice: 0
-  m_SellCurrency: {fileID: 0}
-  m_Stack: 1
-  m_MaxStack: 1
-  m_IsDroppable: 0
-  m_DropSound: {fileID: 0}
-  m_OverridePrefab: {fileID: 0}
-  m_IsCraftable: 0
-  m_CraftingDuration: 2
-  m_UseCraftingSkill: 0
-  m_SkillWindow: Skills
-  m_CraftingSkill: {fileID: 0}
-  m_RemoveIngredientsWhenFailed: 0
-  m_MinCraftingSkillValue: 0
-  m_CraftingAnimatorState: Blacksmithy
-  m_CraftingModifier:
-    modifiers: []
-  ingredients: []
-  properties: []
-  m_UseCategoryCooldown: 1
-  m_Cooldown: 1
-  actions: []
-  references:
-    version: 2
-    RefIds: []
