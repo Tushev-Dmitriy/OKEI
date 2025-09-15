@@ -8,9 +8,6 @@ using UnityEngine.Serialization;
 
 namespace DevionGames.InventorySystem
 {
-    [System.Serializable]
-    public class ItemEvent : UnityEvent<Item> { }
-
     public class ItemCollection : MonoBehaviour, IEnumerable<Item>, IJsonSerializable
     {
         public bool saveable = true;
@@ -33,7 +30,7 @@ namespace DevionGames.InventorySystem
 
         [HideInInspector]
 		public UnityEvent onChange;
-        [HideInInspector] public ItemEvent onItemAdded = new ItemEvent();
+        public UnityEvent onItemAdded;
 
 
         private bool m_Initialized;
@@ -148,7 +145,7 @@ namespace DevionGames.InventorySystem
             if(onChange != null)
 			    onChange.Invoke ();
             if (onItemAdded != null)
-                onItemAdded.Invoke(item);
+                onItemAdded.Invoke();
 		}
 
      

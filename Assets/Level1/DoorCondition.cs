@@ -7,16 +7,23 @@ using UnityEngine;
 public class DoorCondition : MonoBehaviour
 {
     [SerializeField] DoorOpener _doorOpenerScript;
-    [SerializeField] GameObject _slotUiObj;
+    [SerializeField] GameObject _doorUI;
     [SerializeField] ItemDatabase _itemDatabase;
     [SerializeField] ItemCollection _itemCollection;
+    [SerializeField] DoorTextController _doorTextController;
 
-    DevionGames.InventorySystem.Item _itemForCondition;
+    private GameObject _slotUiObj;
+    private GameObject _textUiObj;
+
+    private string _itemForCondition;
 
     private List<DevionGames.InventorySystem.Item> _variableItems = new List<DevionGames.InventorySystem.Item>();
 
     private void Awake()
     {
+        _slotUiObj = _doorUI.transform.GetChild(1).gameObject;
+        _textUiObj = _doorUI.transform.GetChild(0).gameObject;
+
         var _tempItems = _itemDatabase.items;
         foreach (var item in _tempItems)
         {
@@ -31,22 +38,24 @@ public class DoorCondition : MonoBehaviour
 
     public void CheckItemInSlot()
     {
-        Debug.Log(1);
         ItemCollection _doorObjects = _slotUiObj.GetComponent<ItemCollection>();
-        Debug.Log(_itemForCondition);
-        if (_doorObjects.GetItemsInCollection()[0] == _itemForCondition)
+        string itemInSlot = _doorObjects.GetItemsInCollection()[0].name.Replace("(Clone)", "");
+        if (itemInSlot == _itemForCondition)
         {
-            Debug.Log(1);
+            _doorOpenerScript.OpenDoors();
+            _itemCollection.onItemAdded.RemoveListener(CheckItemInSlot);
+
         } else
         {
-            Debug.Log(2);
+            _doorTextController.SetupConsoleError();
         }
     }
 
     private void ConditionCreate()
     {
         int _rndNum = Random.Range(0, _variableItems.Count + 1);
-        _itemForCondition = _variableItems[_rndNum];
+        _itemForCondition = _variableItems[_rndNum].name;
+        _doorTextController.SetupConditionText(_itemForCondition);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -54,6 +63,7 @@ public class DoorCondition : MonoBehaviour
         if (other.tag == "Player")
         {
             _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+            _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
         }
     }
 
@@ -62,6 +72,7 @@ public class DoorCondition : MonoBehaviour
         if (other.tag == "Player")
         {
             _slotUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+            _textUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
         }
     }
 }
