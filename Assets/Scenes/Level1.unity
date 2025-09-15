@@ -1379,7 +1379,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 46, y: 46}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &653651056
 MonoBehaviour:
@@ -1986,7 +1986,7 @@ RectTransform:
   m_GameObject: {fileID: 945354948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 656754408}
@@ -2013,24 +2013,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bb22b138ec68f14884edf560442aaf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delegates:
-  - eventID: OnAddItem
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1182618332}
-          m_TargetAssemblyTypeName: DoorCondition, Assembly-CSharp
-          m_MethodName: CheckItemInSlot
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  name: Inventory
+  delegates: []
+  name: DoorSlot
   priority: 0
   m_KeyCode: 0
   m_EaseType: 28
@@ -2103,8 +2087,8 @@ CanvasGroup:
   m_GameObject: {fileID: 945354948}
   m_Enabled: 1
   m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &945354953
 MonoBehaviour:
@@ -2282,7 +2266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0a711ddced74024e93881d5b45ea367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _doorOpenerScript: {fileID: 6825085609214317272}
   _slotUiObj: {fileID: 945354948}
+  _itemDatabase: {fileID: 11400000, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
 --- !u!1 &1237773411
 GameObject:
   m_ObjectHideFlags: 0
@@ -18203,6 +18189,7 @@ GameObject:
   - component: {fileID: 698766730705464676}
   - component: {fileID: 2457081724782804163}
   - component: {fileID: 4155802069418583878}
+  - component: {fileID: 7756436940912804022}
   m_Layer: 5
   m_Name: Inventory
   m_TagString: Untagged
@@ -18210,6 +18197,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7756436940912804022
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7756436940912804021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f10d0457b7b0541a4d7bdc91b96112, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Categories: []
+  invert: 0
 --- !u!114 &7757823109237952797
 MonoBehaviour:
   m_ObjectHideFlags: 0

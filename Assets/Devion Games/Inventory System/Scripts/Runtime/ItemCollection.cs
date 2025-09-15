@@ -5,15 +5,25 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
+
 namespace DevionGames.InventorySystem
 {
-	public class ItemCollection : MonoBehaviour, IEnumerable<Item>, IJsonSerializable
+    [System.Serializable]
+    public class ItemEvent : UnityEvent<Item> { }
+
+    public class ItemCollection : MonoBehaviour, IEnumerable<Item>, IJsonSerializable
     {
         public bool saveable = true;
 		[ItemPicker (true)]
 		[SerializeField]
         [FormerlySerializedAs("items")]
         protected List<Item> m_Items = new List<Item> ();
+
+        public List<Item> GetItemsInCollection()
+        {
+            return m_Items;
+        }
+        
         [FormerlySerializedAs("amounts")]
         [SerializeField]
         protected List<int> m_Amounts = new List<int>();
@@ -23,7 +33,7 @@ namespace DevionGames.InventorySystem
 
         [HideInInspector]
 		public UnityEvent onChange;
-
+        [HideInInspector] public ItemEvent onItemAdded = new ItemEvent();
 
 
         private bool m_Initialized;
@@ -137,7 +147,8 @@ namespace DevionGames.InventorySystem
             this.m_Modifiers.Insert(index,new ItemModifierList());
             if(onChange != null)
 			    onChange.Invoke ();
-
+            if (onItemAdded != null)
+                onItemAdded.Invoke(item);
 		}
 
      
