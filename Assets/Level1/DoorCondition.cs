@@ -1,8 +1,8 @@
 using DevionGames.InventorySystem;
 using DG.Tweening;
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class DoorCondition : MonoBehaviour
 {
@@ -30,7 +30,7 @@ public class DoorCondition : MonoBehaviour
             if (item.Category == _itemDatabase.categories[0])
             {
                 _variableItems.Add(item);
-            }
+            }   
         }
         ConditionCreate();
         _itemCollection.onItemAdded.AddListener(CheckItemInSlot);
@@ -44,7 +44,6 @@ public class DoorCondition : MonoBehaviour
         {
             _doorOpenerScript.OpenDoors();
             _itemCollection.onItemAdded.RemoveListener(CheckItemInSlot);
-
         } else
         {
             _doorTextController.SetupConsoleError();
@@ -55,7 +54,6 @@ public class DoorCondition : MonoBehaviour
     {
         int _rndNum = Random.Range(0, _variableItems.Count + 1);
         _itemForCondition = _variableItems[_rndNum].name;
-        _doorTextController.SetupConditionText(_itemForCondition);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -64,6 +62,7 @@ public class DoorCondition : MonoBehaviour
         {
             _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
             _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+            _doorTextController.SetupConditionText(_itemForCondition);
         }
     }
 
@@ -73,6 +72,7 @@ public class DoorCondition : MonoBehaviour
         {
             _slotUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
             _textUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+            _doorTextController.ClearText();
         }
     }
 }

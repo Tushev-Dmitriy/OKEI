@@ -23,4 +23,9 @@ public class DoorTextController : MonoBehaviour
     {
         _consoleOutText.text = @"<color=#FF0000>Console.WriteLine(""Error"");</color>)";
     }
+
+    public void ClearText()
+    {
+        _consoleOutText.text = null;
+    }
 }
