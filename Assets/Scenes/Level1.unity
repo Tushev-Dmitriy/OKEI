@@ -2075,7 +2075,8 @@ MonoBehaviour:
   _doorOpenerScript: {fileID: 6825085609214317272}
   _doorUI: {fileID: 242516351}
   _itemDatabase: {fileID: 11400000, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
-  _itemCollection: {fileID: 1426583236}
+  _doorItemCollection: {fileID: 1426583236}
+  _mainInventoryCollection: {fileID: 4155802069418583878}
   _doorTextController: {fileID: 1785774481}
 --- !u!1 &1296320550
 GameObject:
@@ -2553,6 +2554,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onItemAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  onItemRemoved:
     m_PersistentCalls:
       m_Calls: []
 --- !u!225 &1426583237
@@ -11917,6 +11921,9 @@ MonoBehaviour:
   onItemAdded:
     m_PersistentCalls:
       m_Calls: []
+  onItemRemoved:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!224 &4166803005770041008
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19284,6 +19291,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onItemAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  onItemRemoved:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &7971441468856794345

@@ -31,6 +31,7 @@ namespace DevionGames.InventorySystem
         [HideInInspector]
 		public UnityEvent onChange;
         public UnityEvent onItemAdded;
+        public UnityEvent onItemRemoved;
 
 
         private bool m_Initialized;
@@ -160,6 +161,8 @@ namespace DevionGames.InventorySystem
                 this.m_Modifiers.RemoveAt(index);
                 if (onChange != null)
                     onChange.Invoke();
+                if (onItemRemoved != null)
+                    onItemRemoved.Invoke();
             }
 			return result;
 		}
@@ -182,9 +185,8 @@ namespace DevionGames.InventorySystem
                 onChange.Invoke();
         }
 
-		public void Clear ()
+		public void Clear()
 		{
-            
             Item[] currencies = this.m_Items.Where(x => typeof(Currency).IsAssignableFrom(x.GetType())).ToArray();
             for (int i = 0; i < currencies.Length; i++) {
                 currencies[i].Stack = 0;
