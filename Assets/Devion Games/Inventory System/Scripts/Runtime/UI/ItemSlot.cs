@@ -507,6 +507,12 @@ namespace DevionGames.InventorySystem
             return !IsCooldown && ObservedItem != null;
         }
 
+        public void ClearSlot()
+        {
+            this.ObservedItem = null;
+            this.Repaint();
+        }
+
         public class DragObject {
             public ItemContainer container;
             public Slot slot;

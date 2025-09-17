@@ -18,6 +18,7 @@ public class DoorCondition : MonoBehaviour
 
     private string _itemForCondition;
     private bool _isOpen = false;
+    private DevionGames.InventorySystem.Item _item;
 
     private List<DevionGames.InventorySystem.Item> _variableItems = new List<DevionGames.InventorySystem.Item>();
 
@@ -41,7 +42,8 @@ public class DoorCondition : MonoBehaviour
     public void CheckItemInSlot()
     {
         ItemCollection _doorObjects = _slotUiObj.GetComponent<ItemCollection>();
-        string itemInSlot = _doorObjects.GetItemsInCollection()[0].name.Replace("(Clone)", "");
+        _item = _doorObjects.GetItemsInCollection()[0];
+        string itemInSlot = _item.name.Replace("(Clone)", "");
         _doorItemCollection.onItemRemoved.AddListener(RemoveItemInSlot);
         if (itemInSlot == _itemForCondition)
         {
@@ -62,12 +64,13 @@ public class DoorCondition : MonoBehaviour
 
     private void BackItemToInventory()
     {
-        _doorItemCollection.Clear();
+        _doorItemCollection.Remove(_item);
+        _doorItemCollection.GetComponentInChildren<ItemSlot>().ClearSlot();
     }
 
     private void ConditionCreate()
     {
-        int _rndNum = Random.Range(0, _variableItems.Count + 1);
+        int _rndNum = Random.Range(0, _variableItems.Count);
         _itemForCondition = _variableItems[_rndNum].name;
     }
 
