@@ -1,4 +1,3 @@
-using Cinemachine;
 using StarterAssets;
 using UnityEngine;
 using Zenject;
