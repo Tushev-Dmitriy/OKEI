@@ -1,0 +1,11 @@
+Model Information:
+* title:	Minecraft Lever
+* source:	https://sketchfab.com/3d-models/minecraft-lever-5d821ac7148240c092c4face44c1d096
+* author:	Coller (https://sketchfab.com/TheCollerroller)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Minecraft Lever" (https://sketchfab.com/3d-models/minecraft-lever-5d821ac7148240c092c4face44c1d096) by Coller (https://sketchfab.com/TheCollerroller) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
