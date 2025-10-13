@@ -1,10 +1,10 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class BridgePart : MonoBehaviour
+public class RopePart : MonoBehaviour
 {
     [Header("Transform References")]
-    [SerializeField] private Transform bridgePart;
+    [SerializeField] private Transform ropePart;
 
     [Header("Positions and Rotations")]
     [SerializeField] private Vector3 posStart;
@@ -34,8 +34,8 @@ public class BridgePart : MonoBehaviour
         Vector3 targetPos = Vector3.Lerp(posStart, posEnd, progress);
         Vector3 targetRot = Vector3.Lerp(rotStart, rotEnd, progress);
 
-        moveTween = bridgePart.DOLocalMove(targetPos, duration).SetEase(easeType);
-        rotateTween = bridgePart.DOLocalRotate(targetRot, duration).SetEase(easeType);
+        moveTween = ropePart.DOLocalMove(targetPos, duration).SetEase(easeType);
+        rotateTween = ropePart.DOLocalRotate(targetRot, duration).SetEase(easeType);
     }
 
     public void TogglePart()
