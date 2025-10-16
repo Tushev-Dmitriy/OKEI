@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInteractor : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Camera playerCamera;
-    [SerializeField] private float maxDistance;
+    [SerializeField] private float maxDistance = 5f;
     [SerializeField] private LayerMask interactableLayer;
 
     private MainInputSystem _input;
@@ -31,8 +31,8 @@ public class PlayerInteractor : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        Debug.Log(1);
         Ray ray = playerCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
         {
             if (hit.collider.TryGetComponent<InteractableAnimator>(out var interactable))

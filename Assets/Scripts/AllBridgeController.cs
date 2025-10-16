@@ -7,11 +7,6 @@ public class AllBridgeController : MonoBehaviour
     [SerializeField] private RopePart rightRope;
     [SerializeField] private RopePart leftRope;
 
-    private void Start()
-    {
-        RaiseBridgeToPercent(40f);
-    }
-
     public void RaiseBridge() => RaiseBridgeToPercent(1f);
     public void LowerBridge() => RaiseBridgeToPercent(0f);
 

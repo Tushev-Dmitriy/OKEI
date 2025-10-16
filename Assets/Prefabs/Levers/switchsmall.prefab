@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 354827874143520278}
   - component: {fileID: 988118697336340014}
   - component: {fileID: 3349343187443919309}
+  - component: {fileID: 2862759526963188444}
   m_Layer: 0
   m_Name: switchsmall
   m_TagString: Untagged
@@ -173,3 +174,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &2862759526963188444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8567296640081909021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f35f804f55d5ab43ac9c66af735c329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animatedPart: {fileID: 2220747191427848603}
+  _activeRotation: {x: -45, y: 0, z: 0}
+  _activePosition: {x: -0.001184818, y: -0.00007857061, z: 0.05561025}
+  _duration: 1
+  _ease: 6
+  _toggleMode: 1

@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 299330384805322523}
   - component: {fileID: 1204148000469788353}
   - component: {fileID: 4583720934424907912}
-  m_Layer: 0
+  - component: {fileID: 6021854245340267283}
+  - component: {fileID: 2544631566676450152}
+  m_Layer: 3
   m_Name: lever
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: 0.5483998, y: 0.13761248, z: -0.106024295}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7335558479111196915}
   m_Father: {fileID: 0}
@@ -87,6 +89,45 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6021854245340267283
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3234293014605691005}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.32883123, y: 0.59750915, z: 0.17343558}
+  m_Center: {x: -0.0005460457, y: -0.0028114766, z: 0.07589942}
+--- !u!114 &2544631566676450152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3234293014605691005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f35f804f55d5ab43ac9c66af735c329, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animatedPart: {fileID: 7335558479111196915}
+  _activeRotation: {x: 45, y: 0, z: 0}
+  _activePosition: {x: -0.243664, y: 0.008980267, z: 0.08065312}
+  _duration: 1
+  _ease: 6
+  _toggleMode: 1
 --- !u!1 &4796462390959151644
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +139,7 @@ GameObject:
   - component: {fileID: 7335558479111196915}
   - component: {fileID: 107906892001755766}
   - component: {fileID: 1317764159390165431}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
