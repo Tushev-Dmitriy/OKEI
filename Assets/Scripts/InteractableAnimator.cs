@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class InteractableAnimator : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class InteractableAnimator : MonoBehaviour
     [Header("Objects to actions")]
     [SerializeField] private AllBridgeController _allBridgeController;
     [SerializeField] private float _percentToObject;
+
+    [Header("Condition controller")]
+    [SerializeField] private List<InteractableTextConroller> _textController = new List<InteractableTextConroller>();
 
     private bool _isActive;
     private Vector3 _startRotation;
@@ -42,7 +46,11 @@ public class InteractableAnimator : MonoBehaviour
             _allBridgeController.RaiseBridgeToPercent(_percentToObject);
         }
 
-            Sequence seq = DOTween.Sequence();
+        foreach (var tc in _textController)
+        {
+            tc.SwapText();
+        }
+        Sequence seq = DOTween.Sequence();
         seq.Append(_animatedPart.DOLocalRotate(targetRot, _duration).SetEase(_ease));
         seq.Join(_animatedPart.DOLocalMove(targetPos, _duration).SetEase(_ease));
     }
