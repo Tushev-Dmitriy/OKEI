@@ -1,11 +1,11 @@
-using NUnit.Framework;
+    using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class InteractableTextConroller : MonoBehaviour
 {
-    [TextArea(3, 10)]
+    [TextArea(5, 10)]
     [SerializeField] private List<string> _conditionText = new();
 
     private TMP_Text _conditionTextComponent;

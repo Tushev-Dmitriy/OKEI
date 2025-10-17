@@ -17,7 +17,7 @@ public class InteractableAnimator : MonoBehaviour
     [SerializeField] private float _percentToObject;
 
     [Header("Condition controller")]
-    [SerializeField] private List<InteractableTextConroller> _textController = new List<InteractableTextConroller>();
+    [SerializeField] private List<InteractableTextConroller> _textController = new();
 
     private bool _isActive;
     private Vector3 _startRotation;
@@ -25,7 +25,8 @@ public class InteractableAnimator : MonoBehaviour
 
     private void Awake()
     {
-        if (_animatedPart == null) _animatedPart = transform;
+        if (_animatedPart == null)
+            _animatedPart = transform;
 
         _startRotation = _animatedPart.localEulerAngles;
         _startPosition = _animatedPart.localPosition;
@@ -33,23 +34,35 @@ public class InteractableAnimator : MonoBehaviour
 
     public void Animate()
     {
-        if (_toggleMode) _isActive = !_isActive;
-
-        Vector3 targetRot = _isActive ? _activeRotation : _startRotation;
-        Vector3 targetPos = _isActive ? _activePosition : _startPosition;
-
-        if (!_isActive)
+        if (_toggleMode)
         {
-            _allBridgeController.RaiseBridgeToPercent(-_percentToObject);
-        } else
-        {
-            _allBridgeController.RaiseBridgeToPercent(_percentToObject);
+            _isActive = !_isActive;
+            PlayAnimation(_isActive);
         }
+        else
+        {
+            Sequence seq = DOTween.Sequence();
+
+            seq.AppendCallback(() => PlayAnimation(true));
+            seq.AppendInterval(_duration + 0.05f);
+
+            seq.AppendCallback(() => PlayAnimation(false));
+        }
+    }
+
+    private void PlayAnimation(bool activate)
+    {
+        Vector3 targetRot = activate ? _activeRotation : _startRotation;
+        Vector3 targetPos = activate ? _activePosition : _startPosition;
+
+        if (activate)
+            _allBridgeController.RaiseBridgeToPercent(_percentToObject);
+        else
+            _allBridgeController.RaiseBridgeToPercent(-_percentToObject);
 
         foreach (var tc in _textController)
-        {
             tc.SwapText();
-        }
+
         Sequence seq = DOTween.Sequence();
         seq.Append(_animatedPart.DOLocalRotate(targetRot, _duration).SetEase(_ease));
         seq.Join(_animatedPart.DOLocalMove(targetPos, _duration).SetEase(_ease));
