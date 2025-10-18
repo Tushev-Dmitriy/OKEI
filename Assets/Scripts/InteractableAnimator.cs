@@ -10,22 +10,21 @@ public class InteractableAnimator : MonoBehaviour
     [SerializeField] private Vector3 _activePosition;
     [SerializeField] private float _duration = 0.3f;
     [SerializeField] private Ease _ease = Ease.OutQuad;
-    [SerializeField] private bool _toggleMode;
+    [SerializeField] private bool _toggleMode = true;
 
-    [Header("Objects to actions")]
+    [Header("Action Settings")]
     [SerializeField] private AllBridgeController _allBridgeController;
-    [SerializeField] private float _percentToObject;
-
-    [Header("Condition controller")]
-    [SerializeField] private List<InteractableTextConroller> _textController = new();
+    [SerializeField] private float _percentStep = 10f;
+    [SerializeField] private List<InteractableTextConroller> _textControllers = new();
 
     private bool _isActive;
+    private float _currentPercent;
     private Vector3 _startRotation;
     private Vector3 _startPosition;
 
     private void Awake()
     {
-        if (_animatedPart == null)
+        if (!_animatedPart)
             _animatedPart = transform;
 
         _startRotation = _animatedPart.localEulerAngles;
@@ -34,37 +33,41 @@ public class InteractableAnimator : MonoBehaviour
 
     public void Animate()
     {
+        foreach (var tc in _textControllers)
+        {
+            if (tc.useCounter)
+                tc.IncrementCounter();
+            else
+                tc.SwapText();
+        }
+
         if (_toggleMode)
         {
             _isActive = !_isActive;
-            PlayAnimation(_isActive);
+            _currentPercent = _isActive ? 100f : 0f;
+            _allBridgeController.RaiseBridgeToPercent(_currentPercent);
+
+            AnimatePart(_isActive);
         }
         else
         {
+            _currentPercent = Mathf.Clamp(_currentPercent + _percentStep, 0f, 100f);
+            _allBridgeController.RaiseBridgeToPercent(_currentPercent);
+
             Sequence seq = DOTween.Sequence();
-
-            seq.AppendCallback(() => PlayAnimation(true));
+            seq.Append(AnimatePart(true));
             seq.AppendInterval(_duration + 0.05f);
-
-            seq.AppendCallback(() => PlayAnimation(false));
+            seq.Append(AnimatePart(false));
         }
     }
 
-    private void PlayAnimation(bool activate)
+    private Tween AnimatePart(bool activate)
     {
         Vector3 targetRot = activate ? _activeRotation : _startRotation;
         Vector3 targetPos = activate ? _activePosition : _startPosition;
 
-        if (activate)
-            _allBridgeController.RaiseBridgeToPercent(_percentToObject);
-        else
-            _allBridgeController.RaiseBridgeToPercent(-_percentToObject);
-
-        foreach (var tc in _textController)
-            tc.SwapText();
-
-        Sequence seq = DOTween.Sequence();
-        seq.Append(_animatedPart.DOLocalRotate(targetRot, _duration).SetEase(_ease));
-        seq.Join(_animatedPart.DOLocalMove(targetPos, _duration).SetEase(_ease));
+        return DOTween.Sequence()
+            .Join(_animatedPart.DOLocalRotate(targetRot, _duration).SetEase(_ease))
+            .Join(_animatedPart.DOLocalMove(targetPos, _duration).SetEase(_ease));
     }
 }

@@ -41,8 +41,12 @@ public class BridgePart : MonoBehaviour
     public void TogglePart()
     {
         if (currentProgress > 0.5f)
+        {
             MoveToProgress(0f);
+        }
         else
+        {
             MoveToProgress(1f);
+        }
     }
 }
