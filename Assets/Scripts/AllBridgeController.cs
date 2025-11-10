@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AllBridgeController : MonoBehaviour
@@ -7,16 +8,24 @@ public class AllBridgeController : MonoBehaviour
     [SerializeField] private RopePart rightRope;
     [SerializeField] private RopePart leftRope;
 
-    public void RaiseBridge() => RaiseBridgeToPercent(1f);
+    public event Action<float> OnBridgePercentChanged;
+
+    private float _currentPercent;
+
+    public void RaiseBridge() => RaiseBridgeToPercent(100f);
     public void LowerBridge() => RaiseBridgeToPercent(0f);
 
     public void RaiseBridgeToPercent(float percent)
     {
-        float progress = Mathf.Clamp01(percent / 100f);
+        _currentPercent = Mathf.Clamp(percent, 0f, 100f);
 
-        rightPart.MoveToProgress(progress);
-        leftPart.MoveToProgress(progress);
-        rightRope.MoveToProgress(progress);
-        leftRope.MoveToProgress(progress);
+        rightPart.MoveToProgress(_currentPercent / 100f);
+        leftPart.MoveToProgress(_currentPercent / 100f);
+        rightRope.MoveToProgress(_currentPercent / 100f);
+        leftRope.MoveToProgress(_currentPercent / 100f);
+
+        OnBridgePercentChanged?.Invoke(_currentPercent);
     }
+
+    public float CurrentPercent => _currentPercent;
 }

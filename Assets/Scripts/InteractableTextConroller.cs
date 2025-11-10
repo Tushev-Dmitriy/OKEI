@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -53,15 +54,33 @@ public class InteractableTextConroller : MonoBehaviour
 
     private void UpdateCounterText()
     {
-        if (_conditionText.Count > 0)
+        if (_conditionText.Count == 0) return;
+
+        string template = _conditionText[0];
+
+        if (_conditionText.Count > 1 && _conditionText[1].Contains("for"))
         {
-            string template = _conditionText[0];
-            _conditionTextComponent.text = string.Format(template, _currentCount, _targetCount);
+            template = _conditionText[1];
         }
-        else
+
+        string updatedText = template;
+
+        if (template.Contains("for"))
         {
-            _conditionTextComponent.text = $"Нажато {_currentCount}/{_targetCount}";
+            updatedText = Regex.Replace(
+                template,
+                @"i\s*=\s*\d+",
+                $"i = {_currentCount}"
+            );
         }
+
+        _conditionTextComponent.text = updatedText;
+    }
+
+    public void ResetCounter()
+    {
+        _currentCount = 0;
+        UpdateCounterText();
     }
 
     public bool IsCompleted => useCounter && _currentCount >= _targetCount;

@@ -1,31 +1,5 @@
 {
   "dependencies": {
-    "ai.meshy": {
-      "version": "file:ai.meshy",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {
-        "com.unity.mathematics": "1.2.6",
-        "com.unity.burst": "1.8.4",
-        "com.unity.formats.fbx": "4.1.3"
-      }
-    },
-    "com.autodesk.fbx": {
-      "version": "5.1.1",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.coplaydev.unity-mcp": {
-      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.0.2"
-      },
-      "hash": "50844c20f429a9f1a99c8f4df83dd43dadf96686"
-    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -109,16 +83,6 @@
       "source": "builtin",
       "dependencies": {}
     },
-    "com.unity.formats.fbx": {
-      "version": "5.1.1",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.autodesk.fbx": "5.1.1",
-        "com.unity.timeline": "1.7.1"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.ide.rider": {
       "version": "3.0.36",
       "depth": 0,
@@ -163,13 +127,6 @@
     },
     "com.unity.nuget.mono-cecil": {
       "version": "1.11.5",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.nuget.newtonsoft-json": {
-      "version": "3.2.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},

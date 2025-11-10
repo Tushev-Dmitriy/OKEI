@@ -70,4 +70,29 @@ public class InteractableAnimator : MonoBehaviour
             .Join(_animatedPart.DOLocalRotate(targetRot, _duration).SetEase(_ease))
             .Join(_animatedPart.DOLocalMove(targetPos, _duration).SetEase(_ease));
     }
+
+    private void OnEnable()
+    {
+        if (_allBridgeController != null)
+            _allBridgeController.OnBridgePercentChanged += HandleBridgeChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (_allBridgeController != null)
+            _allBridgeController.OnBridgePercentChanged -= HandleBridgeChanged;
+    }
+    private void HandleBridgeChanged(float newPercent)
+    {
+        if (!_toggleMode && newPercent >= 100f)
+        {
+            _currentPercent = 0f;
+            foreach (var tc in _textControllers)
+            {
+                if (tc.useCounter)
+                    tc.ResetCounter();
+            }
+        }
+    }
+
 }
