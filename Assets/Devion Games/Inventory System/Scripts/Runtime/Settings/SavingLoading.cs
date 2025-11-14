@@ -17,7 +17,7 @@ namespace DevionGames.InventorySystem.Configuration
 
         public bool autoSave = true;
         public string savingKey = "Player";
-        public float savingRate = 60f;
+        public float savingRate = 10f;
         public SavingProvider provider;
 
 
