@@ -22,7 +22,12 @@ namespace DevionGames.InventorySystem{
 			}
 		}
 
-		public GameObject GetItemPrefab(string name){
+        public Item GetItemById(string id)
+        {
+            return items.FirstOrDefault(x => x.Id == id);
+        }
+
+        public GameObject GetItemPrefab(string name){
 			for (int i=0; i< items.Count; i++) {
 				Item item=items[i];
 				if(item != null && item.Prefab != null && item.Prefab.name == name){
