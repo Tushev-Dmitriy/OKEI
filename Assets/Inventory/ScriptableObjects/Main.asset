@@ -925,7 +925,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cefcd19cdc9839d449772c4dce1503f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoSave: 1
+  autoSave: 0
   savingKey: Player
   savingRate: 10
   provider: 0
@@ -1267,7 +1267,7 @@ MonoBehaviour:
   playerTag: Player
   maxDropDistance: 3
   queriesHitTriggers: 0
-  debugMessages: 1
+  debugMessages: 0
   showAllComponents: 0
 --- !u!114 &6723580484807366312
 MonoBehaviour:

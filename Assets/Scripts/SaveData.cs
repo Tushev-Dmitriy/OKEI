@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class SaveData
 {
     public PlayerData player;
-    public InventoryData inventory;
+    public List<InventoryData> inventory;
     public SettingsData settings;
     public SaveInfoData saveInfo;
 }
@@ -28,7 +29,8 @@ public class Vector3Data
 [Serializable]
 public class InventoryData
 {
-    
+    public string itemID;
+    public int stack;
 }
 
 [Serializable]
