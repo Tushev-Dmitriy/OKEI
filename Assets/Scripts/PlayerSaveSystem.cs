@@ -6,11 +6,13 @@ using UnityEngine;
 
 public static class PlayerSaveSystem
 {
-    private static string savePath => Path.Combine(Application.persistentDataPath, "player.json");
+    private static string savePath => 
+        Path.Combine(Application.persistentDataPath, "player.json");
 
     public static void Save(SaveData saveData)
     {
-        string json = JsonConvert.SerializeObject(saveData, Formatting.Indented);
+        string json = JsonConvert.SerializeObject(saveData, 
+            Formatting.Indented);
         File.WriteAllText(savePath, json);
 
         Debug.Log("SAVE COMPLETE " + savePath);

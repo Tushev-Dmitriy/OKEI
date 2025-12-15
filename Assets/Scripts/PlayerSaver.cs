@@ -21,8 +21,7 @@ public class PlayerSaver : MonoBehaviour
             yield return new WaitForSeconds(30f);
             SavePlayerData();
         }
-    }
-
+    } 
     public void SavePlayerData()
     {
         if (_player == null)

@@ -236,8 +236,11 @@ namespace DevionGames.InventorySystem
             List<object> rotation = data["Rotation"] as List<object>;
             if ((string)data["Type"] != "UI")
             {
-                transform.position = new Vector3(System.Convert.ToSingle(position[0]), System.Convert.ToSingle(position[1]), System.Convert.ToSingle(position[2]));
-                transform.rotation = Quaternion.Euler(new Vector3(System.Convert.ToSingle(rotation[0]), System.Convert.ToSingle(rotation[1]), System.Convert.ToSingle(rotation[2])));
+                transform.position = new Vector3(System.Convert.ToSingle(position[0]), 
+                    System.Convert.ToSingle(position[1]), System.Convert.ToSingle(position[2]));
+                transform.rotation = Quaternion.Euler(new Vector3
+                    (System.Convert.ToSingle(rotation[0]), System.Convert.ToSingle(rotation[1]), 
+                    System.Convert.ToSingle(rotation[2])));
             }
             Clear();
 
@@ -247,10 +250,12 @@ namespace DevionGames.InventorySystem
                 List<object> mItems = data["Items"] as List<object>;
                 for (int i = 0; i < mItems.Count; i++)
                 {
-                    Dictionary<string, object> itemData = mItems[i] as Dictionary<string, object>;
+                    Dictionary<string, object> itemData = mItems[i]
+                        as Dictionary<string, object>;
                     if (itemData != null)
                     {
-                        List<Item> items = new List<Item>(InventoryManager.Database.items);
+                        List<Item> items = new List<Item>
+                            (InventoryManager.Database.items);
                         items.AddRange(InventoryManager.Database.currencies);
 
                         Item item = items.Find(x => x.Name == (string)itemData["Name"]);
