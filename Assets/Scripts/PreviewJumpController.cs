@@ -1,9 +1,11 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PreviewJumpController : MonoBehaviour
 {
+    [SerializeField] private Slider slider;
     private Vector3 _basePos;
     private Animator _animator;
 
@@ -15,7 +17,11 @@ public class PreviewJumpController : MonoBehaviour
         StartCoroutine(ShowJump(2.5f));
     }
 
-    public IEnumerator ShowJump(float height)
+    public void Show()
+    {
+        StartCoroutine(ShowJump(slider.value));
+    }
+    private IEnumerator ShowJump(float height)
     {
         _animator.SetBool("Jump", true);
 

@@ -14,13 +14,13 @@ public class TerminalController : MonoBehaviour
     private void OpenTerminal()
     {
         _animator.SetTrigger("Open");
-        _objToShow.transform.DOScale(Vector3.one, 1).SetEase(Ease.OutBack);
+        _objToShow.transform.DOScale(Vector3.one, 1.25f).SetEase(Ease.OutBack);
     }
 
     private void CloseTerminal()
     {
         _animator.SetTrigger("Close");
-        _objToShow.transform.DOScale(Vector3.zero, 1).SetEase(Ease.InBack);
+        _objToShow.transform.DOScale(Vector3.zero, 1.25f).SetEase(Ease.InBack);
     }
 
     private void OnTriggerEnter(Collider other)
