@@ -1,6 +1,7 @@
 ﻿ using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
+using Zenject;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -387,6 +388,26 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+
+        //Zenject Injection Constructor
+        private SignalBus _signalBus;
+
+        [Inject]
+        private void Construct(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+            _signalBus.Subscribe<PlayerParamChangedSignal>(OnParamChanged);
+        }
+
+        private void OnDestroy()
+        {
+            _signalBus?.Unsubscribe<PlayerParamChangedSignal>(OnParamChanged);
+        }
+
+        private void OnParamChanged(PlayerParamChangedSignal signal)
+        {
+            JumpHeight = signal.Value;
         }
     }
 }
