@@ -1537,11 +1537,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0a711ddced74024e93881d5b45ea367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _doorOpenerScript: {fileID: 6825085609214317272}
+  _doorOpenerScript: {fileID: 6825085609214317273}
   _doorUI: {fileID: 242516351}
   _itemDatabase: {fileID: 11400000, guid: f0eb3ffb49222dc4ca5e121230baf369, type: 2}
   _doorItemCollection: {fileID: 1426583236}
-  _mainInventoryCollection: {fileID: 0}
   _doorTextController: {fileID: 1785774481}
 --- !u!1 &1296320550
 GameObject:
@@ -2281,6 +2280,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1479681340}
   m_CullTransparentMesh: 0
+--- !u!1 &1496768244 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3646293891382491966, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
+  m_PrefabInstance: {fileID: 2553459881616303563}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1496768248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496768244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10c1d116b5a5f1145894f20ce75e7921, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1597708004
 GameObject:
   m_ObjectHideFlags: 0
@@ -3586,6 +3602,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5699442564937375814, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
+      propertyPath: _monoInstallers.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5699442564937375814, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
+      propertyPath: '_monoInstallers.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1496768248}
     - target: {fileID: 8072454648487141453, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3629,7 +3653,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3646293891382491966, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1496768248}
   m_SourcePrefab: {fileID: 100100000, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
 --- !u!23 &3242105706096071707
 MeshRenderer:
@@ -3747,6 +3774,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6825085609214317271}
   - component: {fileID: 6825085609214317272}
+  - component: {fileID: 6825085609214317273}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -3790,6 +3818,21 @@ MonoBehaviour:
   _leftDoorTarget: {x: 0.12, y: 0, z: 1}
   _rightDoorTarget: {x: 0.12, y: 0, z: -1}
   _duration: 1.5
+--- !u!114 &6825085609214317273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6195901541701503085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abd4e60936333e647b1db5b15f788c33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doorOpener: {fileID: 6825085609214317272}
+  saveId: door_test
+  isOpen: 0
 --- !u!1 &7329296349759810295
 GameObject:
   m_ObjectHideFlags: 0

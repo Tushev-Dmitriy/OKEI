@@ -6,11 +6,10 @@ using Random = UnityEngine.Random;
 
 public class DoorCondition : MonoBehaviour
 {
-    [SerializeField] DoorOpener _doorOpenerScript;
+    [SerializeField] Door _doorOpenerScript;
     [SerializeField] GameObject _doorUI;
     [SerializeField] ItemDatabase _itemDatabase;
     [SerializeField] ItemCollection _doorItemCollection;
-    [SerializeField] ItemCollection _mainInventoryCollection;
     [SerializeField] DoorTextController _doorTextController;
 
     private GameObject _slotUiObj;
@@ -47,7 +46,8 @@ public class DoorCondition : MonoBehaviour
         _doorItemCollection.onItemRemoved.AddListener(RemoveItemInSlot);
         if (itemInSlot == _itemForCondition)
         {
-            _doorOpenerScript.OpenDoors();
+            _doorOpenerScript.OpenChange();
+            _doorOpenerScript.ApplyInstant();
             _doorItemCollection.onItemAdded.RemoveListener(CheckItemInSlot);
             _isOpen = true;
         } else

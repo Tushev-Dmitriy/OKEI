@@ -1,27 +1,42 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerSaver : MonoBehaviour
 {
     private GameObject _player;
+    private SaveData _cachedSaveData;
+
     public string CurrentLevelName => SceneManager.GetActiveScene().name;
+
+    private void Awake()
+    {
+        _player = gameObject;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
 
     private void Start()
     {
-        _player = gameObject;
         LoadPlayerData();
-        StartCoroutine(SaveDataCor());
+        StartCoroutine(AutoSaveCoroutine());
     }
 
-    private IEnumerator SaveDataCor()
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private IEnumerator AutoSaveCoroutine()
     {
         while (true)
         {
             yield return new WaitForSeconds(30f);
             SavePlayerData();
         }
-    } 
+    }
+
     public void SavePlayerData()
     {
         if (_player == null)
@@ -30,51 +45,97 @@ public class PlayerSaver : MonoBehaviour
             return;
         }
 
-        SaveData data = new SaveData();
-
-        data.player = new PlayerData()
+        SaveData data = new SaveData
         {
-            level = CurrentLevelName,
-            position = new Vector3Data()
+            player = new PlayerData
             {
-                x = _player.transform.position.x,
-                y = _player.transform.position.y,
-                z = _player.transform.position.z
+                level = CurrentLevelName,
+                position = new Vector3Data
+                {
+                    x = _player.transform.position.x,
+                    y = _player.transform.position.y,
+                    z = _player.transform.position.z
+                },
+                rotation = new Vector3Data
+                {
+                    x = _player.transform.eulerAngles.x,
+                    y = _player.transform.eulerAngles.y,
+                    z = _player.transform.eulerAngles.z
+                }
             },
-            rotation = new Vector3Data()
+
+            settings = new SettingsData
             {
-                x = _player.transform.eulerAngles.x,
-                y = _player.transform.eulerAngles.y,
-                z = _player.transform.eulerAngles.z
-            }
-        };
+                musicVolume = 0.5f,
+                sfxVolume = 0.5f
+            },
 
-        data.settings = new SettingsData()
-        {
-            musicVolume = 0.5f,
-            sfxVolume = 0.5f
-        };
+            saveInfo = new SaveInfoData
+            {
+                saveVersion = "1.0",
+                lastSaveTime = System.DateTime.Now.ToString()
+            },
 
-        data.saveInfo = new SaveInfoData()
-        {
-            saveVersion = "1.0",
-            lastSaveTime = System.DateTime.Now.ToString()
+            sceneObjects = CaptureSceneObjects()
         };
 
         PlayerSaveSystem.Save(data);
-
         Debug.Log("PLAYER DATA SAVED");
+    }
+
+    private List<SceneObjectStateData> CaptureSceneObjects()
+    {
+        var saveables = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<ISceneSaveable>();
+
+        List<SceneObjectStateData> result = new();
+
+        foreach (var saveable in saveables)
+        {
+            result.Add(saveable.CaptureState());
+        }
+
+        return result;
     }
 
     public void LoadPlayerData()
     {
         PlayerSaveSystem.Load(out SaveData data);
+
         if (data == null)
         {
-            Debug.LogWarning("No save data!");
+            Debug.LogWarning("No save data found");
             return;
         }
 
+        _cachedSaveData = data;
+
+        if (data.player.level != CurrentLevelName)
+        {
+            Debug.Log("Loading saved level: " + data.player.level);
+            SceneManager.LoadScene(data.player.level);
+            return;
+        }
+
+        RestorePlayerTransform(data);
+        RestoreSceneObjects(data);
+
+        Debug.Log("PLAYER DATA LOADED");
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (_cachedSaveData == null)
+            return;
+
+        RestorePlayerTransform(_cachedSaveData);
+        RestoreSceneObjects(_cachedSaveData);
+
+        Debug.Log("SCENE OBJECT STATES RESTORED");
+    }
+
+    private void RestorePlayerTransform(SaveData data)
+    {
         _player.transform.position = new Vector3(
             data.player.position.x,
             data.player.position.y,
@@ -86,14 +147,23 @@ public class PlayerSaver : MonoBehaviour
             data.player.rotation.y,
             data.player.rotation.z
         );
+    }
 
-        if (data.player.level != CurrentLevelName)
-        {
-            Debug.Log("Loading saved level: " + data.player.level);
-            SceneManager.LoadScene(data.player.level);
+    private void RestoreSceneObjects(SaveData data)
+    {
+        if (data.sceneObjects == null || data.sceneObjects.Count == 0)
             return;
-        }
 
-        Debug.Log("PLAYER DATA LOADED");
+        var saveables = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+            .OfType<ISceneSaveable>();
+
+        foreach (var saveable in saveables)
+        {
+            var state = data.sceneObjects
+                .FirstOrDefault(x => x.id == saveable.SaveId);
+
+            if (state != null)
+                saveable.RestoreState(state);
+        }
     }
 }

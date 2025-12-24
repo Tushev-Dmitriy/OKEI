@@ -7,6 +7,8 @@ public class SaveData
     public PlayerData player;
     public SettingsData settings;
     public SaveInfoData saveInfo;
+
+    public List<SceneObjectStateData> sceneObjects;
 }
 
 [Serializable]
@@ -37,4 +39,20 @@ public class SaveInfoData
 {
     public string saveVersion;
     public string lastSaveTime;
+}
+
+[Serializable]
+public class SceneObjectStateData
+{
+    public string id;
+    public SceneObjectType type;
+    public bool state;
+}
+
+public enum SceneObjectType
+{
+    Door,
+    Lever,
+    Bridge,
+    Platform
 }
