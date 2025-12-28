@@ -46,7 +46,7 @@ public class SceneObjectStateData
 {
     public string id;
     public SceneObjectType type;
-    public bool state;
+    public int state;
 }
 
 public enum SceneObjectType

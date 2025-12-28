@@ -151,6 +151,9 @@ namespace DevionGames.UIWidgets
 		private TweenRunner<Vector3Tween> m_ScaleTweenRunner;
 
 		protected Scrollbar[] m_Scrollbars;
+        
+		[Header("UI object max scale")]
+        [SerializeField] private float m_rectScale;
 
 		protected bool m_IsLocked = false;
 		public bool IsLocked
@@ -187,7 +190,7 @@ namespace DevionGames.UIWidgets
 			this.m_ScaleTweenRunner.Init (this);
             m_IsShowing = IsVisible;
 
-			OnAwake ();
+            OnAwake ();
 		}
 
 		protected virtual void OnAwake ()
@@ -232,8 +235,10 @@ namespace DevionGames.UIWidgets
             if (this.m_Focus) {
 				Focus ();
 			}
-			TweenCanvasGroupAlpha (m_CanvasGroup.alpha, 1f);
-			TweenTransformScale (Vector3.ClampMagnitude (m_RectTransform.localScale, 1.9f), Vector3.one);
+
+            TweenCanvasGroupAlpha (m_CanvasGroup.alpha, 1f);
+			TweenTransformScale (Vector3.ClampMagnitude (m_RectTransform.localScale, 1.9f), 
+				new Vector3(m_rectScale, m_rectScale, m_rectScale));
 			
 			WidgetUtility.PlaySound (this.m_ShowSound, 1.0f);
 			m_CanvasGroup.interactable = true;

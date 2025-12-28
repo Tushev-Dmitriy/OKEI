@@ -13,8 +13,6 @@ public class PreviewJumpController : MonoBehaviour
     {
         _basePos = transform.localPosition;
         _animator = GetComponent<Animator>();
-
-        StartCoroutine(ShowJump(2.5f));
     }
 
     public void Show()
@@ -36,5 +34,10 @@ public class PreviewJumpController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
 
         _animator.SetBool("Jump", false);
+    }
+
+    private void OnLand(AnimationEvent animationEvent)
+    {
+
     }
 }

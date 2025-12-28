@@ -1,16 +1,17 @@
 using UnityEngine;
 
-public class Door : MonoBehaviour, ISceneSaveable
+public class Bridge : MonoBehaviour
 {
-    [SerializeField] private DoorOpener doorOpener;
+    [SerializeField] private AllBridgeController bridgeController;
     [SerializeField] private string saveId;
     [SerializeField] SceneObjectType objectType;
-    [SerializeField] private bool isOpen;
-
-
-    public bool OpenChange() => isOpen = !isOpen;
+    [SerializeField] private int openPercent;
 
     public string SaveId => saveId;
+    public void ChangePercent(int percent)
+    {
+        openPercent = percent;
+    }
 
     public SceneObjectStateData CaptureState()
     {
@@ -18,31 +19,24 @@ public class Door : MonoBehaviour, ISceneSaveable
         {
             id = saveId,
             type = objectType,
-            state = isOpen ? 1 : 0
+            state = openPercent
         };
     }
 
     public void RestoreState(SceneObjectStateData data)
     {
-        if (data.state == 1)
-        {
-            isOpen = true;
-        } else
-        {
-            isOpen = false;
-        }
+        openPercent = data.state;
         ApplyInstant();
     }
 
     public void ApplyInstant()
     {
-        if (isOpen)
+        if (openPercent != 0) 
         {
-            doorOpener.OpenDoors();
-        }
-        else
+            bridgeController.RaiseBridgeToPercent(openPercent);
+        } else
         {
-            doorOpener.CloseDoors();
+            bridgeController.LowerBridge();
         }
     }
 }

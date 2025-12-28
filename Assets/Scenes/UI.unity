@@ -264,6 +264,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   m_Title: {fileID: 1165730728}
   m_Instruction: {fileID: 581469625}
 --- !u!225 &70556114
@@ -1192,7 +1193,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1598555373766118756}
   - {fileID: 1737234306505687324}
@@ -1203,8 +1204,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -225, y: 175}
-  m_SizeDelta: {x: 380.56006, y: 247.26001}
+  m_AnchoredPosition: {x: -305, y: 180}
+  m_SizeDelta: {x: 380.56006, y: 210}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &242145248242338364
 GameObject:
@@ -1413,6 +1414,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   m_UpdatePosition: 1
   m_PositionOffset: {x: 130, y: 0}
   m_Title: {fileID: 7310806979044834266}
@@ -2615,6 +2617,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   progressbar: {fileID: 6720953299174772454}
   m_ProgressbarTitle: {fileID: 3147792474049568722}
   progressLabel: {fileID: 0}
@@ -6032,6 +6035,7 @@ MonoBehaviour:
   m_CloseOnMove: 0
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 1.5
   useButton: 2
   m_DynamicContainer: 0
   m_SlotParent: {fileID: 253241105755374912}
@@ -10825,6 +10829,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   autoClose: 1
   title: {fileID: 2346023658712175957}
   text: {fileID: 6370241134549878467}
@@ -14814,7 +14819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
 --- !u!222 &7412676163429443101
@@ -15469,6 +15474,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   useButton: 0
   m_DynamicContainer: 0
   m_SlotParent: {fileID: 0}
@@ -16473,6 +16479,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   m_MenuItemPrefab: {fileID: 8321027694529230031}
 --- !u!114 &8321027693397336077
 MonoBehaviour:
@@ -16565,6 +16572,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   m_DynamicContainer: 1
   m_SlotParent: {fileID: 8321027694046231902}
   m_SlotPrefab: {fileID: 8321027692765595205}
@@ -16810,6 +16818,7 @@ MonoBehaviour:
   m_CloseOnMove: 1
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 2
   m_UpdatePosition: 1
   m_PositionOffset: {x: 0, y: 0}
   m_Title: {fileID: 8482228817350952818}

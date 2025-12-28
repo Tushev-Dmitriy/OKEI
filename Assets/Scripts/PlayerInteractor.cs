@@ -37,7 +37,7 @@ public class PlayerInteractor : MonoBehaviour
         {
             if (hit.collider.TryGetComponent<InteractableAnimator>(out var interactable))
             {
-                interactable.Animate();
+                interactable.Interact();
             }
         }
     }

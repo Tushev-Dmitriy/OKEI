@@ -1952,6 +1952,7 @@ MonoBehaviour:
   m_CloseOnMove: 0
   m_Deactivate: 306
   m_FocusPlayer: 0
+  m_rectScale: 0
   useButton: 2
   m_DynamicContainer: 0
   m_SlotParent: {fileID: 1891440645}

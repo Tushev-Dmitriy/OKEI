@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-public class JumpHeightSlider : MonoBehaviour, IChangeSlider
+public class MoveSpeedSlider : MonoBehaviour, IChangeSlider
 {
     private Slider _slider;
     private SignalBus _signalBus;
@@ -31,13 +31,13 @@ public class JumpHeightSlider : MonoBehaviour, IChangeSlider
     {
         _signalBus.Fire(new PlayerParamChangedSignal
         {
-            ParamType = PlayerParamType.JumpHeight,
+            ParamType = PlayerParamType.MoveSpeed,
             Value = value
         });
     }
 
     float IChangeSlider.CurrentValue()
     {
-        return _player.JumpHeight;
+        return _player.MoveSpeed;
     }
 }

@@ -32,7 +32,7 @@ public class PlayerSaver : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(30f);
+            yield return new WaitForSeconds(10f);
             SavePlayerData();
         }
     }

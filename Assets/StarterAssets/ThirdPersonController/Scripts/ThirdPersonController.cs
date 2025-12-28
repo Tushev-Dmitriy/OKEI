@@ -407,7 +407,16 @@ namespace StarterAssets
 
         private void OnParamChanged(PlayerParamChangedSignal signal)
         {
-            JumpHeight = signal.Value;
+            switch (signal.ParamType)
+            {
+                case PlayerParamType.JumpHeight:
+                    JumpHeight = signal.Value;
+                    break;
+
+                case PlayerParamType.MoveSpeed:
+                    MoveSpeed = signal.Value;
+                    break;
+            }
         }
     }
 }
