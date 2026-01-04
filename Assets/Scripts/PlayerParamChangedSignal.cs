@@ -7,5 +7,6 @@ public struct PlayerParamChangedSignal
 public enum PlayerParamType
 {
     JumpHeight,
-    MoveSpeed
+    MoveSpeed,
+    Gravity
 }

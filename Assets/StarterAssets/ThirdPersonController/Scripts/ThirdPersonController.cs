@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 using Zenject;
@@ -87,6 +87,7 @@ namespace StarterAssets
         private float _rotationVelocity;
         private float _verticalVelocity;
         private float _terminalVelocity = 53.0f;
+        private Vector3 _externalVelocity;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -151,6 +152,9 @@ namespace StarterAssets
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
+
+            // SprintSpeed всегда в 2 раза больше MoveSpeed
+            SprintSpeed = MoveSpeed * 2f;
         }
 
         private void Update()
@@ -217,28 +221,24 @@ namespace StarterAssets
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
 
-            // a simplistic acceleration and deceleration designed to be easy to remove, replace, or iterate upon
+            if (_input.move == Vector2.zero)
+                targetSpeed = 0.0f;
 
-            // note: Vector2's == operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is no input, set the target speed to 0
-            if (_input.move == Vector2.zero) targetSpeed = 0.0f;
-
-            // a reference to the players current horizontal velocity
-            float currentHorizontalSpeed = new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
+            float currentHorizontalSpeed =
+                new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
 
             float speedOffset = 0.1f;
             float inputMagnitude = _input.analogMovement ? _input.move.magnitude : 1f;
 
-            // accelerate or decelerate to target speed
             if (currentHorizontalSpeed < targetSpeed - speedOffset ||
                 currentHorizontalSpeed > targetSpeed + speedOffset)
             {
-                // creates curved result rather than a linear one giving a more organic speed change
-                // note T in Lerp is clamped, so we don't need to clamp our speed
-                _speed = Mathf.Lerp(currentHorizontalSpeed, targetSpeed * inputMagnitude,
-                    Time.deltaTime * SpeedChangeRate);
+                _speed = Mathf.Lerp(
+                    currentHorizontalSpeed,
+                    targetSpeed * inputMagnitude,
+                    Time.deltaTime * SpeedChangeRate
+                );
 
-                // round speed to 3 decimal places
                 _speed = Mathf.Round(_speed * 1000f) / 1000f;
             }
             else
@@ -249,35 +249,56 @@ namespace StarterAssets
             _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
-            // normalise input direction
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
 
-            // note: Vector2's != operator uses approximation so is not floating point error prone, and is cheaper than magnitude
-            // if there is a move input rotate player when the player is moving
             if (_input.move != Vector2.zero)
             {
-                _targetRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
-                                  _mainCamera.transform.eulerAngles.y;
-                float rotation = Mathf.SmoothDampAngle(transform.eulerAngles.y, _targetRotation, ref _rotationVelocity,
-                    RotationSmoothTime);
+                _targetRotation =
+                    Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg +
+                    _mainCamera.transform.eulerAngles.y;
 
-                // rotate to face input direction relative to camera position
+                float rotation = Mathf.SmoothDampAngle(
+                    transform.eulerAngles.y,
+                    _targetRotation,
+                    ref _rotationVelocity,
+                    RotationSmoothTime
+                );
+
                 transform.rotation = Quaternion.Euler(0.0f, rotation, 0.0f);
             }
 
+            Vector3 targetDirection =
+                Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
 
-            Vector3 targetDirection = Quaternion.Euler(0.0f, _targetRotation, 0.0f) * Vector3.forward;
+            Vector3 playerHorizontalVelocity = Vector3.zero;
 
-            // move the player
-            _controller.Move(targetDirection.normalized * (_speed * Time.deltaTime) +
-                             new Vector3(0.0f, _verticalVelocity, 0.0f) * Time.deltaTime);
+            if (_input.move != Vector2.zero)
+            {
+                playerHorizontalVelocity =
+                    targetDirection.normalized * _speed;
+            }
 
-            // update animator if using character
+            Vector3 playerMove =
+                playerHorizontalVelocity +
+                Vector3.up * _verticalVelocity;
+
+            Vector3 finalVelocity = playerMove + _externalVelocity;
+
+            _controller.Move(finalVelocity * Time.deltaTime);
+
+            _externalVelocity = Vector3.zero;
+
             if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
                 _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
+        }
+
+
+        public void SetExternalVelocity(Vector3 velocity)
+        {
+            _externalVelocity = velocity;
         }
 
         private void JumpAndGravity()
@@ -415,6 +436,11 @@ namespace StarterAssets
 
                 case PlayerParamType.MoveSpeed:
                     MoveSpeed = signal.Value;
+                    SprintSpeed = MoveSpeed * 2f;
+                    break;
+
+                case PlayerParamType.Gravity:
+                    Gravity = signal.Value;
                     break;
             }
         }
