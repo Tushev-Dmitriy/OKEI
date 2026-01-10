@@ -2286,7 +2286,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3646293891382491966, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
   m_PrefabInstance: {fileID: 2553459881616303563}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1496768248
+--- !u!114 &1496768252
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2295,7 +2295,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1496768244}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10c1d116b5a5f1145894f20ce75e7921, type: 3}
+  m_Script: {fileID: 11500000, guid: e13348b004ffb8041aed035bd76b4999, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1597708004
@@ -2601,7 +2601,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1717445795}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f87908e2474579949ad6c7cce1b2a8f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 662b9e42458e3f74db7d4ed9edb75c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _variableItems:
@@ -2625,7 +2625,7 @@ MonoBehaviour:
   - {fileID: 7089563499898678431, guid: f47e929cf290c1240b7e89506947c7eb, type: 3}
   - {fileID: 7089563499898678431, guid: 4cca192de12a132488ebf9d4a15f7a8d, type: 3}
   - {fileID: 7089563499898678431, guid: 35723b1be9b71aa4e9fd14cf5fe02635, type: 3}
-  _randomRange: fbffffff05000000050000000a000000
+  _randomRange: 05000000fbffffff0a00000005000000
 --- !u!1 &1729958786
 GameObject:
   m_ObjectHideFlags: 0
@@ -3610,7 +3610,7 @@ PrefabInstance:
     - target: {fileID: 5699442564937375814, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
       propertyPath: '_monoInstallers.Array.data[1]'
       value: 
-      objectReference: {fileID: 1496768248}
+      objectReference: {fileID: 1496768252}
     - target: {fileID: 8072454648487141453, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3657,7 +3657,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3646293891382491966, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1496768248}
+      addedObject: {fileID: 1496768252}
   m_SourcePrefab: {fileID: 100100000, guid: a468bce952ee0eb438f9e29a36b9d0b5, type: 3}
 --- !u!23 &3242105706096071707
 MeshRenderer:
@@ -3833,6 +3833,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorOpener: {fileID: 6825085609214317272}
   saveId: door_test
+  objectType: 0
   isOpen: 0
 --- !u!1 &7329296349759810295
 GameObject:

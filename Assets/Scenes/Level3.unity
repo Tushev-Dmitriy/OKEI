@@ -5470,9 +5470,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1313797253}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10c1d116b5a5f1145894f20ce75e7921, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a98342308ece8645ac58daf649554fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerPrefab: {fileID: 5105336821252649523, guid: 283df348b83219d41b6c3013d9ca30e8, type: 3}
+  _playerPos: {x: 0, y: 0, z: 0}
 --- !u!1 &1330199155
 GameObject:
   m_ObjectHideFlags: 0
