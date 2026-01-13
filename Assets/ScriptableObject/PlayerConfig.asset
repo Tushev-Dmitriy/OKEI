@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff0271ad972bae54fbb8783361684f30, type: 3}
+  m_Script: {fileID: 11500000, guid: 0614192685351664d916f0e3cde0cfa4, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  jumpForce: 250
-  spawnPosition: {x: 0, y: 1, z: 0}
+  moveSpeed: 0
+  jumpForce: 0
+  spawnPosition: {x: 0, y: 0, z: 0}

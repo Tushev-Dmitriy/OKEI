@@ -14,4 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   rotationSpeed: 15
+  maxHealth: 100
+  damagePerHit: 25
+  attackInterval: 0.5
   activeModules: 0100000003000000

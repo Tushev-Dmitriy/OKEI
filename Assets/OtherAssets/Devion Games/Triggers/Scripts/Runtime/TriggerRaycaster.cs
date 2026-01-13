@@ -22,9 +22,15 @@ namespace DevionGames
         [RuntimeInitializeOnLoadMethod]
         static void Initialize()
         {
-            Camera camera = Camera.main;
-            if (camera.GetComponent<TriggerRaycaster>() == null)
-                camera.gameObject.AddComponent<TriggerRaycaster>();
+            try
+            {
+                Camera camera = Camera.main;
+                if (camera != null && camera.GetComponent<TriggerRaycaster>() == null)
+                    camera.gameObject.AddComponent<TriggerRaycaster>();
+            }
+            catch (System.Exception ex)
+            {
+            }
         }
 
 

@@ -16,6 +16,13 @@ public class RobotConfigSO : ScriptableObject
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
 
+    [Header("Health")]
+    public float maxHealth = 100f;
+
+    [Header("Combat")]
+    public float damagePerHit = 10f;
+    public float attackInterval = 0.5f;
+
     [Header("Visuals")]
     public List<VisualModuleType> activeModules;
 }

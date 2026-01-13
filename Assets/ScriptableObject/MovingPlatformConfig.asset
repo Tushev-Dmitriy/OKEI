@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d00af0c073927c443a7bddb5fe94e742, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f6adb550c9a94f4ca6d18ace6483545, type: 3}
   m_Name: MovingPlatformConfig
   m_EditorClassIdentifier: 
-  moveOffset: {x: 5, y: 0, z: 0}
+  moveOffset: {x: 0, y: 0, z: 1}
   moveDuration: 2
   loop: 1

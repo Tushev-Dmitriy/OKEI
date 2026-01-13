@@ -2,21 +2,32 @@ using UnityEngine;
 
 [RequireComponent(typeof(RobotVisualController))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(CombatSystem))]
 public class Robot : MonoBehaviour
 {
     protected RobotConfigSO config;
     protected bool isAutonomous = false;
     protected RobotVisualController visualController;
+    protected Health health;
+    protected CombatSystem combatSystem;
 
     protected virtual void Awake()
     {
         visualController = GetComponent<RobotVisualController>();
+        health = GetComponent<Health>();
+        combatSystem = GetComponent<CombatSystem>();
+
+        health.OnDeath += OnDeath;
     }
 
     public void Initialize(RobotConfigSO settings)
     {
         config = settings;
         visualController.InitializeVisuals(config);
+        
+        health.Initialize(config.maxHealth);
+        combatSystem.InitializeCombat(config.damagePerHit, config.attackInterval);
     }
 
     public void ActivateAutonomousMode()
@@ -26,7 +37,7 @@ public class Robot : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (isAutonomous && config != null)
+        if (isAutonomous && config != null && health.IsAlive)
         {
             Move();
         }
@@ -46,14 +57,28 @@ public class Robot : MonoBehaviour
 
     public virtual void TryEngageCombat(EnemyUnit enemy)
     {
-        Debug.Log($"Робот не умеет сражаться");
+        Debug.Log($"{gameObject.name} (базовый робот) не может сражаться");
         
+        health.TakeDamage(health.MaxHealth);
+    }
+
+    protected virtual void OnDeath()
+    {
+        Debug.Log($"{gameObject.name} уничтожен в бою");
         Die();
     }
 
     protected void Die()
     {
-        Debug.Log($"{gameObject.name} уничтожен");
+        Debug.Log($"{gameObject.name} удаляется из игры");
         Destroy(gameObject);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        if (health != null)
+        {
+            health.OnDeath -= OnDeath;
+        }
     }
 }
