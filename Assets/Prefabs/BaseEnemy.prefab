@@ -167,6 +167,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e306dee641d82f4098742e3173e77e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyDamage: 10
+  attackEffect: {fileID: 4419880369518771566}
 --- !u!1 &390592297067027917
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,7 +392,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.13725491, g: 0.29882008, b: 0.5529412, a: 1}
+      maxColor: {r: 0.5529412, g: 0.13725491, b: 0.15385777, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -10117,7 +10119,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.13725491, g: 0.29882008, b: 0.5529412, a: 1}
+      maxColor: {r: 0.5529412, g: 0.13725491, b: 0.15315767, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -15008,7 +15010,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.13725491, g: 0.29882008, b: 0.5529412, a: 1}
+      maxColor: {r: 0.5529412, g: 0.14979345, b: 0.13725491, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -19901,7 +19903,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.25098038, g: 0.53321314, b: 1, a: 1}
+      maxColor: {r: 1, g: 0.25098038, b: 0.3260662, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -24848,7 +24850,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.13725491, g: 0.29882008, b: 0.5529412, a: 1}
+      maxColor: {r: 0.5529412, g: 0.13725491, b: 0.15928508, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

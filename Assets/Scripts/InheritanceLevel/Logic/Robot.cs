@@ -25,9 +25,29 @@ public class Robot : MonoBehaviour
     {
         config = settings;
         visualController.InitializeVisuals(config);
-        
-        health.Initialize(config.maxHealth);
-        combatSystem.InitializeCombat(config.damagePerHit, config.attackInterval);
+
+
+        float maxHealth = config.maxHealth;
+        float damagePerHit = config.damagePerHit;
+
+        if (config.activeModules != null)
+        {
+            foreach (var module in config.activeModules)
+            {
+                switch (module)
+                {
+                    case VisualModuleType.Blaster:
+                        damagePerHit += 5f;
+                        break;
+                    case VisualModuleType.Shield:
+                        maxHealth += 25f;
+                        break;
+                }
+            }
+        }
+
+        health.Initialize(maxHealth);
+        combatSystem.InitializeCombat(damagePerHit, config.attackInterval);
     }
 
     public void ActivateAutonomousMode()

@@ -392,5 +392,5 @@
   ],
   "host": "http://localhost:8080",
   "timeoutMs": 10000,
-  "keepConnected": true
+  "keepConnected": false
 }

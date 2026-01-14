@@ -59,6 +59,8 @@ public class CombatSystem : MonoBehaviour
         targetHealth = null;
 
         Debug.Log($"{gameObject.name} прекратил бой");
+
+        StopAttackEffect();
     }
 
     private IEnumerator CombatRoutine()
@@ -97,6 +99,15 @@ public class CombatSystem : MonoBehaviour
     protected virtual void OnTargetDefeated()
     {
         Debug.Log($"{gameObject.name} победил в бою!");
+        StopAttackEffect();
+    }
+
+    private void StopAttackEffect()
+    {
+        if (attackEffect != null && attackEffect.isPlaying)
+        {
+            attackEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 
     private void OnDisable()

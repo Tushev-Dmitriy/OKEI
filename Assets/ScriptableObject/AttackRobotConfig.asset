@@ -17,4 +17,4 @@ MonoBehaviour:
   maxHealth: 100
   damagePerHit: 25
   attackInterval: 0.5
-  activeModules: 0100000003000000
+  activeModules: 0100000002000000
