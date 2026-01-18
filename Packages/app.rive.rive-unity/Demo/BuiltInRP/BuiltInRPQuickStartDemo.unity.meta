@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 030cc2a9a3a8c45d99663c29c472b091
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 350858
+  packageName: Rive
+  packageVersion: 0.4.0
+  assetPath: Packages/app.rive.rive-unity/Demo/BuiltInRP/BuiltInRPQuickStartDemo.unity
+  uploadId: 837172
