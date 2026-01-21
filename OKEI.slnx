@@ -2,7 +2,6 @@
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="DevionGames.Triggers.csproj" />
   <Project Path="DevionGames.StatSystem.csproj" />
-  <Project Path="Rive.Runtime.Components.csproj" />
   <Project Path="Zenject.csproj" />
   <Project Path="Zenject-IntegrationTests-Editor.csproj" />
   <Project Path="DevionGames.UIWidgets.csproj" />
@@ -12,14 +11,11 @@
   <Project Path="Zenject-Editor.csproj" />
   <Project Path="DevionGames.Graphs.csproj" />
   <Project Path="Zenject-IntegrationTests.csproj" />
-  <Project Path="Rive.Editor.Components.csproj" />
   <Project Path="DevionGames.InventorySystem.csproj" />
-  <Project Path="Rive.Runtime.csproj" />
   <Project Path="DevionGames.ThirdPersonController.csproj" />
   <Project Path="DevionGames.Utilities.csproj" />
   <Project Path="com.IvanMurzak.Unity.MCP.Installer.Tests.csproj" />
   <Project Path="Assembly-CSharp-firstpass.csproj" />
-  <Project Path="Rive.Editor.csproj" />
   <Project Path="Zenject-TestFramework.csproj" />
   <Project Path="MainInputSystem.csproj" />
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />

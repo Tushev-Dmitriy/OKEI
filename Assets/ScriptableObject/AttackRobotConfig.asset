@@ -12,9 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e95aa2c2c8a7e645a6f48da8704deeb, type: 3}
   m_Name: AttackRobotConfig
   m_EditorClassIdentifier: 
+  robotType: 2
+  robotName: "\u0410\u0442\u0430\u043A\u0443\u044E\u0449\u0438\u0439 \u0440\u043E\u0431\u043E\u0442"
+  robotIcon: {fileID: 559946888, guid: 7558fbf386fc57248bfb66b0e9d16444, type: 3}
+  health: 3
+  damage: 3
+  speed: 3
+  methodNames:
+  - Move();
+  - TakeDamage();
+  - Attack();
   moveSpeed: 10
   rotationSpeed: 15
   maxHealth: 100
-  damagePerHit: 25
-  attackInterval: 0.5
+  damagePerHit: 30
+  attackInterval: 0.9
   activeModules: 0100000002000000

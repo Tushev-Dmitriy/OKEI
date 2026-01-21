@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 public class CombatSystem : MonoBehaviour
 {
@@ -14,10 +15,17 @@ public class CombatSystem : MonoBehaviour
     private Health targetHealth;
     private bool isInCombat = false;
     private Coroutine combatCoroutine;
+    private RobotUnlockEvents _robotUnlockEvents;
 
     public float DamagePerHit => damagePerHit;
     public float AttackInterval => attackInterval;
     public bool IsInCombat => isInCombat;
+
+    [Inject]
+    public void Construct(RobotUnlockEvents robotUnlockEvents)
+    {
+        _robotUnlockEvents = robotUnlockEvents;
+    }
 
     public void InitializeCombat(float damage, float interval)
     {

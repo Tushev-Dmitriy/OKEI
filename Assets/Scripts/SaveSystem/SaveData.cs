@@ -7,6 +7,7 @@ public class SaveData
     public PlayerData player;
     public SettingsData settings;
     public SaveInfoData saveInfo;
+    public RobotProgressData robotProgress;
 
     public List<SceneObjectStateData> sceneObjects;
 }
@@ -47,6 +48,12 @@ public class SceneObjectStateData
     public string id;
     public SceneObjectType type;
     public int state;
+}
+
+[Serializable]
+public class RobotProgressData
+{
+    public List<int> unlockedRobotTypes = new List<int>();
 }
 
 public enum SceneObjectType
