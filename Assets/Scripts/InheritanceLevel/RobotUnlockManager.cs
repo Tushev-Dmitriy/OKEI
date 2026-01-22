@@ -58,6 +58,7 @@ public class RobotUnlockManager : MonoBehaviour
     {
         if (!_unlockedRobots.Contains(RobotType.Base))
         {
+            _unlockedRobots.Clear();
             _unlockedRobots.Add(RobotType.Base);
         }
     }

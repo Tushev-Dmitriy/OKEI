@@ -1667,62 +1667,6 @@ Transform:
   - {fileID: 1404601874}
   m_Father: {fileID: 1024598721}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!1 &559745689
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 559745691}
-  - component: {fileID: 559745690}
-  m_Layer: 0
-  m_Name: RobotWindowController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &559745690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 559745689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f6ab2b7c53be54347adc1a42863b95a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  robotConfig: {fileID: 11400000, guid: f8270862eba84674bb14c9f38650e788, type: 2}
-  robotIconImage: {fileID: 1333230390}
-  robotNameText: {fileID: 1790072752}
-  healthSlider: {fileID: 790256144}
-  healthValueText: {fileID: 778675289}
-  damageSlider: {fileID: 1702703140}
-  damageValueText: {fileID: 1300438342}
-  speedSlider: {fileID: 2027209132}
-  speedValueText: {fileID: 1529243088}
-  method1Text: {fileID: 1742496879}
-  method2Text: {fileID: 153244672}
-  method3Text: {fileID: 1395122286}
---- !u!4 &559745691
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 559745689}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &606680669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,6 +1678,7 @@ GameObject:
   - component: {fileID: 606680670}
   - component: {fileID: 606680672}
   - component: {fileID: 606680671}
+  - component: {fileID: 606680673}
   m_Layer: 5
   m_Name: RobotIcon
   m_TagString: Untagged
@@ -1798,6 +1743,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 606680669}
   m_CullTransparentMesh: 1
+--- !u!114 &606680673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606680669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 606680671}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &610316479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,6 +1796,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 610316480}
+  - component: {fileID: 610316481}
   m_Layer: 5
   m_Name: LevelUpWindow
   m_TagString: Untagged
@@ -1839,6 +1829,32 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -1820, y: -980}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &610316481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 610316479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ab2b7c53be54347adc1a42863b95a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  robotConfig: {fileID: 11400000, guid: 45da9765ae352b24b927fdafe9ae806d, type: 2}
+  robotIconImage: {fileID: 1333230390}
+  robotNameText: {fileID: 1790072752}
+  lockOverlay: {fileID: 1774612318}
+  robotButton: {fileID: 606680673}
+  healthSlider: {fileID: 790256144}
+  healthValueText: {fileID: 778675289}
+  damageSlider: {fileID: 1702703140}
+  damageValueText: {fileID: 1300438342}
+  speedSlider: {fileID: 2027209132}
+  speedValueText: {fileID: 1529243088}
+  method1Text: {fileID: 1742496879}
+  method2Text: {fileID: 153244672}
+  method3Text: {fileID: 1395122286}
 --- !u!1 &631009239
 GameObject:
   m_ObjectHideFlags: 0
@@ -2372,6 +2388,7 @@ GameObject:
   - component: {fileID: 699247547}
   - component: {fileID: 699247549}
   - component: {fileID: 699247548}
+  - component: {fileID: 699247550}
   m_Layer: 5
   m_Name: RobotIcon
   m_TagString: Untagged
@@ -2436,6 +2453,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699247546}
   m_CullTransparentMesh: 1
+--- !u!114 &699247550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699247546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 699247548}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &727618913
 GameObject:
   m_ObjectHideFlags: 0
@@ -5134,9 +5195,9 @@ MonoBehaviour:
   defenderHintTemplate: "\u0421\u043B\u0438\u0448\u043A\u043E\u043C \u043C\u043D\u043E\u0433\u043E
     \u0443\u0440\u043E\u043D\u0430! \u041D\u0443\u0436\u0435\u043D <color=blue>\u0437\u0430\u0449\u0438\u0449\u0430\u044E\u0449\u0438\u0439
     \u0440\u043E\u0431\u043E\u0442</color>"
-  fadeInDuration: 0.5
+  fadeInDuration: 0.75
   showDuration: 3
-  fadeOutDuration: 0.5
+  fadeOutDuration: 0.75
 --- !u!1 &1529243086
 GameObject:
   m_ObjectHideFlags: 0
@@ -6176,6 +6237,7 @@ GameObject:
   - component: {fileID: 1767282059}
   - component: {fileID: 1767282061}
   - component: {fileID: 1767282060}
+  - component: {fileID: 1767282062}
   m_Layer: 5
   m_Name: RobotIcon
   m_TagString: Untagged
@@ -6240,6 +6302,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1767282058}
   m_CullTransparentMesh: 1
+--- !u!114 &1767282062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767282058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1767282060}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1774612318
 GameObject:
   m_ObjectHideFlags: 0
@@ -6611,7 +6717,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1874980364}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -8307,6 +8413,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BaseEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 58426759139161237, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5
@@ -9200,5 +9310,4 @@ SceneRoots:
   - {fileID: 1423242753}
   - {fileID: 661632223}
   - {fileID: 1933921340}
-  - {fileID: 559745691}
   - {fileID: 1708697653}

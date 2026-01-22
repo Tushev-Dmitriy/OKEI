@@ -36,8 +36,8 @@ public class RobotUnlockHintUI : MonoBehaviour
     {
         if (hintPanel != null)
         {
-            hintPanel.alpha = 0f;
             hintPanel.gameObject.SetActive(false);
+            hintPanel.transform.localScale = Vector3.zero;
         }
     }
 
@@ -137,28 +137,21 @@ public class RobotUnlockHintUI : MonoBehaviour
         }
 
         _currentSequence?.Kill();
-        hintPanel.gameObject.SetActive(true);
-        hintPanel.alpha = 1f;
-
+        
         var panelTransform = hintPanel.transform;
         panelTransform.localScale = Vector3.zero;
+        
+        hintPanel.gameObject.SetActive(true);
 
         _currentSequence = DOTween.Sequence()
-            .Append(panelTransform.DOScale(1.15f, fadeInDuration * 0.7f).SetEase(Ease.OutBack))
-            .Append(panelTransform.DOScale(1f, fadeInDuration * 0.3f).SetEase(Ease.InOutSine))
+            .Append(panelTransform.DOScale(1.15f, fadeInDuration * 0.7f))
+            .Append(panelTransform.DOScale(1f, fadeInDuration * 0.3f))
             .AppendInterval(showDuration)
-            .Append(panelTransform.DOScale(0f, fadeOutDuration).SetEase(Ease.InBack))
-            .OnStart(() =>
-            {
-                hintPanel.alpha = 1f;
-            })
+            .Append(panelTransform.DOScale(0f, fadeOutDuration))
             .OnComplete(() =>
             {
                 if (hintPanel != null)
-                {
-                    hintPanel.alpha = 0f;
                     hintPanel.gameObject.SetActive(false);
-                }
             });
     }
 }
