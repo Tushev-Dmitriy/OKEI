@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -41,7 +41,6 @@ public class PlayerSaver : MonoBehaviour
     {
         if (_player == null)
         {
-            Debug.LogError("Player reference is missing");
             return;
         }
 
@@ -76,11 +75,11 @@ public class PlayerSaver : MonoBehaviour
                 lastSaveTime = System.DateTime.Now.ToString()
             },
 
-            sceneObjects = CaptureSceneObjects()
+            sceneObjects = CaptureSceneObjects(),
+            robotProgress = CaptureRobotProgress()
         };
 
         PlayerSaveSystem.Save(data);
-        Debug.Log("PLAYER DATA SAVED");
     }
 
     private List<SceneObjectStateData> CaptureSceneObjects()
@@ -104,7 +103,6 @@ public class PlayerSaver : MonoBehaviour
 
         if (data == null)
         {
-            Debug.LogWarning("No save data found");
             return;
         }
 
@@ -112,15 +110,14 @@ public class PlayerSaver : MonoBehaviour
 
         if (data.player.level != CurrentLevelName)
         {
-            Debug.Log("Loading saved level: " + data.player.level);
             SceneManager.LoadScene(data.player.level);
             return;
         }
 
         RestorePlayerTransform(data);
         RestoreSceneObjects(data);
+        RestoreRobotProgress(data);
 
-        Debug.Log("PLAYER DATA LOADED");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -130,8 +127,8 @@ public class PlayerSaver : MonoBehaviour
 
         RestorePlayerTransform(_cachedSaveData);
         RestoreSceneObjects(_cachedSaveData);
+        RestoreRobotProgress(_cachedSaveData);
 
-        Debug.Log("SCENE OBJECT STATES RESTORED");
     }
 
     private void RestorePlayerTransform(SaveData data)
@@ -166,4 +163,26 @@ public class PlayerSaver : MonoBehaviour
                 saveable.RestoreState(state);
         }
     }
+
+    private RobotProgressData CaptureRobotProgress()
+    {
+        var manager = Object.FindFirstObjectByType<RobotUnlockManager>();
+        if (manager == null)
+            return null;
+
+        return manager.CaptureProgress();
+    }
+
+    private void RestoreRobotProgress(SaveData data)
+    {
+        if (data.robotProgress == null)
+            return;
+
+        var manager = Object.FindFirstObjectByType<RobotUnlockManager>();
+        if (manager == null)
+            return;
+
+        manager.ApplyProgress(data.robotProgress);
+    }
 }
+

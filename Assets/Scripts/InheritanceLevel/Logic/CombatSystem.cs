@@ -1,4 +1,4 @@
-using System.Collections;
+п»їusing System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -37,20 +37,17 @@ public class CombatSystem : MonoBehaviour
     {
         if (target == null || !target.IsAlive)
         {
-            Debug.LogWarning($"{gameObject.name}: Невозможно начать бой - цель недоступна");
             return;
         }
 
         if (isInCombat)
         {
-            Debug.Log($"{gameObject.name} уже в бою");
             return;
         }
 
         targetHealth = target;
         isInCombat = true;
 
-        Debug.Log($"{gameObject.name} начинает бой с {target.gameObject.name}");
 
         combatCoroutine = StartCoroutine(CombatRoutine());
     }
@@ -66,7 +63,6 @@ public class CombatSystem : MonoBehaviour
         isInCombat = false;
         targetHealth = null;
 
-        Debug.Log($"{gameObject.name} прекратил бой");
 
         StopAttackEffect();
     }
@@ -93,7 +89,6 @@ public class CombatSystem : MonoBehaviour
     {
         if (targetHealth != null && targetHealth.IsAlive)
         {
-            Debug.Log($"{gameObject.name} атакует {targetHealth.gameObject.name} на {damagePerHit} урона");
 
             if (attackEffect != null)
             {
@@ -106,7 +101,6 @@ public class CombatSystem : MonoBehaviour
 
     protected virtual void OnTargetDefeated()
     {
-        Debug.Log($"{gameObject.name} победил в бою!");
         StopAttackEffect();
     }
 
@@ -128,3 +122,5 @@ public class CombatSystem : MonoBehaviour
         StopCombat();
     }
 }
+
+

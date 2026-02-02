@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 [RequireComponent(typeof(RobotVisualController))]
 [RequireComponent(typeof(Rigidbody))]
@@ -77,20 +77,17 @@ public class Robot : MonoBehaviour
 
     public virtual void TryEngageCombat(EnemyUnit enemy)
     {
-        Debug.Log($"{gameObject.name} (базовый робот) не может сражаться");
         
         health.TakeDamage(health.MaxHealth);
     }
 
     protected virtual void OnDeath()
     {
-        Debug.Log($"{gameObject.name} уничтожен в бою");
         Die();
     }
 
     protected void Die()
     {
-        Debug.Log($"{gameObject.name} удаляется из игры");
         Destroy(gameObject);
     }
 
@@ -102,3 +99,5 @@ public class Robot : MonoBehaviour
         }
     }
 }
+
+

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +15,6 @@ public static class PlayerSaveSystem
             Formatting.Indented);
         File.WriteAllText(savePath, json);
 
-        Debug.Log("SAVE COMPLETE " + savePath);
     }
 
     public static void Load(out SaveData saveData)
@@ -24,13 +23,12 @@ public static class PlayerSaveSystem
 
         if (!File.Exists(savePath))
         {
-            Debug.Log("Save file not found");
             return;
         }
 
         string json = File.ReadAllText(savePath);
         saveData = JsonConvert.DeserializeObject<SaveData>(json);
 
-        Debug.Log("LOAD COMPLETE");
     }
 }
+

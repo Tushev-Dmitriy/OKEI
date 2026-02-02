@@ -1,4 +1,4 @@
-using Zenject;
+п»їusing Zenject;
 using UnityEngine;
 
 public class RobotUnlockInstaller : MonoInstaller
@@ -26,6 +26,6 @@ public class RobotUnlockInstaller : MonoInstaller
                 .NonLazy();
         }
 
-        Debug.Log("[RobotUnlockInstaller] Система открытия роботов зарегистрирована в Zenject");
     }
 }
+

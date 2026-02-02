@@ -1,4 +1,4 @@
-using DG.Tweening;
+п»їusing DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +12,6 @@ public class TerminalController : MonoBehaviour
     private void Awake()
     {
         _slider = _sliderComponent as IChangeSlider;
-        if (_slider == null) Debug.LogError("Компонент не реализует IChangeSlider");
 
         _animator = transform.parent.GetComponent<Animator>();
     }
@@ -40,3 +39,4 @@ public class TerminalController : MonoBehaviour
         CloseTerminal();
     }
 }
+

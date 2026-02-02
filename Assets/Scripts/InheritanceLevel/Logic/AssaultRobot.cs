@@ -1,10 +1,9 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 public class AssaultRobot : Robot
 {
     public override void TryEngageCombat(EnemyUnit enemy)
     {
-        Debug.Log($"{gameObject.name} (атакующий робот) вступает в бой с {enemy.gameObject.name}");
 
         Health enemyHealth = enemy.GetComponent<Health>();
         
@@ -14,7 +13,8 @@ public class AssaultRobot : Robot
         }
         else
         {
-            Debug.LogWarning($"{gameObject.name}: Враг не имеет компонента Health или уже мёртв");
         }
     }
 }
+
+

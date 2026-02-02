@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 
 [RequireComponent(typeof(Health))]
 public class EnemyUnit : MonoBehaviour
@@ -27,7 +27,6 @@ public class EnemyUnit : MonoBehaviour
             if (robotHealth != null && robotHealth.IsAlive)
             {
                 robotHealth.TakeDamage(enemyDamage);
-                Debug.Log($"{gameObject.name} (враг) атакует {incomingRobot.gameObject.name} на {enemyDamage} урона!");
                 if (attackEffect != null)
                 {
                     attackEffect.Play();
@@ -38,7 +37,6 @@ public class EnemyUnit : MonoBehaviour
 
     private void OnDeath()
     {
-        Debug.Log($"{gameObject.name} (враг) повержен");
         StopAttackEffect();
         Destroy(gameObject);
     }
@@ -60,3 +58,4 @@ public class EnemyUnit : MonoBehaviour
         }
     }
 }
+

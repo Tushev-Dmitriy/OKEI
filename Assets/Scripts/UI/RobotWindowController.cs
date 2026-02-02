@@ -1,34 +1,27 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Zenject;
 
 public class RobotWindowController : MonoBehaviour
 {
-    [Header("Robot Config")]
     [SerializeField] private RobotConfigSO robotConfig;
+    [SerializeField] private bool useNextRobotFromManager;
+    [SerializeField] private bool useSelectionFromUI;
+    [SerializeField] private RobotSelectionUI selectionUI;
     
-    [Header("Robot Info")]
     [SerializeField] private Image robotIconImage;
     [SerializeField] private TMP_Text robotNameText;
-    
-    [Header("Lock State")]
     [SerializeField] private GameObject lockOverlay;
     [SerializeField] private Button robotButton;
     
-    [Header("Health Slider")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private TMP_Text healthValueText;
-    
-    [Header("Damage Slider")]
     [SerializeField] private Slider damageSlider;
     [SerializeField] private TMP_Text damageValueText;
-    
-    [Header("Speed Slider")]
     [SerializeField] private Slider speedSlider;
     [SerializeField] private TMP_Text speedValueText;
     
-    [Header("Methods")]
     [SerializeField] private TMP_Text method1Text;
     [SerializeField] private TMP_Text method2Text;
     [SerializeField] private TMP_Text method3Text;
@@ -45,56 +38,80 @@ public class RobotWindowController : MonoBehaviour
 
     private void Awake()
     {
-        // Устанавливаем начальное заблокированное состояние
-        if (lockOverlay != null)
-        {
-            lockOverlay.SetActive(true);
-        }
-
-        if (robotButton != null)
-        {
-            robotButton.interactable = false;
-        }
+        SetLocked(true);
     }
 
     private void Start()
     {
-        // После инжекта зависимостей загружаем данные и обновляем состояние
+        if (useSelectionFromUI && selectionUI == null)
+            selectionUI = FindFirstObjectByType<RobotSelectionUI>();
+
+        ResolveRobotConfig();
+
         if (robotConfig != null)
         {
             LoadRobotData();
             UpdateLockState();
         }
+        else
+        {
+        }
 
-        SubscribeToEvents();
+        if (_events != null)
+        {
+            _events.OnUnlocked += OnRobotUnlocked;
+        }
+
+        if (_unlockManager != null)
+        {
+            _unlockManager.OnProgressApplied += OnProgressApplied;
+        }
+
+        if (selectionUI != null)
+        {
+            selectionUI.OnSelectedRobotChanged += OnSelectedRobotChanged;
+        }
     }
 
     private void OnDestroy()
     {
-        UnsubscribeFromEvents();
-    }
-
-    private void SubscribeToEvents()
-    {
         if (_events != null)
         {
-            _events.OnRobotUnlocked += OnRobotUnlocked;
+            _events.OnUnlocked -= OnRobotUnlocked;
         }
-    }
 
-    private void UnsubscribeFromEvents()
-    {
-        if (_events != null)
+        if (_unlockManager != null)
         {
-            _events.OnRobotUnlocked -= OnRobotUnlocked;
+            _unlockManager.OnProgressApplied -= OnProgressApplied;
+        }
+
+        if (selectionUI != null)
+        {
+            selectionUI.OnSelectedRobotChanged -= OnSelectedRobotChanged;
         }
     }
 
     private void OnRobotUnlocked(RobotType unlockedType)
     {
+        if (useSelectionFromUI)
+        {
+            UpdateLockState();
+            return;
+        }
+
+        if (useNextRobotFromManager)
+        {
+            ResolveRobotConfig();
+            if (robotConfig != null)
+            {
+                LoadRobotData();
+                UpdateLockState();
+            }
+            return;
+        }
+
         if (robotConfig != null && robotConfig.robotType == unlockedType)
         {
-            Debug.Log($"Робот {robotConfig.robotName} разблокирован! Обновляем UI.");
             UpdateLockState();
         }
     }
@@ -102,14 +119,10 @@ public class RobotWindowController : MonoBehaviour
     private void LoadRobotData()
     {
         if (robotIconImage != null && robotConfig.robotIcon != null)
-        {
             robotIconImage.sprite = robotConfig.robotIcon;
-        }
         
         if (robotNameText != null)
-        {
             robotNameText.text = robotConfig.robotName;
-        }
         
         SetupSlider(healthSlider, healthValueText, robotConfig.health);
         SetupSlider(damageSlider, damageValueText, robotConfig.damage);
@@ -122,22 +135,20 @@ public class RobotWindowController : MonoBehaviour
 
     private void UpdateLockState()
     {
-        if (robotConfig == null || _unlockManager == null)
-            return;
+        if (robotConfig == null || _unlockManager == null) return;
 
         bool isUnlocked = _unlockManager.IsRobotUnlocked(robotConfig.robotType);
+        SetLocked(!isUnlocked);
+        
+    }
 
+    private void SetLocked(bool locked)
+    {
         if (lockOverlay != null)
-        {
-            lockOverlay.SetActive(!isUnlocked);
-        }
+            lockOverlay.SetActive(locked);
 
         if (robotButton != null)
-        {
-            robotButton.interactable = isUnlocked;
-        }
-
-        Debug.Log($"Робот {robotConfig.robotName} ({robotConfig.robotType}): {(isUnlocked ? "открыт" : "заблокирован")}");
+            robotButton.interactable = !locked;
     }
 
     private void SetupSlider(Slider slider, TMP_Text valueText, int value)
@@ -148,9 +159,7 @@ public class RobotWindowController : MonoBehaviour
             slider.value = value;
             
             if (valueText != null)
-            {
                 valueText.text = $"{value}/5";
-            }
         }
     }
 
@@ -175,4 +184,64 @@ public class RobotWindowController : MonoBehaviour
             if (parent != null) parent.SetActive(false);
         }
     }
+
+    private void OnProgressApplied()
+    {
+        if (useSelectionFromUI)
+        {
+            ResolveRobotConfig();
+            if (robotConfig != null)
+            {
+                LoadRobotData();
+                UpdateLockState();
+            }
+            return;
+        }
+
+        if (useNextRobotFromManager)
+        {
+            ResolveRobotConfig();
+            if (robotConfig != null)
+            {
+                LoadRobotData();
+                UpdateLockState();
+            }
+            return;
+        }
+
+        UpdateLockState();
+    }
+
+    private void ResolveRobotConfig()
+    {
+        if (useSelectionFromUI && selectionUI != null && _unlockManager != null)
+        {
+            var selected = selectionUI.GetSelectedType();
+            robotConfig = _unlockManager.GetRobotConfig(selected);
+            return;
+        }
+
+        if (useNextRobotFromManager && _unlockManager != null)
+        {
+            var nextType = _unlockManager.GetNextRobotToUnlock();
+            if (nextType == RobotType.None)
+                return;
+
+            robotConfig = _unlockManager.GetRobotConfig(nextType);
+        }
+    }
+
+    private void OnSelectedRobotChanged(RobotType type)
+    {
+        if (_unlockManager == null)
+            return;
+
+        robotConfig = _unlockManager.GetRobotConfig(type);
+        if (robotConfig != null)
+        {
+            LoadRobotData();
+            UpdateLockState();
+        }
+    }
 }
+

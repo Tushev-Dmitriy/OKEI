@@ -1,4 +1,4 @@
-using System;
+п»їusing System;
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -33,7 +33,6 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Max(0, currentHealth - damage);
         OnHealthChanged?.Invoke(currentHealth);
 
-        Debug.Log($"{gameObject.name} получил {damage} урона. HP: {currentHealth}/{maxHealth}");
 
         if (damageEffect != null)
         {
@@ -53,6 +52,6 @@ public class Health : MonoBehaviour
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
         OnHealthChanged?.Invoke(currentHealth);
 
-        Debug.Log($"{gameObject.name} восстановил {amount} HP. HP: {currentHealth}/{maxHealth}");
     }
 }
+

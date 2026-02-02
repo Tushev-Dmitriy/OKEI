@@ -1,68 +1,41 @@
-using UnityEngine;
+п»їusing UnityEngine;
+using UnityEngine.Events;
 using Zenject;
 
 public class RobotUnlockTrigger : MonoBehaviour
 {
-    [Header("Trigger Settings")]
-    [SerializeField] private RobotType requiredRobotType = RobotType.Attacker;
-    [SerializeField] private bool triggerOnce = true;
-    [SerializeField] private float triggerDelay = 0.5f;
+    [SerializeField] private RobotType robotTypeToUnlock = RobotType.Attacker;
+    
+    public UnityEvent OnTriggerActivated;
 
-    private bool _hasTriggered = false;
     private RobotUnlockEvents _events;
     private RobotUnlockManager _unlockManager;
 
     [Inject]
-    public void Construct(RobotUnlockEvents events, RobotUnlockManager unlockManager)
+    public void Construct(RobotUnlockEvents events)
     {
         _events = events;
-        _unlockManager = unlockManager;
     }
 
-    public void TriggerHint()
+    public void Trigger()
     {
-        if (triggerOnce && _hasTriggered)
+
+        if (_unlockManager == null)
+            _unlockManager = FindFirstObjectByType<RobotUnlockManager>();
+
+        if (_unlockManager != null && _unlockManager.IsRobotUnlocked(robotTypeToUnlock))
+        {
             return;
-
-        if (_unlockManager != null && _unlockManager.IsRobotUnlocked(requiredRobotType))
-        {
-            Debug.Log($"Робот {requiredRobotType} уже открыт. Подсказка не показывается.");
-            return;
         }
-
-        _hasTriggered = true;
-
-        Invoke(nameof(SendHintRequest), triggerDelay);
-    }
-
-    private void SendHintRequest()
-    {
-        if (_events != null)
-        {
-            _events.RequestRobotHint(requiredRobotType);
-        }
-        else
-        {
-            Debug.LogWarning("RobotUnlockEvents не найдена!");
-        }
-    }
-
-    public void ResetTrigger()
-    {
-        _hasTriggered = false;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Robot"))
-        {
-            TriggerHint();
-        }
+        
+        _events?.RequestUnlock(robotTypeToUnlock);
+        OnTriggerActivated?.Invoke();
     }
 
     [ContextMenu("Test Trigger")]
     private void TestTrigger()
     {
-        TriggerHint();
+        Trigger();
     }
 }
+
