@@ -15,8 +15,8 @@ public class DoorOpener : MonoBehaviour
 
     private void Awake()
     {
-        _leftDoorPosition = _leftDoor.transform.position;
-        _rightDoorPosition = _rightDoor.transform.position;
+        _leftDoorPosition = _leftDoor.localPosition;
+        _rightDoorPosition = _rightDoor.localPosition;
     }
 
     public void OpenDoors()

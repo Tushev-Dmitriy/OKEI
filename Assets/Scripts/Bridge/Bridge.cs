@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Bridge : MonoBehaviour
+public class Bridge : MonoBehaviour, ISceneSaveable
 {
     [SerializeField] private AllBridgeController bridgeController;
     [SerializeField] private string saveId;

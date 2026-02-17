@@ -9,6 +9,18 @@ public class Door : MonoBehaviour, ISceneSaveable
 
 
     public bool OpenChange() => isOpen = !isOpen;
+    public bool IsOpen => isOpen;
+
+    public void SetOpen(bool open)
+    {
+        if (isOpen == open)
+        {
+            return;
+        }
+
+        isOpen = open;
+        ApplyInstant();
+    }
 
     public string SaveId => saveId;
 

@@ -22,9 +22,16 @@ MonoBehaviour:
   - Move();
   - TakeDamage();
   - Heal();
+  unlockConditions:
+  - robotType: 2
+    requiredDeaths: 2
   moveSpeed: 15
   rotationSpeed: 15
   maxHealth: 100
   damagePerHit: 10
   attackInterval: 1
-  activeModules: 0100000002000000
+  healAmount: 20
+  healInterval: 1
+  healRange: 4
+  followDistance: 2.5
+  activeModules: 0100000003000000

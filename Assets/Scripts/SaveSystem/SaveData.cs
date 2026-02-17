@@ -61,5 +61,6 @@ public enum SceneObjectType
     Door,
     Lever,
     Bridge,
-    Platform
+    Platform,
+    VariableItem
 }

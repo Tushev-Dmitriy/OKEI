@@ -35,6 +35,57 @@ public static class InventorySaveSystem
         collection.SetObjectData(data);
     }
 
+    public static bool TryGetSavedItemNames(out HashSet<string> itemNames)
+    {
+        itemNames = new HashSet<string>();
+
+        if (!File.Exists(savePath))
+        {
+            return false;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(savePath);
+            var root = JToken.Parse(json);
+            var items = root["Items"] as JArray;
+            if (items == null)
+            {
+                return true;
+            }
+
+            foreach (var item in items)
+            {
+                var nameToken = item?["Name"];
+                if (nameToken == null)
+                {
+                    continue;
+                }
+
+                string name = nameToken.Value<string>();
+                if (!string.IsNullOrEmpty(name))
+                {
+                    itemNames.Add(name);
+                }
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[InventorySaveSystem] Failed to read saved items: {ex.Message}");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static void DeleteSave()
+    {
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
+    }
+
     private static object ConvertJToken(object token)
     {
         if (token is JObject obj)

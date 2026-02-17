@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Zenject;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
 using Zenject;

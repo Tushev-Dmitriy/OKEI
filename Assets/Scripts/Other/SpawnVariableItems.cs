@@ -1,6 +1,7 @@
 using DevionGames.InventorySystem;
 using System.Collections.Generic;
 using UnityEngine;
+using DevionItem = DevionGames.InventorySystem.Item;
 
 public class SpawnVariableItems : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class SpawnVariableItems : MonoBehaviour
 
     private void Awake()
     {
+        FilterItemsBySave();
         SetRandomPosToSpawn();
     }
 
@@ -47,6 +49,59 @@ public class SpawnVariableItems : MonoBehaviour
             _itemsPos.Add(spawnPos);
         }
 
+    }
+
+    private void FilterItemsBySave()
+    {
+        if (!InventorySaveSystem.TryGetSavedItemNames(out var savedNames))
+        {
+            return;
+        }
+
+        if (savedNames.Count == 0)
+        {
+            return;
+        }
+
+        for (int i = _variableItems.Count - 1; i >= 0; i--)
+        {
+            var prefab = _variableItems[i];
+            if (prefab == null)
+            {
+                _variableItems.RemoveAt(i);
+                continue;
+            }
+
+            if (IsItemAlreadySaved(prefab, savedNames))
+            {
+                _variableItems.RemoveAt(i);
+            }
+        }
+    }
+
+    private bool IsItemAlreadySaved(GameObject prefab, HashSet<string> savedNames)
+    {
+        if (!prefab.TryGetComponent(out ItemCollection collection))
+        {
+            return false;
+        }
+
+        List<DevionItem> items = collection.GetItemsInCollection();
+        if (items == null || items.Count == 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+            if (item != null && savedNames.Contains(item.Name))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void SpawnItems()

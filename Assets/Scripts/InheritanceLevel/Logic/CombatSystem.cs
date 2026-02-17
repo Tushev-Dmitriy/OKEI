@@ -1,31 +1,22 @@
 ﻿using System.Collections;
 using UnityEngine;
-using Zenject;
 
 public class CombatSystem : MonoBehaviour
 {
     [Header("Combat Settings")]
     [SerializeField] private float damagePerHit = 10f;
     [SerializeField] private float attackInterval = 0.5f;
-    [SerializeField] private float combatRange = 2f;
 
     [Header("Attack Effect (Optional)")]
     [SerializeField] private ParticleSystem attackEffect;
 
     private Health targetHealth;
-    private bool isInCombat = false;
+    private bool isInCombat;
     private Coroutine combatCoroutine;
-    private RobotUnlockEvents _robotUnlockEvents;
 
     public float DamagePerHit => damagePerHit;
     public float AttackInterval => attackInterval;
     public bool IsInCombat => isInCombat;
-
-    [Inject]
-    public void Construct(RobotUnlockEvents robotUnlockEvents)
-    {
-        _robotUnlockEvents = robotUnlockEvents;
-    }
 
     public void InitializeCombat(float damage, float interval)
     {
@@ -48,7 +39,6 @@ public class CombatSystem : MonoBehaviour
         targetHealth = target;
         isInCombat = true;
 
-
         combatCoroutine = StartCoroutine(CombatRoutine());
     }
 
@@ -62,7 +52,6 @@ public class CombatSystem : MonoBehaviour
 
         isInCombat = false;
         targetHealth = null;
-
 
         StopAttackEffect();
     }
@@ -89,13 +78,19 @@ public class CombatSystem : MonoBehaviour
     {
         if (targetHealth != null && targetHealth.IsAlive)
         {
-
             if (attackEffect != null)
             {
                 attackEffect.Play();
             }
 
-            targetHealth.TakeDamage(damagePerHit);
+            Vector3 hitPosition = targetHealth.transform.position;
+            Collider targetCollider = targetHealth.GetComponent<Collider>();
+            if (targetCollider != null)
+            {
+                hitPosition = targetCollider.ClosestPoint(transform.position);
+            }
+
+            targetHealth.TakeDamage(damagePerHit, hitPosition);
         }
     }
 
@@ -122,5 +117,3 @@ public class CombatSystem : MonoBehaviour
         StopCombat();
     }
 }
-
-

@@ -21,6 +21,10 @@ public class Robot : MonoBehaviour
         health.OnDeath += OnDeath;
     }
 
+    public RobotType RobotType => config != null ? config.robotType : RobotType.None;
+
+    public static event System.Action<RobotType> OnRobotDied;
+
     public void Initialize(RobotConfigSO settings)
     {
         config = settings;
@@ -78,11 +82,12 @@ public class Robot : MonoBehaviour
     public virtual void TryEngageCombat(EnemyUnit enemy)
     {
         
-        health.TakeDamage(health.MaxHealth);
+        health.TakeDamage(health.MaxHealth, transform.position);
     }
 
     protected virtual void OnDeath()
     {
+        OnRobotDied?.Invoke(RobotType);
         Die();
     }
 

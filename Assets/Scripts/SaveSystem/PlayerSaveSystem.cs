@@ -30,5 +30,13 @@ public static class PlayerSaveSystem
         saveData = JsonConvert.DeserializeObject<SaveData>(json);
 
     }
+
+    public static void DeleteSave()
+    {
+        if (File.Exists(savePath))
+        {
+            File.Delete(savePath);
+        }
+    }
 }
 

@@ -26,7 +26,12 @@ public class EnemyUnit : MonoBehaviour
             Health robotHealth = incomingRobot.GetComponent<Health>();
             if (robotHealth != null && robotHealth.IsAlive)
             {
-                robotHealth.TakeDamage(enemyDamage);
+                Vector3 hitPosition = other.transform.position;
+                if (other.contactCount > 0)
+                {
+                    hitPosition = other.GetContact(0).point;
+                }
+                robotHealth.TakeDamage(enemyDamage, hitPosition);
                 if (attackEffect != null)
                 {
                     attackEffect.Play();

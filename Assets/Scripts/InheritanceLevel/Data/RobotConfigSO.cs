@@ -1,11 +1,19 @@
-using System.Collections.Generic;
+Ôªøusing System.Collections.Generic;
 using UnityEngine;
 
 public enum VisualModuleType
 {
     None = 0,
     Blaster = 1,
-    Shield = 2
+    Shield = 2,
+    Heal = 3
+}
+
+[System.Serializable]
+public class UnlockCondition
+{
+    public RobotType robotType = RobotType.Base;
+    public int requiredDeaths = 1;
 }
 
 [CreateAssetMenu(fileName = "NewRobotConfig", menuName = "Configs/Robot Config")]
@@ -15,7 +23,7 @@ public class RobotConfigSO : ScriptableObject
     public RobotType robotType = RobotType.Base;
     
     [Header("UI Info")]
-    public string robotName = "¡‡ÁÓ‚˚È Ó·ÓÚ";
+    public string robotName = "–ë–∞–∑–æ–≤—ã–π —Ä–æ–±–æ—Ç";
     public Sprite robotIcon;
     
     [Header("UI Stats (0-5)")]
@@ -25,6 +33,9 @@ public class RobotConfigSO : ScriptableObject
     
     [Header("Methods")]
     public List<string> methodNames = new List<string>();
+
+    [Header("Unlock Conditions (Deaths)")]
+    public List<UnlockCondition> unlockConditions = new List<UnlockCondition>();
     
     [Header("Stats")]
     public float moveSpeed = 5f;
@@ -36,6 +47,12 @@ public class RobotConfigSO : ScriptableObject
     [Header("Combat")]
     public float damagePerHit = 10f;
     public float attackInterval = 0.5f;
+
+    [Header("Support (Healer)")]
+    public float healAmount = 15f;
+    public float healInterval = 1.5f;
+    public float healRange = 3f;
+    public float followDistance = 2f;
 
     [Header("Visuals")]
     public List<VisualModuleType> activeModules;

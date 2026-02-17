@@ -5,9 +5,6 @@ using Zenject;
 
 public class RobotWindowController : MonoBehaviour
 {
-    [SerializeField] private RobotConfigSO robotConfig;
-    [SerializeField] private bool useNextRobotFromManager;
-    [SerializeField] private bool useSelectionFromUI;
     [SerializeField] private RobotSelectionUI selectionUI;
     
     [SerializeField] private Image robotIconImage;
@@ -28,6 +25,7 @@ public class RobotWindowController : MonoBehaviour
 
     private RobotUnlockManager _unlockManager;
     private RobotUnlockEvents _events;
+    private RobotConfigSO robotConfig;
 
     [Inject]
     public void Construct(RobotUnlockManager unlockManager, RobotUnlockEvents events)
@@ -43,18 +41,16 @@ public class RobotWindowController : MonoBehaviour
 
     private void Start()
     {
-        if (useSelectionFromUI && selectionUI == null)
+        if (selectionUI == null)
             selectionUI = FindFirstObjectByType<RobotSelectionUI>();
 
-        ResolveRobotConfig();
-
-        if (robotConfig != null)
+        if (selectionUI != null)
         {
-            LoadRobotData();
-            UpdateLockState();
+            OnSelectedRobotChanged(selectionUI.GetSelectedType());
         }
-        else
+        else if (_unlockManager != null)
         {
+            OnSelectedRobotChanged(RobotType.Base);
         }
 
         if (_events != null)
@@ -93,27 +89,8 @@ public class RobotWindowController : MonoBehaviour
 
     private void OnRobotUnlocked(RobotType unlockedType)
     {
-        if (useSelectionFromUI)
-        {
-            UpdateLockState();
-            return;
-        }
-
-        if (useNextRobotFromManager)
-        {
-            ResolveRobotConfig();
-            if (robotConfig != null)
-            {
-                LoadRobotData();
-                UpdateLockState();
-            }
-            return;
-        }
-
         if (robotConfig != null && robotConfig.robotType == unlockedType)
-        {
             UpdateLockState();
-        }
     }
 
     private void LoadRobotData()
@@ -187,48 +164,13 @@ public class RobotWindowController : MonoBehaviour
 
     private void OnProgressApplied()
     {
-        if (useSelectionFromUI)
+        if (selectionUI != null)
         {
-            ResolveRobotConfig();
-            if (robotConfig != null)
-            {
-                LoadRobotData();
-                UpdateLockState();
-            }
-            return;
-        }
-
-        if (useNextRobotFromManager)
-        {
-            ResolveRobotConfig();
-            if (robotConfig != null)
-            {
-                LoadRobotData();
-                UpdateLockState();
-            }
+            OnSelectedRobotChanged(selectionUI.GetSelectedType());
             return;
         }
 
         UpdateLockState();
-    }
-
-    private void ResolveRobotConfig()
-    {
-        if (useSelectionFromUI && selectionUI != null && _unlockManager != null)
-        {
-            var selected = selectionUI.GetSelectedType();
-            robotConfig = _unlockManager.GetRobotConfig(selected);
-            return;
-        }
-
-        if (useNextRobotFromManager && _unlockManager != null)
-        {
-            var nextType = _unlockManager.GetNextRobotToUnlock();
-            if (nextType == RobotType.None)
-                return;
-
-            robotConfig = _unlockManager.GetRobotConfig(nextType);
-        }
     }
 
     private void OnSelectedRobotChanged(RobotType type)

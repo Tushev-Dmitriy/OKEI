@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -59,6 +59,7 @@ public class RobotSelectionUI : MonoBehaviour
             ApplyIconsFromConfigs();
         }
 
+        RebindButtons();
         SelectInitial();
         UpdateVisuals();
     }
@@ -109,20 +110,16 @@ public class RobotSelectionUI : MonoBehaviour
         {
             var button = buttons[i];
             var image = button.GetComponent<Image>();
+            var typeSource = button.GetComponentInParent<RobotSelectionButton>();
+            var resolvedType = typeSource != null ? typeSource.robotType : DefaultOrder[i];
             var entry = new ButtonEntry
             {
                 button = button,
                 image = image,
-                type = DefaultOrder[i],
+                type = resolvedType,
                 root = button.transform,
-                lockOverlay = button.transform.parent != null
-                    ? button.transform.parent.Find("CloseIcon")?.gameObject
-                    : null
+                lockOverlay = FindLockOverlay(button.transform)
             };
-
-            int capturedIndex = i;
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => OnButtonClicked(DefaultOrder[capturedIndex]));
 
             _entries.Add(entry);
         }
@@ -140,6 +137,18 @@ public class RobotSelectionUI : MonoBehaviour
             {
                 entry.image.sprite = config.robotIcon;
             }
+        }
+    }
+
+    private void RebindButtons()
+    {
+        foreach (var entry in _entries)
+        {
+            if (entry.button == null)
+                continue;
+
+            entry.button.onClick.RemoveAllListeners();
+            entry.button.onClick.AddListener(() => OnButtonClicked(entry.type));
         }
     }
 
@@ -166,7 +175,7 @@ public class RobotSelectionUI : MonoBehaviour
 
         if (spawner != null)
         {
-            spawner.SetSelectedRobotType(_selectedType, spawnOnSelection);
+            spawner.SetSelectedRobotType(_selectedType, false);
         }
 
         OnSelectedRobotChanged?.Invoke(_selectedType);
@@ -229,6 +238,25 @@ public class RobotSelectionUI : MonoBehaviour
                 entry.lockOverlay.SetActive(!unlocked);
             }
         }
+    }
+
+    private GameObject FindLockOverlay(Transform buttonTransform)
+    {
+        if (buttonTransform == null)
+            return null;
+
+        var parent = buttonTransform.parent;
+        if (parent == null)
+            return null;
+
+        var overlays = parent.GetComponentsInChildren<Transform>(true);
+        foreach (var overlay in overlays)
+        {
+            if (overlay.name == "CloseIcon")
+                return overlay.gameObject;
+        }
+
+        return null;
     }
 
     private class ButtonEntry

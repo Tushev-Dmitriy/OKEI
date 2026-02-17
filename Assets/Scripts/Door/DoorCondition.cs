@@ -1,100 +1,440 @@
+using System;
+using System.Collections.Generic;
 using DevionGames.InventorySystem;
 using DG.Tweening;
-using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class DoorCondition : MonoBehaviour
 {
-    [SerializeField] Door _doorOpenerScript;
-    [SerializeField] GameObject _doorUI;
-    [SerializeField] ItemDatabase _itemDatabase;
-    [SerializeField] ItemCollection _doorItemCollection;
-    [SerializeField] DoorTextController _doorTextController;
+    [SerializeField] private Door _door;
+    [SerializeField] private GameObject _doorUI;
+    [SerializeField] private DoorTextController _doorTextController;
+    [SerializeField] private ItemCollection _doorItemCollection;
+    [SerializeField] private List<ItemCollection> _slotCollections = new List<ItemCollection>();
+    [SerializeField] private DoorConditionExpression _condition = new DoorConditionExpression();
+    [SerializeField] private int _slotCount = 1;
+    [SerializeField] private Vector2 _slotOffset = new Vector2(0f, -160f);
+    [SerializeField] private bool _ignoreCase = true;
 
     private GameObject _slotUiObj;
     private GameObject _textUiObj;
-
-    private string _itemForCondition;
-    private bool _isOpen = false;
-    private DevionGames.InventorySystem.Item _item;
-
-    private List<DevionGames.InventorySystem.Item> _variableItems = new List<DevionGames.InventorySystem.Item>();
+    private readonly List<GameObject> _slotUiObjects = new List<GameObject>();
+    private bool _isOpen;
 
     private void Awake()
     {
         _slotUiObj = _doorUI.transform.GetChild(1).gameObject;
         _textUiObj = _doorUI.transform.GetChild(0).gameObject;
-
-        var _tempItems = _itemDatabase.items;
-        foreach (var item in _tempItems)
-        {
-            if (item.Category == _itemDatabase.categories[0])
-            {
-                _variableItems.Add(item);
-            }   
-        }
-        ConditionCreate();
-        _doorItemCollection.onItemAdded.AddListener(CheckItemInSlot);
+        _slotUiObjects.Clear();
+        _slotUiObjects.Add(_slotUiObj);
+        EnsureSlotCollections();
+        ApplySlotVisibility();
     }
 
-    public void CheckItemInSlot()
+    private void OnEnable()
     {
-        ItemCollection _doorObjects = _slotUiObj.GetComponent<ItemCollection>();
-        _item = _doorObjects.GetItemsInCollection()[0];
-        string itemInSlot = _item.name.Replace("(Clone)", "");
-        _doorItemCollection.onItemRemoved.AddListener(RemoveItemInSlot);
-        if (itemInSlot == _itemForCondition)
+        SyncOpenState();
+        SubscribeToSlotEvents();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromSlotEvents();
+    }
+
+    private void EnsureSlotCollections()
+    {
+        if (_slotCollections.Count > 0)
         {
-            _doorOpenerScript.OpenChange();
-            _doorOpenerScript.ApplyInstant();
-            _doorItemCollection.onItemAdded.RemoveListener(CheckItemInSlot);
-            _isOpen = true;
-        } else
+            return;
+        }
+
+        if (_doorItemCollection != null)
         {
-            _doorTextController.SetupConsoleError();
+            _slotCollections.Add(_doorItemCollection);
+            EnsureSlotInstances();
+            return;
+        }
+
+        var slotCollectionOnUi = _slotUiObj.GetComponent<ItemCollection>();
+        if (slotCollectionOnUi != null)
+        {
+            _slotCollections.Add(slotCollectionOnUi);
+            EnsureSlotInstances();
         }
     }
 
-    private void RemoveItemInSlot()
+    private void EnsureSlotInstances()
+    {
+        if (_slotCount <= 1)
+        {
+            return;
+        }
+
+        var baseRect = _slotUiObj.GetComponent<RectTransform>();
+        if (baseRect == null)
+        {
+            return;
+        }
+
+        for (int i = _slotCollections.Count; i < _slotCount; i++)
+        {
+            var clone = Instantiate(_slotUiObj, _slotUiObj.transform.parent);
+            clone.name = $"{_slotUiObj.name} ({i})";
+
+            var rect = clone.GetComponent<RectTransform>();
+            rect.anchoredPosition = baseRect.anchoredPosition + _slotOffset * i;
+
+            var collection = clone.GetComponent<ItemCollection>();
+            if (collection != null)
+            {
+                _slotCollections.Add(collection);
+                _slotUiObjects.Add(clone);
+            }
+        }
+    }
+
+    private int GetRequiredSlotCountFromCondition()
+    {
+        if (_condition == null || _condition.Clauses == null || _condition.Clauses.Count == 0)
+        {
+            return 1;
+        }
+
+        int maxIndex = 0;
+        foreach (var clause in _condition.Clauses)
+        {
+            if (clause == null)
+            {
+                continue;
+            }
+
+            if (clause.SlotIndex > maxIndex)
+            {
+                maxIndex = clause.SlotIndex;
+            }
+        }
+
+        return maxIndex + 1;
+    }
+
+    private void ApplySlotVisibility()
+    {
+        int requiredSlots = GetRequiredSlotCountFromCondition();
+        for (int i = 0; i < _slotUiObjects.Count; i++)
+        {
+            if (_slotUiObjects[i] == null)
+            {
+                continue;
+            }
+
+            _slotUiObjects[i].SetActive(i < requiredSlots);
+        }
+    }
+
+    private void SubscribeToSlotEvents()
+    {
+        foreach (var slotCollection in _slotCollections)
+        {
+            if (slotCollection == null)
+            {
+                continue;
+            }
+
+            slotCollection.onItemAdded.AddListener(OnItemAddedToSlot);
+            slotCollection.onItemRemoved.AddListener(OnItemRemovedFromSlot);
+        }
+    }
+
+    private void UnsubscribeFromSlotEvents()
+    {
+        foreach (var slotCollection in _slotCollections)
+        {
+            if (slotCollection == null)
+            {
+                continue;
+            }
+
+            slotCollection.onItemAdded.RemoveListener(OnItemAddedToSlot);
+            slotCollection.onItemRemoved.RemoveListener(OnItemRemovedFromSlot);
+        }
+    }
+
+    public void OnItemAddedToSlot()
+    {
+        TryOpenDoorFromCondition(true);
+    }
+
+    private void OnItemRemovedFromSlot()
     {
         _doorTextController.ClearText();
-        _doorItemCollection.onItemRemoved.RemoveListener(RemoveItemInSlot);
     }
 
-    private void BackItemToInventory()
+    private bool EvaluateCondition()
     {
-        _doorItemCollection.Remove(_item);
-        _doorItemCollection.GetComponentInChildren<ItemSlot>().ClearSlot();
+        if (_condition == null || _condition.Clauses == null || _condition.Clauses.Count == 0)
+        {
+            return false;
+        }
+
+        bool result = _condition.Logic == DoorLogicalOperator.And;
+        foreach (var clause in _condition.Clauses)
+        {
+            bool clauseResult = EvaluateClause(clause);
+            if (_condition.Logic == DoorLogicalOperator.And)
+            {
+                result &= clauseResult;
+                if (!result)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                result |= clauseResult;
+                if (result)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return result;
     }
 
-    private void ConditionCreate()
+    private bool EvaluateClause(DoorConditionClause clause)
     {
-        int _rndNum = Random.Range(0, _variableItems.Count);
-        _itemForCondition = _variableItems[_rndNum].name;
+        if (clause == null)
+        {
+            return false;
+        }
+
+        if (clause.SlotIndex < 0 || clause.SlotIndex >= _slotCollections.Count)
+        {
+            return false;
+        }
+
+        var slotCollection = _slotCollections[clause.SlotIndex];
+        if (slotCollection == null)
+        {
+            return false;
+        }
+
+        var items = slotCollection.GetItemsInCollection();
+        if (items == null || items.Count == 0 || items[0] == null)
+        {
+            return false;
+        }
+
+        string actualItemName = ResolveItemValue(items[0]);
+        if (clause.ValueType == DoorValueType.String)
+        {
+            return CompareStrings(actualItemName, clause.Operator, clause.ExpectedValue);
+        }
+
+        if (!int.TryParse(actualItemName, out int actualNumber))
+        {
+            return false;
+        }
+
+        if (!int.TryParse(clause.ExpectedValue, out int expectedNumber))
+        {
+            return false;
+        }
+
+        return CompareNumbers(actualNumber, clause.Operator, expectedNumber);
+    }
+
+    private static string NormalizeItemName(string itemName)
+    {
+        return itemName.Replace("(Clone)", string.Empty).Trim();
+    }
+
+    private string ResolveItemValue(DevionGames.InventorySystem.Item item)
+    {
+        if (item == null)
+        {
+            return string.Empty;
+        }
+
+        // Prefer VariableItemSpawn data from prefab/override prefab.
+        var prefab = item.OverridePrefab != null ? item.OverridePrefab : item.Prefab;
+        if (prefab != null)
+        {
+            var variable = prefab.GetComponent<VariableItemSpawn>();
+            if (variable != null && variable.VariableItemData != null)
+            {
+                return variable.VariableItemData.value;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.DisplayName))
+        {
+            return item.DisplayName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.Name))
+        {
+            return item.Name;
+        }
+
+        return NormalizeItemName(item.name);
+    }
+
+    private bool CompareStrings(string actual, DoorComparisonOperator op, string expected)
+    {
+        actual = NormalizeConditionString(actual);
+        expected = NormalizeConditionString(expected);
+        var comparison = _ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        switch (op)
+        {
+            case DoorComparisonOperator.Equal:
+                return string.Equals(actual, expected, comparison);
+            case DoorComparisonOperator.NotEqual:
+                return !string.Equals(actual, expected, comparison);
+            default:
+                return false;
+        }
+    }
+
+    private static string NormalizeConditionString(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        value = value.Trim();
+        if (value.Length >= 2 && value[0] == '"' && value[value.Length - 1] == '"')
+        {
+            value = value.Substring(1, value.Length - 2);
+        }
+
+        return value.Trim();
+    }
+
+    private static bool CompareNumbers(int actual, DoorComparisonOperator op, int expected)
+    {
+        switch (op)
+        {
+            case DoorComparisonOperator.Equal:
+                return actual == expected;
+            case DoorComparisonOperator.NotEqual:
+                return actual != expected;
+            case DoorComparisonOperator.GreaterOrEqual:
+                return actual >= expected;
+            case DoorComparisonOperator.LessOrEqual:
+                return actual <= expected;
+            case DoorComparisonOperator.Greater:
+                return actual > expected;
+            case DoorComparisonOperator.Less:
+                return actual < expected;
+            default:
+                return false;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (!other.CompareTag("Player"))
         {
-            _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
-            _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
-            _doorTextController.SetupConditionText(_itemForCondition);
+            return;
         }
+
+        _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+        _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+        ApplySlotVisibility();
+
+        for (int i = 1; i < _slotUiObjects.Count; i++)
+        {
+            if (_slotUiObjects[i] == null || !_slotUiObjects[i].activeSelf)
+            {
+                continue;
+            }
+
+            _slotUiObjects[i].transform.localScale = Vector3.one;
+        }
+
+        _doorTextController.SetupConditionText(_condition);
+        _doorTextController.ClearText();
+        TryOpenDoorFromCondition(false);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Player")
+        if (!other.CompareTag("Player"))
         {
-            _slotUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
-            _textUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
-            _doorTextController.ClearText();
-            if (_isOpen)
+            return;
+        }
+
+        _slotUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+        _textUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+
+        for (int i = 1; i < _slotUiObjects.Count; i++)
+        {
+            if (_slotUiObjects[i] == null)
             {
-                BackItemToInventory();
+                continue;
+            }
+
+            _slotUiObjects[i].transform.localScale = Vector3.zero;
+        }
+
+        _doorTextController.ClearText();
+    }
+
+    private void SyncOpenState()
+    {
+        _isOpen = _door != null && _door.IsOpen;
+    }
+
+    private bool TryOpenDoorFromCondition(bool showErrorOnFail)
+    {
+        SyncOpenState();
+        if (_isOpen)
+        {
+            return true;
+        }
+
+        if (!EvaluateCondition())
+        {
+            if (showErrorOnFail)
+            {
+                _doorTextController.SetupConsoleError();
+            }
+            return false;
+        }
+
+        _door.SetOpen(true);
+        _isOpen = true;
+        ConsumeItemsInSlots();
+        _doorTextController.SetupConsoleSuccess();
+        UnsubscribeFromSlotEvents();
+        return true;
+    }
+
+    private void ConsumeItemsInSlots()
+    {
+        foreach (var slotCollection in _slotCollections)
+        {
+            if (slotCollection == null)
+            {
+                continue;
+            }
+
+            var items = slotCollection.GetItemsInCollection();
+            if (items == null || items.Count == 0)
+            {
+                continue;
+            }
+
+            slotCollection.Remove(items[0]);
+            var itemSlot = slotCollection.GetComponentInChildren<ItemSlot>();
+            if (itemSlot != null)
+            {
+                itemSlot.ClearSlot();
             }
         }
     }
+
 }

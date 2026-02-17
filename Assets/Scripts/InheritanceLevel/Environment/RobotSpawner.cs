@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RobotSpawner : MonoBehaviour
@@ -15,19 +15,15 @@ public class RobotSpawner : MonoBehaviour
     [Header("Spawn Settings")]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private bool spawnOnStart = true;
-    [SerializeField] private bool replaceExisting = true;
+    [SerializeField] private bool replaceExisting = false;
     [SerializeField] private RobotType defaultRobotType = RobotType.Base;
-    [SerializeField] private bool unlockAttackerOnBaseDeath = true;
 
     private RobotType _selectedRobotType;
+    private readonly List<GameObject> _instances = new List<GameObject>();
     private GameObject _currentInstance;
-    private Health _currentHealth;
-    private RobotUnlockManager _unlockManager;
-    private RobotType _currentRobotType;
 
     private void Start()
     {
-        _unlockManager = FindFirstObjectByType<RobotUnlockManager>();
         _selectedRobotType = spawnAssaultRobot ? RobotType.Attacker : defaultRobotType;
 
         if (spawnOnStart)
@@ -69,21 +65,16 @@ public class RobotSpawner : MonoBehaviour
         if (robotPrefab == null || spawnPoint == null)
             return;
 
-        if (_currentHealth != null)
-        {
-            _currentHealth.OnDeath -= OnCurrentRobotDeath;
-            _currentHealth = null;
-        }
-
         if (replaceExisting && _currentInstance != null)
         {
             Destroy(_currentInstance);
             _currentInstance = null;
+            _instances.Clear();
         }
 
         GameObject instance = Instantiate(robotPrefab, spawnPoint.position, spawnPoint.rotation);
         _currentInstance = instance;
-        _currentRobotType = robotType;
+        _instances.Add(instance);
 
         Robot robotLogic = null;
         RobotConfigSO configToUse = ResolveConfig(robotType);
@@ -93,6 +84,18 @@ public class RobotSpawner : MonoBehaviour
             robotLogic = instance.GetComponent<AssaultRobot>();
             if (robotLogic == null)
                 robotLogic = instance.AddComponent<AssaultRobot>();
+        }
+        else if (robotType == RobotType.Healer)
+        {
+            robotLogic = instance.GetComponent<HealerRobot>();
+            if (robotLogic == null)
+                robotLogic = instance.AddComponent<HealerRobot>();
+        }
+        else if (robotType == RobotType.Defender)
+        {
+            robotLogic = instance.GetComponent<DefenderRobot>();
+            if (robotLogic == null)
+                robotLogic = instance.AddComponent<DefenderRobot>();
         }
         else
         {
@@ -106,11 +109,6 @@ public class RobotSpawner : MonoBehaviour
             robotLogic.Initialize(configToUse);
         }
 
-        _currentHealth = instance.GetComponent<Health>();
-        if (_currentHealth != null)
-        {
-            _currentHealth.OnDeath += OnCurrentRobotDeath;
-        }
     }
 
     private RobotConfigSO ResolveConfig(RobotType robotType)
@@ -136,28 +134,7 @@ public class RobotSpawner : MonoBehaviour
         return basicConfig;
     }
 
-    private void OnCurrentRobotDeath()
-    {
-        if (!unlockAttackerOnBaseDeath)
-            return;
-
-        if (_currentRobotType != RobotType.Base)
-            return;
-
-        if (_unlockManager == null)
-            _unlockManager = FindFirstObjectByType<RobotUnlockManager>();
-
-        if (_unlockManager != null)
-        {
-            _unlockManager.UnlockRobot(RobotType.Attacker);
-        }
-    }
-
     private void OnDestroy()
     {
-        if (_currentHealth != null)
-        {
-            _currentHealth.OnDeath -= OnCurrentRobotDeath;
-        }
     }
 }

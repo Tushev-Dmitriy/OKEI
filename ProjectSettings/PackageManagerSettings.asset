@@ -18,7 +18,7 @@ MonoBehaviour:
   m_SeeAllPackageVersions: 0
   m_DismissPreviewPackagesInUse: 0
   oneTimeWarningShown: 0
-  oneTimeDeprecatedPopUpShown: 0
+  oneTimePackageErrorsPopUpShown: 0
   m_Registries:
   - m_Id: main
     m_Name: 
@@ -34,9 +34,9 @@ MonoBehaviour:
     m_Name: package.openupm.com
     m_Url: https://package.openupm.com
     m_Scopes:
-    - com.ivanmurzak
+    - com.cysharp
+    - com.openupm
     - extensions.unity
-    - org.nuget.com.ivanmurzak
     - org.nuget.microsoft
     - org.nuget.system
     - org.nuget.r3
@@ -51,6 +51,6 @@ MonoBehaviour:
   m_RegistryInfoDraft:
     m_Modified: 0
     m_ErrorMessage: 
-    m_UserModificationsInstanceId: -864
-    m_OriginalInstanceId: -866
+    m_UserModificationsInstanceId: -912
+    m_OriginalInstanceId: -916
   m_LoadAssets: 0
