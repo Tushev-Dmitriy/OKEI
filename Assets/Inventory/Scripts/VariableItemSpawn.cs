@@ -5,14 +5,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Globalization;
 
-public class VariableItemSpawn : MonoBehaviour, ISceneSaveable
+public class VariableItemSpawn : MonoBehaviour
 {
     [SerializeField] private VariableItem _variableItem;
     [SerializeField] private string _saveId;
-    [SerializeField] private SceneObjectType _objectType = SceneObjectType.VariableItem;
 
     public VariableItem VariableItemData => _variableItem;
-    public string SaveId => _saveId;
 
     private ItemCollection _itemCollection;
     private Renderer _renderer;
@@ -38,6 +36,7 @@ public class VariableItemSpawn : MonoBehaviour, ISceneSaveable
             _itemCollection.onChange.AddListener(OnItemCollectionChanged);
         }
 
+        _collected = VariableItemSaveSystem.IsCollected(_saveId);
         Spawn();
         SyncCollectedFromCollection();
         ApplyCollectedState();
@@ -101,27 +100,6 @@ public class VariableItemSpawn : MonoBehaviour, ISceneSaveable
         }
     }
 
-    public SceneObjectStateData CaptureState()
-    {
-        if (_itemCollection != null && _itemCollection.IsEmpty)
-        {
-            _collected = true;
-        }
-
-        return new SceneObjectStateData
-        {
-            id = _saveId,
-            type = _objectType,
-            state = _collected ? 1 : 0
-        };
-    }
-
-    public void RestoreState(SceneObjectStateData data)
-    {
-        _collected = data != null && data.state == 1;
-        ApplyCollectedState();
-    }
-
     private string BuildRuntimeSaveId()
     {
         Vector3 p = transform.position;
@@ -133,15 +111,6 @@ public class VariableItemSpawn : MonoBehaviour, ISceneSaveable
         return $"{SceneManager.GetActiveScene().name}::VariableItem::{type}::{value}::{px}:{py}:{pz}";
     }
 
-    private void SaveNow()
-    {
-        var saver = Object.FindFirstObjectByType<PlayerSaver>();
-        if (saver != null)
-        {
-            saver.SavePlayerData();
-        }
-    }
-
     private void SyncCollectedFromCollection()
     {
         if (_collected || _itemCollection == null || !_itemCollection.IsEmpty)
@@ -151,6 +120,18 @@ public class VariableItemSpawn : MonoBehaviour, ISceneSaveable
 
         _collected = true;
         ApplyCollectedState();
-        SaveNow();
+        VariableItemSaveSystem.SetCollected(_saveId, true);
+    }
+
+    public void ConfigureSaveId(string saveId)
+    {
+        if (string.IsNullOrWhiteSpace(saveId))
+        {
+            return;
+        }
+
+        _saveId = saveId;
+        _collected = VariableItemSaveSystem.IsCollected(_saveId);
+        ApplyCollectedState();
     }
 }

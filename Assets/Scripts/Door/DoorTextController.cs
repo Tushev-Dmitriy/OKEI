@@ -6,9 +6,26 @@ public class DoorTextController : MonoBehaviour
 {
     [SerializeField] Text _doorConditionText;
     [SerializeField] Text _consoleOutText;
+    [SerializeField] private int _conditionMinFontSize = 14;
+    [SerializeField] private int _conditionMaxFontSize = 34;
+    [SerializeField] private int _consoleMinFontSize = 14;
+    [SerializeField] private int _consoleMaxFontSize = 28;
 
     private void Start()
     {
+        if (_doorConditionText != null)
+        {
+            _doorConditionText.resizeTextForBestFit = true;
+            _doorConditionText.resizeTextMinSize = _conditionMinFontSize;
+            _doorConditionText.resizeTextMaxSize = _conditionMaxFontSize;
+        }
+
+        if (_consoleOutText != null)
+        {
+            _consoleOutText.resizeTextForBestFit = true;
+            _consoleOutText.resizeTextMinSize = _consoleMinFontSize;
+            _consoleOutText.resizeTextMaxSize = _consoleMaxFontSize;
+        }
         ClearText();
     }
 
@@ -43,17 +60,35 @@ public class DoorTextController : MonoBehaviour
     
     public void SetupConsoleError()
     {
-        _consoleOutText.text = @"<color=#FF0000>Console.WriteLine(""Error"");</color>)";
+        SetConsoleText(@"<color=#FF0000>Console.WriteLine(""Error"");</color>");
     }
 
     public void SetupConsoleSuccess()
     {
-        _consoleOutText.text = @"<color=#00FF00>Console.WriteLine(""OK: condition passed"");</color>";
+        SetConsoleText(@"<color=#00FF00>Console.WriteLine(""OK: condition passed"");</color>");
     }
 
     public void ClearText()
     {
         _consoleOutText.text = null;
+    }
+
+    private void SetConsoleText(string text)
+    {
+        _consoleOutText.text = text;
+        ApplyConsoleAutoSize(text);
+    }
+
+    private void ApplyConsoleAutoSize(string text)
+    {
+        if (_consoleOutText == null)
+        {
+            return;
+        }
+
+        _consoleOutText.resizeTextForBestFit = true;
+        _consoleOutText.resizeTextMinSize = _consoleMinFontSize;
+        _consoleOutText.resizeTextMaxSize = _consoleMaxFontSize;
     }
 
     private static string BuildConditionText(DoorConditionExpression expression)

@@ -1,17 +1,25 @@
 using DevionGames.InventorySystem;
 using System.Collections.Generic;
 using UnityEngine;
-using DevionItem = DevionGames.InventorySystem.Item;
+using UnityEngine.SceneManagement;
 
 public class SpawnVariableItems : MonoBehaviour
 {
     [SerializeField] private List<GameObject> _variableItems;
     [SerializeField] private List<int> _randomRange = new List<int>();
+
+    private readonly List<SpawnEntry> _spawnEntries = new List<SpawnEntry>();
     private List<Vector3> _itemsPos = new List<Vector3>();
+
+    private struct SpawnEntry
+    {
+        public GameObject prefab;
+        public string saveId;
+    }
 
     private void Awake()
     {
-        FilterItemsBySave();
+        BuildSpawnEntries();
         SetRandomPosToSpawn();
     }
 
@@ -22,7 +30,7 @@ public class SpawnVariableItems : MonoBehaviour
 
     private void SetRandomPosToSpawn()
     {
-        for (int i = 0; i < _variableItems.Count; i++)
+        for (int i = 0; i < _spawnEntries.Count; i++)
         {
             Vector3 spawnPos;
             bool validPos = false;
@@ -51,64 +59,54 @@ public class SpawnVariableItems : MonoBehaviour
 
     }
 
-    private void FilterItemsBySave()
+    private void BuildSpawnEntries()
     {
-        if (!InventorySaveSystem.TryGetSavedItemNames(out var savedNames))
-        {
-            return;
-        }
+        _spawnEntries.Clear();
 
-        if (savedNames.Count == 0)
-        {
-            return;
-        }
-
-        for (int i = _variableItems.Count - 1; i >= 0; i--)
+        for (int i = 0; i < _variableItems.Count; i++)
         {
             var prefab = _variableItems[i];
             if (prefab == null)
             {
-                _variableItems.RemoveAt(i);
                 continue;
             }
 
-            if (IsItemAlreadySaved(prefab, savedNames))
+            string saveId = BuildSpawnSaveId(i, prefab);
+            if (VariableItemSaveSystem.IsCollected(saveId))
             {
-                _variableItems.RemoveAt(i);
+                continue;
             }
-        }
-    }
 
-    private bool IsItemAlreadySaved(GameObject prefab, HashSet<string> savedNames)
-    {
-        if (!prefab.TryGetComponent(out ItemCollection collection))
-        {
-            return false;
-        }
-
-        List<DevionItem> items = collection.GetItemsInCollection();
-        if (items == null || items.Count == 0)
-        {
-            return false;
-        }
-
-        for (int i = 0; i < items.Count; i++)
-        {
-            var item = items[i];
-            if (item != null && savedNames.Contains(item.Name))
+            _spawnEntries.Add(new SpawnEntry
             {
-                return true;
-            }
+                prefab = prefab,
+                saveId = saveId
+            });
         }
-
-        return false;
     }
 
     private void SpawnItems()
     {
-        for (int i = 0; i < _variableItems.Count; i++)
+        for (int i = 0; i < _spawnEntries.Count; i++)
         {
-            Instantiate(_variableItems[i], _itemsPos[i], Quaternion.identity);
+            var entry = _spawnEntries[i];
+            var instance = Instantiate(entry.prefab, _itemsPos[i], Quaternion.identity);
+
+            var variableSpawn = instance.GetComponent<VariableItemSpawn>();
+            if (variableSpawn == null)
+            {
+                continue;
+            }
+
+            variableSpawn.ConfigureSaveId(entry.saveId);
         }
+    }
+
+    private string BuildSpawnSaveId(int index, GameObject prefab)
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        string spawnerName = gameObject.name;
+        string prefabName = prefab != null ? prefab.name : "null";
+        return $"{sceneName}::SpawnVariableItems::{spawnerName}::{index}::{prefabName}";
     }
 }

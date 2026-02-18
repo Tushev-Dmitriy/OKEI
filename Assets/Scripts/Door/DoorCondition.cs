@@ -13,12 +13,13 @@ public class DoorCondition : MonoBehaviour
     [SerializeField] private List<ItemCollection> _slotCollections = new List<ItemCollection>();
     [SerializeField] private DoorConditionExpression _condition = new DoorConditionExpression();
     [SerializeField] private int _slotCount = 1;
-    [SerializeField] private Vector2 _slotOffset = new Vector2(0f, -160f);
+    [SerializeField] private Vector2 _slotOffset = new Vector2(170f, 0f);
     [SerializeField] private bool _ignoreCase = true;
 
     private GameObject _slotUiObj;
     private GameObject _textUiObj;
     private readonly List<GameObject> _slotUiObjects = new List<GameObject>();
+    private RectTransform _slotParentRoot;
     private bool _isOpen;
 
     private void Awake()
@@ -27,7 +28,9 @@ public class DoorCondition : MonoBehaviour
         _textUiObj = _doorUI.transform.GetChild(0).gameObject;
         _slotUiObjects.Clear();
         _slotUiObjects.Add(_slotUiObj);
+        EnsureSlotParent();
         EnsureSlotCollections();
+        EnsureSlotsForCondition();
         ApplySlotVisibility();
     }
 
@@ -52,7 +55,7 @@ public class DoorCondition : MonoBehaviour
         if (_doorItemCollection != null)
         {
             _slotCollections.Add(_doorItemCollection);
-            EnsureSlotInstances();
+            EnsureSlotsForCondition();
             return;
         }
 
@@ -60,13 +63,13 @@ public class DoorCondition : MonoBehaviour
         if (slotCollectionOnUi != null)
         {
             _slotCollections.Add(slotCollectionOnUi);
-            EnsureSlotInstances();
+            EnsureSlotsForCondition();
         }
     }
 
-    private void EnsureSlotInstances()
+    private void EnsureSlotInstances(int requiredSlots)
     {
-        if (_slotCount <= 1)
+        if (requiredSlots <= 1)
         {
             return;
         }
@@ -77,9 +80,16 @@ public class DoorCondition : MonoBehaviour
             return;
         }
 
-        for (int i = _slotCollections.Count; i < _slotCount; i++)
+        EnsureSlotParent();
+        _slotUiObj.transform.SetParent(_slotParentRoot, true);
+        baseRect.anchorMin = new Vector2(0.5f, 0.5f);
+        baseRect.anchorMax = new Vector2(0.5f, 0.5f);
+        baseRect.pivot = new Vector2(0.5f, 0.5f);
+        baseRect.anchoredPosition = Vector2.zero;
+
+        for (int i = _slotCollections.Count; i < requiredSlots; i++)
         {
-            var clone = Instantiate(_slotUiObj, _slotUiObj.transform.parent);
+            var clone = Instantiate(_slotUiObj, _slotParentRoot);
             clone.name = $"{_slotUiObj.name} ({i})";
 
             var rect = clone.GetComponent<RectTransform>();
@@ -92,6 +102,31 @@ public class DoorCondition : MonoBehaviour
                 _slotUiObjects.Add(clone);
             }
         }
+    }
+
+    private void EnsureSlotParent()
+    {
+        if (_slotParentRoot != null)
+        {
+            return;
+        }
+
+        var baseRect = _slotUiObj.GetComponent<RectTransform>();
+        if (baseRect == null)
+        {
+            return;
+        }
+
+        var parent = _slotUiObj.transform.parent;
+        var go = new GameObject("DoorSlots", typeof(RectTransform));
+        _slotParentRoot = go.GetComponent<RectTransform>();
+        _slotParentRoot.SetParent(parent, false);
+        _slotParentRoot.anchorMin = baseRect.anchorMin;
+        _slotParentRoot.anchorMax = baseRect.anchorMax;
+        _slotParentRoot.pivot = baseRect.pivot;
+        _slotParentRoot.anchoredPosition = baseRect.anchoredPosition;
+        _slotParentRoot.sizeDelta = Vector2.zero;
+        _slotParentRoot.localScale = Vector3.one;
     }
 
     private int GetRequiredSlotCountFromCondition()
@@ -116,6 +151,18 @@ public class DoorCondition : MonoBehaviour
         }
 
         return maxIndex + 1;
+    }
+
+    private void EnsureSlotsForCondition()
+    {
+        int requiredSlots = GetRequiredSlotCountFromCondition();
+        if (requiredSlots < 1)
+        {
+            requiredSlots = 1;
+        }
+
+        _slotCount = Mathf.Max(_slotCount, requiredSlots);
+        EnsureSlotInstances(requiredSlots);
     }
 
     private void ApplySlotVisibility()
@@ -177,6 +224,11 @@ public class DoorCondition : MonoBehaviour
             return false;
         }
 
+        if (!AreRequiredSlotsFilled())
+        {
+            return false;
+        }
+
         bool result = _condition.Logic == DoorLogicalOperator.And;
         foreach (var clause in _condition.Clauses)
         {
@@ -200,6 +252,32 @@ public class DoorCondition : MonoBehaviour
         }
 
         return result;
+    }
+
+    private bool AreRequiredSlotsFilled()
+    {
+        int requiredSlots = GetRequiredSlotCountFromCondition();
+        if (requiredSlots <= 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < requiredSlots && i < _slotCollections.Count; i++)
+        {
+            var slotCollection = _slotCollections[i];
+            if (slotCollection == null)
+            {
+                return false;
+            }
+
+            var items = slotCollection.GetItemsInCollection();
+            if (items == null || items.Count == 0 || items[0] == null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private bool EvaluateClause(DoorConditionClause clause)
@@ -343,6 +421,7 @@ public class DoorCondition : MonoBehaviour
 
         _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
         _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+        EnsureSlotsForCondition();
         ApplySlotVisibility();
 
         for (int i = 1; i < _slotUiObjects.Count; i++)
@@ -352,7 +431,7 @@ public class DoorCondition : MonoBehaviour
                 continue;
             }
 
-            _slotUiObjects[i].transform.localScale = Vector3.one;
+            _slotUiObjects[i].transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
         }
 
         _doorTextController.SetupConditionText(_condition);
@@ -377,7 +456,7 @@ public class DoorCondition : MonoBehaviour
                 continue;
             }
 
-            _slotUiObjects[i].transform.localScale = Vector3.zero;
+            _slotUiObjects[i].transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
         }
 
         _doorTextController.ClearText();

@@ -14,6 +14,7 @@ public class SaveResetter : MonoBehaviour
     {
         PlayerSaveSystem.DeleteSave();
         InventorySaveSystem.DeleteSave();
+        VariableItemSaveSystem.DeleteSave();
     }
 
     public void CollectSaveablesInScene()
