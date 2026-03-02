@@ -612,7 +612,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -3507,6 +3507,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6825085609214317271}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!1001 &5081948759329108118
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2269837147817283981, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_Name
+      value: LeaveObjTest
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
 --- !u!33 &5168781004259909677
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -3798,3 +3855,4 @@ SceneRoots:
   - {fileID: 729131518}
   - {fileID: 1471278213}
   - {fileID: 116992625}
+  - {fileID: 5081948759329108118}

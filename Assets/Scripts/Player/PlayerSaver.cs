@@ -110,7 +110,7 @@ public class PlayerSaver : MonoBehaviour
 
         if (data.player.level != CurrentLevelName)
         {
-            SceneManager.LoadScene(data.player.level);
+            // SceneManager.LoadScene(data.player.level);
             return;
         }
 

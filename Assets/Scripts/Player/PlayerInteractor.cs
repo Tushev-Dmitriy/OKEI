@@ -35,6 +35,12 @@ public class PlayerInteractor : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, maxDistance, interactableLayer))
         {
+            if (hit.collider.TryGetComponent<LockControlInteractable>(out var lockInteractable))
+            {
+                lockInteractable.Interact();
+                return;
+            }
+
             if (hit.collider.TryGetComponent<InteractableAnimator>(out var interactable))
             {
                 interactable.Interact();
