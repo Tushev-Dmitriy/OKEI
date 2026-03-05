@@ -75,7 +75,7 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartWaterFor(10);
+        lockControlSystem.TryStartWaterPrimaryFor();
     }
 
     public void WaterForFive()
@@ -83,7 +83,7 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartWaterFor(5);
+        lockControlSystem.TryStartWaterSecondaryFor();
     }
 
     public void LiftForTen()
@@ -91,7 +91,7 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartLiftFor(10);
+        lockControlSystem.TryStartLiftSecondaryFor();
     }
 
     public void LiftForTwentyFive()
@@ -99,7 +99,7 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartLiftFor(25);
+        lockControlSystem.TryStartLiftPrimaryFor();
     }
 
     private bool CanChangeSwitchState()
