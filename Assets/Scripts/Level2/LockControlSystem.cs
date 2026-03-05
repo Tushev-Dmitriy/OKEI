@@ -1,165 +1,274 @@
+using System;
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LockControlSystem : MonoBehaviour
 {
-    [Header("Scene References")]
-    [SerializeField] private AllBridgeController bridgeController;
-    [SerializeField] private ShipController shipController;
+    [Header("References")]
+    [SerializeField] private LockInputs lockInputs;
+    [SerializeField] private LockUI lockUi;
+    [SerializeField] private SimpleShipController simpleShipController;
+    [SerializeField] private Transform shipHoldPoint;
+    [SerializeField] private Transform shipExitPoint;
+    [SerializeField] private Transform gateTransform;
     [SerializeField] private Transform waterTransform;
-    [SerializeField] private PlayerInteractor playerInteractor;
     [SerializeField] private AudioSource alarmAudio;
 
-    [Header("Control Objects (optional scene controls)")]
-    [SerializeField] private string safeModeObjectName = "lever";
-    [SerializeField] private string powerObjectName = "bigbutton";
-    [SerializeField] private string coolingObjectName = "button";
-    [SerializeField] private string pumpObjectName = "handle";
-    [SerializeField] private bool useSceneInteractables;
+    [Header("Reload")]
+    [SerializeField] private string reloadSceneName = "Level2";
 
     [Header("Core Params (0-100)")]
-    [SerializeField, Range(0f, 100f)] private float systemIntegrity = 55f;
-    [SerializeField, Range(0f, 100f)] private float pressure = 80f;
-    [SerializeField, Range(0f, 100f)] private float temperature = 15f;
+    [SerializeField, Range(0f, 100f)] private float systemIntegrity = 70f;
+    [SerializeField, Range(0f, 100f)] private float pressure = 72f;
+    [SerializeField, Range(0f, 100f)] private float temperature = 18f;
     [SerializeField, Range(0f, 100f)] private float waterLevel = 0f;
     [SerializeField, Range(0f, 100f)] private float liftPower = 0f;
 
-    [Header("Requested Tunables")]
-    [SerializeField] private float integrityDrainSpeed = 2f;
-    [SerializeField] private float integrityRecoverSpeed = 1.5f;
-    [SerializeField] private float pressureDrainSpeed = 0.3f;
-    [SerializeField] private float temperatureIncreasePerBigFor = 9f;
-    [SerializeField] private float temperatureCoolSpeed = 3f;
+    [Header("Targets")]
+    [SerializeField, Range(0f, 100f)] private float minPressure = 45f;
+    [SerializeField, Range(0f, 100f)] private float maxTemperature = 82f;
+    [SerializeField, Range(0f, 100f)] private float waterLevelTarget = 80f;
     [SerializeField, Range(0f, 100f)] private float liftPowerTarget = 100f;
-    [SerializeField, Range(0f, 100f)] private float waterLevelTarget = 100f;
+    [SerializeField] private float waterTargetTolerance = 1f;
 
-    [Header("Thresholds")]
-    [SerializeField] private float minPressure = 20f;
-    [SerializeField] private float maxTemperature = 85f;
-    [SerializeField] private float stabilizationHoldTime = 35f;
+    [Header("Phase 1 / Stabilization")]
+    [SerializeField] private float stabilizationRequiredTime = 180f;
+    [SerializeField] private float requiredIntegrityForPhase2 = 60f;
+    [SerializeField] private float stabilizationTimerLossPerSecond = 1f;
 
-    [Header("FOR Step Values")]
-    [SerializeField] private float pressureStep = 2.4f;
-    [SerializeField] private float waterStep = 0.25f;
-    [SerializeField] private float liftStep = 0.12f;
-    [SerializeField] private float smallLiftHeatFactor = 0.45f;
+    [Header("Core Simulation")]
+    [SerializeField] private float pressureDrainPerSecond = 1.15f;
+    [SerializeField] private float coolingPerSecond = 3.25f;
+    [SerializeField] private float passiveHeatPerSecondPhase3 = 0.9f;
+    [SerializeField] private float integrityRecoverPerSecond = 0.85f;
+    [SerializeField] private float integrityDrainPerSecond = 5f;
+    [SerializeField] private float brokenWhileDrainMultiplier = 2.2f;
 
-    [Header("Failure Tuning")]
-    [SerializeField] private float brokenWhileDrainMultiplier = 2.4f;
-    [SerializeField] private float overheatIntegrityDrain = 10f;
-    [SerializeField] private float waterUnsafeFailureDelay = 6f;
-    [SerializeField] private float failureWaterRiseSpeed = 28f;
+    [Header("FOR Actions")]
+    [SerializeField] private int pumpIterations = 5;
+    [SerializeField] private float pumpStepValue = 4f;
+    [SerializeField] private float pumpStepDelay = 0.3f;
+    [SerializeField] private float waterStepValue = 0.45f;
+    [SerializeField] private float waterStepDelay = 0.38f;
+    [SerializeField] private float liftStepValue = 0.35f;
+    [SerializeField] private float liftStepDelay = 0.2f;
+    [SerializeField] private float liftHeatPerSmallStep = 0.3f;
+    [SerializeField] private float liftHeatPerBigStep = 0.85f;
+
+    [Header("Safety Penalties")]
+    [SerializeField] private float phase2EmergencyDuration = 3f;
+    [SerializeField] private float phase2EmergencyDrainPerSecond = 22f;
+    [SerializeField] private float phase2ImmediateHit = 18f;
+    [SerializeField] private float overheatIntegrityDrainPerSecond = 18f;
+
+    [Header("Failure")]
+    [SerializeField] private float failureWaterRisePerSecond = 28f;
     [SerializeField] private float restartDelay = 4f;
 
     [Header("Water Visual")]
     [SerializeField] private float waterMinY = 3f;
     [SerializeField] private float waterMaxY = 14f;
 
-    [Header("Simple UI")]
-    [SerializeField] private bool showTestHints = true;
-    [SerializeField] private TMP_Text statusText;
-    [SerializeField] private bool showControlPanel = true;
-    [SerializeField] private Rect panelRect = new Rect(16f, 16f, 440f, 480f);
+    [Header("Gate Visual")]
+    [SerializeField] private Vector3 gateOpenOffset = new Vector3(0f, 8f, 0f);
+    [SerializeField] private Vector3 gateOpenEulerOffset;
+    [SerializeField] private float gateOpenSpeed = 2.5f;
 
     private LockPhase _phase = LockPhase.Stabilization;
-    private bool _powerEnabled;
-    private bool _coolingEnabled;
-    private bool _safeModeEnabled;
-    private bool _failureTriggered;
-    private float _stabilizationTimer;
-    private float _waterUnsafeTimer;
-
+    private Coroutine _activeForRoutine;
     private Coroutine _failureRoutine;
 
-    public bool CanInteract => _phase != LockPhase.Completed && _phase != LockPhase.Failed && !_failureTriggered;
+    private float _stabilizationTimer;
+    private float _phase2EmergencyTimer;
+
+    private bool _failureTriggered;
+    private bool _gateOpening;
+    private bool _gatePoseInitialized;
+    private bool _shipStarted;
+
+    private string _forLabel = "FOR: ожидание";
+    private int _forIteration;
+    private int _forTotal;
+    private bool _forRunning;
+
+    private Vector3 _gateClosedLocalPosition;
+    private Vector3 _gateOpenLocalPosition;
+    private Quaternion _gateClosedLocalRotation;
+    private Quaternion _gateOpenLocalRotation;
+
     public LockPhase CurrentPhase => _phase;
-    public bool WhileActive => _safeModeEnabled && _powerEnabled && _coolingEnabled && pressure > minPressure;
+    public bool WhileActive => IsWhileConditionTrue();
+    public bool CanInteract => CanReceiveInput;
+    public bool CanReceiveInput => !_failureTriggered && _phase != LockPhase.Completed && _phase != LockPhase.Failed;
+
+    public float SystemIntegrity => systemIntegrity;
+    public float Pressure => pressure;
+    public float Temperature => temperature;
+    public float WaterLevel => waterLevel;
+    public float LiftPower => liftPower;
+    public float WaterLevelTarget => waterLevelTarget;
+    public float LiftPowerTarget => liftPowerTarget;
+    public float StabilizationProgress => stabilizationRequiredTime <= 0f ? 1f : Mathf.Clamp01(_stabilizationTimer / stabilizationRequiredTime);
+
+    public bool IsForRunning => _forRunning;
+    public int ForIteration => _forIteration;
+    public int ForTotal => _forTotal;
+    public string ForLabel => _forLabel;
+
+    public bool PowerEnabled => lockInputs != null && lockInputs.PowerEnabled;
+    public bool CoolingEnabled => lockInputs != null && lockInputs.CoolingEnabled;
+    public bool SafeModeEnabled => lockInputs != null && lockInputs.SafeModeEnabled;
 
     private void Awake()
     {
-        EnsureRuntimeControls();
-        if (statusText == null)
-            statusText = GameObject.Find("ActionInfoText")?.GetComponent<TMP_Text>();
+        ResolveLocalReferences();
+        if (lockInputs != null)
+            lockInputs.SetSystem(this);
+
+        ResolveReferences();
+        InitializeGatePose();
+        lockUi?.Initialize(this, lockInputs);
+        lockUi?.Refresh();
+    }
+
+    private void Start()
+    {
+        StartShipIfReady();
+        ApplyWaterVisual();
     }
 
     private void Update()
     {
-        if (_phase == LockPhase.Completed || _phase == LockPhase.Failed)
+        float dt = Time.deltaTime;
+
+        if (_failureTriggered)
         {
-            UpdateUI();
+            UpdateGate(dt);
+            ApplyWaterVisual();
+            lockUi?.Refresh();
             return;
         }
 
-        float dt = Time.deltaTime;
-        pressure = Mathf.Clamp(pressure - pressureDrainSpeed * dt, 0f, 100f);
+        // WHILE support values that constantly change.
+        pressure = Mathf.Clamp(pressure - pressureDrainPerSecond * dt, 0f, 100f);
 
-        if (_coolingEnabled)
-            temperature = Mathf.Clamp(temperature - temperatureCoolSpeed * dt, 0f, 100f);
+        if (CoolingEnabled)
+            temperature = Mathf.Clamp(temperature - coolingPerSecond * dt, 0f, 100f);
 
-        // while (...) condition for system stability
-        bool whileActive = WhileActive;
+        if (_phase == LockPhase.LiftPreparation && !CoolingEnabled)
+            temperature = Mathf.Clamp(temperature + passiveHeatPerSecondPhase3 * dt, 0f, 100f);
 
         switch (_phase)
         {
             case LockPhase.Stabilization:
-                UpdateStabilization(whileActive, dt);
+                UpdateStabilizationPhase(dt);
                 break;
             case LockPhase.WaterLeveling:
-                UpdateWaterLeveling(whileActive, dt);
+                UpdateWaterPhase(dt);
                 break;
             case LockPhase.LiftPreparation:
-                UpdateLiftPreparation(whileActive, dt);
+                UpdateLiftPhase(dt);
+                break;
+            case LockPhase.Completed:
+                break;
+            case LockPhase.Failed:
                 break;
         }
 
-        ApplyWaterVisual();
-        UpdateBridgeProgress();
-        UpdateUI();
+        systemIntegrity = Mathf.Clamp(systemIntegrity, 0f, 100f);
 
-        if (systemIntegrity <= 0f && !_failureTriggered)
+        if (systemIntegrity <= 0f)
             TriggerFailure();
+
+        UpdateGate(dt);
+        ApplyWaterVisual();
+        lockUi?.Refresh();
     }
 
     public bool ProcessControl(LockControlAction action)
     {
-        if (!CanInteract)
+        if (!CanReceiveInput || lockInputs == null)
             return false;
 
         switch (action)
         {
             case LockControlAction.SafeModeLever:
-                _safeModeEnabled = !_safeModeEnabled;
+                lockInputs.ToggleSafeMode();
                 return true;
             case LockControlAction.PrimaryButton:
                 if (_phase == LockPhase.Stabilization)
                 {
-                    _powerEnabled = !_powerEnabled;
+                    lockInputs.TogglePower();
                     return true;
                 }
+
                 if (_phase == LockPhase.WaterLeveling)
-                    return DoWaterFor(10);
+                    return TryStartWaterFor(10);
+
                 if (_phase == LockPhase.LiftPreparation)
-                    return DoLiftFor(25, temperatureIncreasePerBigFor);
+                    return TryStartLiftFor(25);
+
                 return false;
             case LockControlAction.SecondaryButton:
                 if (_phase == LockPhase.Stabilization)
                 {
-                    _coolingEnabled = !_coolingEnabled;
+                    lockInputs.ToggleCooling();
                     return true;
                 }
+
                 if (_phase == LockPhase.WaterLeveling)
-                    return DoWaterFor(5);
+                    return TryStartWaterFor(5);
+
                 if (_phase == LockPhase.LiftPreparation)
-                    return DoLiftFor(10, temperatureIncreasePerBigFor * smallLiftHeatFactor);
+                    return TryStartLiftFor(10);
+
                 return false;
             case LockControlAction.PumpHandle:
-                DoPumpForFive();
-                return true;
+                return TryStartPumpFor5();
             default:
                 return false;
         }
+    }
+
+    public bool TryStartPumpFor5()
+    {
+        if (!CanReceiveInput || _forRunning)
+            return false;
+
+        return StartForRoutine("Подкачка FOR x5", pumpIterations, pumpStepDelay, false, false, i =>
+        {
+            pressure = Mathf.Clamp(pressure + pumpStepValue, 0f, 100f);
+        });
+    }
+
+    public bool TryStartWaterFor(int iterations)
+    {
+        if (!CanReceiveInput || _phase != LockPhase.WaterLeveling || _forRunning)
+            return false;
+
+        int stepCount = Mathf.Max(1, iterations);
+
+        return StartForRoutine($"Вода FOR x{stepCount}", stepCount, waterStepDelay, true, true, i =>
+        {
+            float direction = waterLevelTarget >= waterLevel ? 1f : -1f;
+            waterLevel = Mathf.Clamp(waterLevel + direction * waterStepValue, 0f, 100f);
+        });
+    }
+
+    public bool TryStartLiftFor(int iterations)
+    {
+        if (!CanReceiveInput || _phase != LockPhase.LiftPreparation || _forRunning)
+            return false;
+
+        int stepCount = Mathf.Max(1, iterations);
+        float heatPerStep = stepCount >= 25 ? liftHeatPerBigStep : liftHeatPerSmallStep;
+
+        return StartForRoutine($"Подъем FOR x{stepCount}", stepCount, liftStepDelay, true, false, i =>
+        {
+            liftPower = Mathf.Clamp(liftPower + liftStepValue, 0f, 100f);
+            temperature = Mathf.Clamp(temperature + heatPerStep, 0f, 100f);
+        });
     }
 
     public void TriggerFailure()
@@ -171,14 +280,21 @@ public class LockControlSystem : MonoBehaviour
         _phase = LockPhase.Failed;
         systemIntegrity = 0f;
 
-        if (playerInteractor != null)
-            playerInteractor.enabled = false;
+        if (_activeForRoutine != null)
+            StopCoroutine(_activeForRoutine);
+
+        _forRunning = false;
+        _forIteration = 0;
+        _forTotal = 0;
+        _forLabel = "FOR: прерван";
+
+        lockInputs?.SetInputEnabled(false);
 
         if (alarmAudio != null)
             alarmAudio.Play();
 
-        if (shipController != null)
-            shipController.SinkShip();
+        if (simpleShipController != null)
+            simpleShipController.BeginSinking();
 
         if (_failureRoutine != null)
             StopCoroutine(_failureRoutine);
@@ -186,134 +302,153 @@ public class LockControlSystem : MonoBehaviour
         _failureRoutine = StartCoroutine(FailureSequence());
     }
 
-    private void UpdateStabilization(bool whileActive, float dt)
+    private void UpdateStabilizationPhase(float dt)
     {
-        if (whileActive)
+        // WHILE
+        if (WhileActive)
         {
             _stabilizationTimer += dt;
-            systemIntegrity = Mathf.Clamp(systemIntegrity + integrityRecoverSpeed * dt, 0f, 100f);
+            systemIntegrity += integrityRecoverPerSecond * dt;
         }
         else
         {
-            _stabilizationTimer = 0f;
-            systemIntegrity = Mathf.Clamp(systemIntegrity - integrityDrainSpeed * dt, 0f, 100f);
+            _stabilizationTimer = Mathf.Max(0f, _stabilizationTimer - stabilizationTimerLossPerSecond * dt);
+            systemIntegrity -= integrityDrainPerSecond * dt;
         }
 
-        if (_stabilizationTimer >= stabilizationHoldTime && systemIntegrity >= 95f && whileActive)
+        if (_stabilizationTimer >= stabilizationRequiredTime && systemIntegrity >= requiredIntegrityForPhase2)
             _phase = LockPhase.WaterLeveling;
     }
 
-    private void UpdateWaterLeveling(bool whileActive, float dt)
+    private void UpdateWaterPhase(float dt)
     {
-        if (whileActive)
-        {
-            _waterUnsafeTimer = 0f;
-            systemIntegrity = Mathf.Clamp(systemIntegrity + integrityRecoverSpeed * 0.35f * dt, 0f, 100f);
-        }
+        // WHILE
+        if (WhileActive)
+            systemIntegrity += integrityRecoverPerSecond * 0.35f * dt;
         else
-        {
-            // Water phase combines FOR actions with this WHILE guard:
-            // if WHILE is broken for too long, the lock fails.
-            _waterUnsafeTimer += dt;
-            systemIntegrity = Mathf.Clamp(systemIntegrity - (integrityDrainSpeed * brokenWhileDrainMultiplier) * dt, 0f, 100f);
+            systemIntegrity -= integrityDrainPerSecond * brokenWhileDrainMultiplier * dt;
 
-            if (_waterUnsafeTimer >= waterUnsafeFailureDelay)
-            {
-                TriggerFailure();
-                return;
-            }
+        if (_phase2EmergencyTimer > 0f)
+        {
+            _phase2EmergencyTimer -= dt;
+            systemIntegrity -= phase2EmergencyDrainPerSecond * dt;
         }
 
-        if (waterLevel >= waterLevelTarget)
+        if (Mathf.Abs(waterLevelTarget - waterLevel) <= waterTargetTolerance)
             _phase = LockPhase.LiftPreparation;
     }
 
-    private void UpdateLiftPreparation(bool whileActive, float dt)
+    private void UpdateLiftPhase(float dt)
     {
-        if (whileActive)
-        {
-            systemIntegrity = Mathf.Clamp(systemIntegrity + integrityRecoverSpeed * 0.3f * dt, 0f, 100f);
-        }
+        // WHILE
+        if (WhileActive)
+            systemIntegrity += integrityRecoverPerSecond * 0.3f * dt;
         else
-        {
-            systemIntegrity = Mathf.Clamp(systemIntegrity - (integrityDrainSpeed * brokenWhileDrainMultiplier) * dt, 0f, 100f);
-        }
-
-        if (!_coolingEnabled)
-            temperature = Mathf.Clamp(temperature + temperatureCoolSpeed * 0.8f * dt, 0f, 100f);
+            systemIntegrity -= integrityDrainPerSecond * brokenWhileDrainMultiplier * dt;
 
         if (temperature > maxTemperature)
-            systemIntegrity = Mathf.Clamp(systemIntegrity - overheatIntegrityDrain * dt, 0f, 100f);
+            systemIntegrity -= overheatIntegrityDrainPerSecond * dt;
 
         if (liftPower >= liftPowerTarget)
             CompleteLevel();
     }
 
-    private void DoPumpForFive()
+    private bool StartForRoutine(string label, int iterations, float stepDelay, bool requireWhile, bool phase2CriticalIfBroken, Action<int> stepAction)
     {
-        // for (int i = 0; i < 5; i++) { pressure += step; }
-        for (int i = 0; i < 5; i++)
-            pressure += pressureStep;
-
-        pressure = Mathf.Clamp(pressure, 0f, 100f);
-    }
-
-    private bool DoWaterFor(int iterations)
-    {
-        if (_phase != LockPhase.WaterLeveling)
+        if (_forRunning)
             return false;
 
-        // FOR step runs only while stability condition is valid
-        if (!WhileActive)
-            return false;
-
-        for (int i = 0; i < iterations; i++)
-            waterLevel += waterStep;
-
-        waterLevel = Mathf.Clamp(waterLevel, 0f, 100f);
+        _activeForRoutine = StartCoroutine(ForRoutine(label, iterations, stepDelay, requireWhile, phase2CriticalIfBroken, stepAction));
         return true;
     }
 
-    private bool DoLiftFor(int iterations, float heatPerClick)
+    private IEnumerator ForRoutine(string label, int iterations, float stepDelay, bool requireWhile, bool phase2CriticalIfBroken, Action<int> stepAction)
     {
-        if (_phase != LockPhase.LiftPreparation)
-            return false;
+        _forRunning = true;
+        _forLabel = label;
+        _forTotal = Mathf.Max(1, iterations);
+        _forIteration = 0;
 
-        if (!WhileActive)
-            return false;
+        for (int i = 0; i < _forTotal; i++)
+        {
+            // FOR
+            if (_failureTriggered)
+                break;
 
-        for (int i = 0; i < iterations; i++)
-            liftPower += liftStep;
+            if (requireWhile && !WhileActive)
+            {
+                if (phase2CriticalIfBroken)
+                {
+                    _phase2EmergencyTimer = phase2EmergencyDuration;
+                    systemIntegrity = Mathf.Clamp(systemIntegrity - phase2ImmediateHit, 0f, 100f);
+                }
 
-        liftPower = Mathf.Clamp(liftPower, 0f, 100f);
-        temperature = Mathf.Clamp(temperature + heatPerClick, 0f, 100f);
-        return true;
-    }
+                break;
+            }
 
-    private void CompleteLevel()
-    {
-        _phase = LockPhase.Completed;
+            stepAction?.Invoke(i);
+            _forIteration = i + 1;
 
-        if (bridgeController != null)
-            bridgeController.RaiseBridge();
+            if (stepDelay > 0f)
+                yield return new WaitForSeconds(stepDelay);
+            else
+                yield return null;
+        }
 
-        if (shipController != null)
-            shipController.MoveToEnd();
+        _forRunning = false;
+        _forLabel = "FOR: ожидание";
+        _forIteration = 0;
+        _forTotal = 0;
+        _activeForRoutine = null;
     }
 
     private IEnumerator FailureSequence()
     {
         float timer = 0f;
+
         while (timer < restartDelay)
         {
             timer += Time.deltaTime;
-            waterLevel = Mathf.Clamp(waterLevel + failureWaterRiseSpeed * Time.deltaTime, 0f, 100f);
+            waterLevel = Mathf.Clamp(waterLevel + failureWaterRisePerSecond * Time.deltaTime, 0f, 100f);
             ApplyWaterVisual();
-            UpdateUI();
+            lockUi?.Refresh();
             yield return null;
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        ReloadCurrentLevel();
+    }
+
+    private void CompleteLevel()
+    {
+        if (_phase == LockPhase.Completed)
+            return;
+
+        _phase = LockPhase.Completed;
+        _gateOpening = true;
+        lockInputs?.SetInputEnabled(false);
+
+        if (simpleShipController != null)
+            simpleShipController.BeginExit();
+    }
+
+    private bool IsWhileConditionTrue()
+    {
+        if (lockInputs == null)
+            return false;
+
+        return lockInputs.SafeModeEnabled && lockInputs.PowerEnabled && lockInputs.CoolingEnabled && pressure > minPressure;
+    }
+
+    private void UpdateGate(float dt)
+    {
+        if (!_gatePoseInitialized || gateTransform == null)
+            return;
+
+        Vector3 targetPosition = _gateOpening ? _gateOpenLocalPosition : _gateClosedLocalPosition;
+        Quaternion targetRotation = _gateOpening ? _gateOpenLocalRotation : _gateClosedLocalRotation;
+
+        gateTransform.localPosition = Vector3.MoveTowards(gateTransform.localPosition, targetPosition, gateOpenSpeed * dt);
+        gateTransform.localRotation = Quaternion.RotateTowards(gateTransform.localRotation, targetRotation, gateOpenSpeed * 45f * dt);
     }
 
     private void ApplyWaterVisual()
@@ -321,109 +456,35 @@ public class LockControlSystem : MonoBehaviour
         if (waterTransform == null)
             return;
 
-        float normalizedLevel = Mathf.Clamp01(waterLevel / 100f);
-        Vector3 pos = waterTransform.position;
-        pos.y = Mathf.Lerp(waterMinY, waterMaxY, normalizedLevel);
-        waterTransform.position = pos;
+        float normalized = Mathf.Clamp01(waterLevel / 100f);
+        Vector3 position = waterTransform.position;
+        position.y = Mathf.Lerp(waterMinY, waterMaxY, normalized);
+        waterTransform.position = position;
     }
 
-    private void UpdateBridgeProgress()
+    private void ReloadCurrentLevel()
     {
-        if (bridgeController == null || _phase != LockPhase.LiftPreparation)
-            return;
-
-        float targetPercent = Mathf.Clamp01(liftPower / Mathf.Max(1f, liftPowerTarget)) * 100f;
-        bridgeController.RaiseBridgeToPercent(targetPercent);
-    }
-
-    private void UpdateUI()
-    {
-        if (statusText == null)
-            return;
-
-        statusText.text =
-            $"Phase: {_phase}\n" +
-            $"WHILE: {(WhileActive ? "ACTIVE" : "STOPPED")}\n" +
-            $"SystemIntegrity: {systemIntegrity:0.0}\n" +
-            $"Pressure: {pressure:0.0}\n" +
-            $"Temperature: {temperature:0.0}\n" +
-            $"WaterLevel: {waterLevel:0.0}\n" +
-            $"LiftPower: {liftPower:0.0}\n\n" +
-            $"Power: {(_powerEnabled ? "ON" : "OFF")}  " +
-            $"Cooling: {(_coolingEnabled ? "ON" : "OFF")}  " +
-            $"SafeMode: {(_safeModeEnabled ? "ON" : "OFF")}";
-
-        if (showTestHints)
+        if (!string.IsNullOrWhiteSpace(reloadSceneName) && Application.CanStreamedLevelBeLoaded(reloadSceneName))
         {
-            statusText.text +=
-                "\n\nControls:\n" +
-                "Use on-screen buttons only\n" +
-                "SafeMode + Power + Cooling keep WHILE active\n" +
-                "Pump keeps pressure above minimum";
-        }
-    }
-
-    private void OnGUI()
-    {
-        if (!showControlPanel)
+            SceneManager.LoadScene(reloadSceneName);
             return;
-
-        GUILayout.BeginArea(panelRect, GUI.skin.box);
-        GUILayout.Label("Lock Control Panel");
-        GUILayout.Space(8f);
-
-        GUILayout.Label($"Phase: {_phase}");
-        GUILayout.Label($"WHILE: {(WhileActive ? "ACTIVE" : "STOPPED")}");
-        GUILayout.Label($"Integrity: {systemIntegrity:0.0}");
-        GUILayout.Label($"Pressure: {pressure:0.0}");
-        GUILayout.Label($"Temperature: {temperature:0.0}");
-        GUILayout.Label($"Water: {waterLevel:0.0}");
-        GUILayout.Label($"Lift: {liftPower:0.0}");
-        GUILayout.Space(8f);
-
-        GUI.enabled = CanInteract;
-        if (GUILayout.Button($"SafeMode ({(_safeModeEnabled ? "ON" : "OFF")})", GUILayout.Height(30f)))
-            ProcessControl(LockControlAction.SafeModeLever);
-
-        if (GUILayout.Button($"Power ({(_powerEnabled ? "ON" : "OFF")})", GUILayout.Height(30f)))
-            ProcessControl(LockControlAction.PrimaryButton);
-
-        if (GUILayout.Button($"Cooling ({(_coolingEnabled ? "ON" : "OFF")})", GUILayout.Height(30f)))
-            ProcessControl(LockControlAction.SecondaryButton);
-
-        if (GUILayout.Button("Pump FOR x5", GUILayout.Height(30f)))
-            ProcessControl(LockControlAction.PumpHandle);
-
-        GUILayout.Space(6f);
-        switch (_phase)
-        {
-            case LockPhase.WaterLeveling:
-                if (GUILayout.Button("FOR x10 (Water)", GUILayout.Height(30f)))
-                    ProcessControl(LockControlAction.PrimaryButton);
-                if (GUILayout.Button("FOR x5 (Water)", GUILayout.Height(30f)))
-                    ProcessControl(LockControlAction.SecondaryButton);
-                break;
-            case LockPhase.LiftPreparation:
-                if (GUILayout.Button("FOR x25 (Lift)", GUILayout.Height(30f)))
-                    ProcessControl(LockControlAction.PrimaryButton);
-                if (GUILayout.Button("FOR x10 (Lift)", GUILayout.Height(30f)))
-                    ProcessControl(LockControlAction.SecondaryButton);
-                break;
         }
 
-        GUI.enabled = true;
-        GUILayout.EndArea();
+        Scene activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(activeScene.name);
     }
 
-    private void EnsureRuntimeControls()
+    private void ResolveLocalReferences()
     {
-        if (bridgeController == null)
-            bridgeController = FindFirstObjectByType<AllBridgeController>();
-        if (shipController == null)
-            shipController = FindFirstObjectByType<ShipController>();
-        if (playerInteractor == null)
-            playerInteractor = FindFirstObjectByType<PlayerInteractor>();
+        if (lockInputs == null)
+            lockInputs = GetComponent<LockInputs>();
 
+        if (lockUi == null)
+            lockUi = GetComponent<LockUI>();
+    }
+
+    private void ResolveReferences()
+    {
         if (waterTransform == null)
         {
             GameObject waterObject = GameObject.Find("Water");
@@ -431,60 +492,41 @@ public class LockControlSystem : MonoBehaviour
                 waterTransform = waterObject.transform;
         }
 
-        if (!useSceneInteractables)
-            return;
+        if (simpleShipController == null)
+            simpleShipController = FindFirstObjectByType<SimpleShipController>();
 
-        RegisterControl(safeModeObjectName, LockControlAction.SafeModeLever, true, true);
-        RegisterControl(powerObjectName, LockControlAction.PrimaryButton, true, true);
-        RegisterControl(coolingObjectName, LockControlAction.SecondaryButton, true, true);
-        RegisterControl(pumpObjectName, LockControlAction.PumpHandle, false, true);
+        if (simpleShipController != null)
+        {
+            ShipController legacyShip = simpleShipController.GetComponent<ShipController>();
+            if (legacyShip != null)
+                legacyShip.enabled = false;
+
+            if (shipHoldPoint != null || shipExitPoint != null)
+                simpleShipController.SetRoute(shipHoldPoint, shipExitPoint);
+        }
     }
 
-    private void RegisterControl(string objectName, LockControlAction action, bool toggleVisual, bool optional = false)
+    private void StartShipIfReady()
     {
-        if (string.IsNullOrWhiteSpace(objectName))
+        if (_shipStarted)
             return;
 
-        GameObject target = GameObject.Find(objectName);
-        if (target == null)
-        {
-            if (!optional)
-                Debug.LogWarning($"LockControlSystem: object '{objectName}' not found.");
+        if (simpleShipController == null)
             return;
-        }
 
-        target.layer = 3;
-
-        if (target.GetComponent<Collider>() == null)
-        {
-            Renderer renderer = target.GetComponent<Renderer>();
-            BoxCollider collider = target.AddComponent<BoxCollider>();
-            if (renderer != null)
-                collider.size = target.transform.InverseTransformVector(renderer.bounds.size);
-        }
-
-        InteractableAnimator oldAnimator = target.GetComponent<InteractableAnimator>();
-        if (oldAnimator != null)
-            oldAnimator.enabled = false;
-
-        LockControlInteractable interactable = target.GetComponent<LockControlInteractable>();
-        if (interactable == null)
-            interactable = target.AddComponent<LockControlInteractable>();
-
-        interactable.Setup(this, action, toggleVisual);
+        simpleShipController.BeginApproach();
+        _shipStarted = true;
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void BootstrapLevel2()
+    private void InitializeGatePose()
     {
-        Scene activeScene = SceneManager.GetActiveScene();
-        if (!activeScene.name.Equals("Level2"))
+        if (gateTransform == null)
             return;
 
-        if (FindFirstObjectByType<LockControlSystem>() != null)
-            return;
-
-        GameObject bootstrapObject = new GameObject("LockControlSystem");
-        bootstrapObject.AddComponent<LockControlSystem>();
+        _gateClosedLocalPosition = gateTransform.localPosition;
+        _gateClosedLocalRotation = gateTransform.localRotation;
+        _gateOpenLocalPosition = _gateClosedLocalPosition + gateOpenOffset;
+        _gateOpenLocalRotation = _gateClosedLocalRotation * Quaternion.Euler(gateOpenEulerOffset);
+        _gatePoseInitialized = true;
     }
 }
