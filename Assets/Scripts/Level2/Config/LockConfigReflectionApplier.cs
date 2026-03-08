@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -20,11 +20,11 @@ public static class LockConfigReflectionApplier
 
         for (int i = 0; i < targetFields.Length; i++)
         {
-            FieldInfo field = targetFields[i];
-            if (field.IsStatic || field.IsInitOnly)
+            FieldInfo targetField = targetFields[i];
+            if (targetField.IsStatic || targetField.IsInitOnly)
                 continue;
 
-            targetFieldMap[field.Name] = field;
+            targetFieldMap[targetField.Name] = targetField;
         }
 
         for (int i = 0; i < sourceFields.Length; i++)
@@ -39,8 +39,7 @@ public static class LockConfigReflectionApplier
             if (!targetField.FieldType.IsAssignableFrom(sourceField.FieldType))
                 continue;
 
-            object value = sourceField.GetValue(source);
-            targetField.SetValue(target, value);
+            targetField.SetValue(target, sourceField.GetValue(source));
         }
     }
 }

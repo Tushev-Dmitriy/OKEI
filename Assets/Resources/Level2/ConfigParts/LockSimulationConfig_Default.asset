@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed45eb19854a43d5a6c9275f79a24e5d, type: 3}
+  m_Name: LockSimulationConfig_Default
+  m_EditorClassIdentifier: 
+  pressureDrainPerSecond: 1.15
+  coolingPerSecond: 3.25
+  passiveHeatPerSecondPhase3: 0.9
+  integrityRecoverPerSecond: 0.85
+  integrityDrainPerSecond: 5
+  brokenWhileDrainMultiplier: 2.4
+  waterPhaseIntegrityRecoveryMultiplier: 0.35
+  liftPhaseIntegrityRecoveryMultiplier: 0.3
+  pumpIterations: 5
+  pumpStepValue: 4
+  pumpStepDelay: 0.3
+  waterStepValue: 0.45
+  waterStepDelay: 0.38
+  liftStepValue: 0.35
+  liftStepDelay: 0.2
+  liftHeatPerSmallStep: 0.3
+  liftHeatPerBigStep: 0.85
+  waterPrimaryIterations: 10
+  waterSecondaryIterations: 5
+  liftPrimaryIterations: 25
+  liftSecondaryIterations: 10
+  phase2EmergencyDuration: 3
+  phase2EmergencyDrainPerSecond: 22
+  phase2ImmediateHit: 18
+  overheatIntegrityDrainPerSecond: 18
+  failureWaterRisePerSecond: 28
+  restartDelay: 4
+  stabilizationProgressWeight: 0.35
+  waterLevelingProgressWeight: 0.3

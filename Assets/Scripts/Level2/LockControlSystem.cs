@@ -1042,7 +1042,7 @@ public class LockControlSystem : MonoBehaviour
         if (!applyConfigOnAwake || levelConfig == null)
             return;
 
-        LockConfigReflectionApplier.CopySharedFields(levelConfig, this);
+        levelConfig.ApplyTo(this);
     }
 
     private void InitializeRuntimeLabels()
