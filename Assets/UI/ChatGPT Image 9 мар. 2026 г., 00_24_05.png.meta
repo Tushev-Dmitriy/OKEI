@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_0"
+      name: l2_panel_header_top
       rect:
         serializedVersion: 2
         x: 17
@@ -119,7 +119,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_1"
+      name: l2_panel_header_main
       rect:
         serializedVersion: 2
         x: 17
@@ -141,7 +141,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_2"
+      name: l2_panel_info_left_top
       rect:
         serializedVersion: 2
         x: 17
@@ -163,7 +163,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_3"
+      name: l2_panel_info_right_top
       rect:
         serializedVersion: 2
         x: 600
@@ -172,7 +172,7 @@ TextureImporter:
         height: 94
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 38, y: 14, z: 37, w: 13}
       customData: 
       outline: []
       physicsShape: []
@@ -185,7 +185,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_4"
+      name: l2_panel_info_left_mid
       rect:
         serializedVersion: 2
         x: 17
@@ -207,7 +207,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_5"
+      name: l2_panel_info_right_mid
       rect:
         serializedVersion: 2
         x: 601
@@ -216,7 +216,7 @@ TextureImporter:
         height: 92
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 39, y: 25, z: 36, w: 26}
       customData: 
       outline: []
       physicsShape: []
@@ -229,7 +229,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_6"
+      name: l2_panel_button_col_left_01
       rect:
         serializedVersion: 2
         x: 17
@@ -238,7 +238,7 @@ TextureImporter:
         height: 80
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 13, y: 17, z: 15, w: 18}
       customData: 
       outline: []
       physicsShape: []
@@ -251,7 +251,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_7"
+      name: l2_panel_button_col_left_02
       rect:
         serializedVersion: 2
         x: 318
@@ -273,7 +273,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_8"
+      name: l2_bar_track_wide_01
       rect:
         serializedVersion: 2
         x: 601
@@ -295,7 +295,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_9"
+      name: l2_bar_fill_wide_01
       rect:
         serializedVersion: 2
         x: 586
@@ -317,7 +317,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_10"
+      name: l2_bar_fill_wide_02
       rect:
         serializedVersion: 2
         x: 585
@@ -339,7 +339,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_11"
+      name: l2_panel_button_col_left_03
       rect:
         serializedVersion: 2
         x: 17
@@ -361,7 +361,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_12"
+      name: l2_panel_button_col_left_04
       rect:
         serializedVersion: 2
         x: 319
@@ -383,7 +383,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_13"
+      name: l2_bar_fill_wide_03
       rect:
         serializedVersion: 2
         x: 576
@@ -405,7 +405,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_14"
+      name: l2_bar_fill_wide_04
       rect:
         serializedVersion: 2
         x: 577
@@ -427,16 +427,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_17"
+      name: l2_panel_button_col_left_05
       rect:
         serializedVersion: 2
-        x: 17
+        x: 18
         y: 764
-        width: 292
+        width: 291
         height: 60
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 20, y: 15, z: 21, w: 16}
       customData: 
       outline: []
       physicsShape: []
@@ -449,7 +449,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_18"
+      name: l2_panel_button_col_left_06
       rect:
         serializedVersion: 2
         x: 319
@@ -471,7 +471,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_19"
+      name: l2_bar_fill_wide_05
       rect:
         serializedVersion: 2
         x: 577
@@ -493,7 +493,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_20"
+      name: l2_button_action_bg_01
       rect:
         serializedVersion: 2
         x: 16
@@ -502,7 +502,7 @@ TextureImporter:
         height: 58
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 16, y: 14, z: 19, w: 14}
       customData: 
       outline: []
       physicsShape: []
@@ -515,7 +515,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_21"
+      name: l2_button_action_bg_02
       rect:
         serializedVersion: 2
         x: 273
@@ -524,7 +524,7 @@ TextureImporter:
         height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 20, y: 16, z: 22, w: 16}
       customData: 
       outline: []
       physicsShape: []
@@ -537,7 +537,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_22"
+      name: l2_chip_rect_small_01
       rect:
         serializedVersion: 2
         x: 592
@@ -559,7 +559,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_23"
+      name: l2_divider_long_01
       rect:
         serializedVersion: 2
         x: 655
@@ -581,7 +581,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_24"
+      name: l2_chip_rect_small_02
       rect:
         serializedVersion: 2
         x: 591
@@ -603,7 +603,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_25"
+      name: l2_divider_long_02
       rect:
         serializedVersion: 2
         x: 654
@@ -625,7 +625,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_27"
+      name: l2_button_action_bg_03
       rect:
         serializedVersion: 2
         x: 273
@@ -634,7 +634,7 @@ TextureImporter:
         height: 59
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 20, y: 15, z: 19, w: 14}
       customData: 
       outline: []
       physicsShape: []
@@ -647,7 +647,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_28"
+      name: l2_divider_long_03
       rect:
         serializedVersion: 2
         x: 589
@@ -669,7 +669,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_29"
+      name: l2_divider_long_04
       rect:
         serializedVersion: 2
         x: 588
@@ -691,7 +691,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_30"
+      name: l2_light_round_green
       rect:
         serializedVersion: 2
         x: 16
@@ -713,7 +713,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_31"
+      name: l2_light_round_yellow_01
       rect:
         serializedVersion: 2
         x: 71
@@ -735,7 +735,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_32"
+      name: l2_light_round_yellow_02
       rect:
         serializedVersion: 2
         x: 126
@@ -757,7 +757,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_33"
+      name: l2_light_round_red
       rect:
         serializedVersion: 2
         x: 181
@@ -779,7 +779,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_38"
+      name: l2_button_small_blue
       rect:
         serializedVersion: 2
         x: 331
@@ -801,7 +801,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_39"
+      name: l2_dot_cluster_bg_01
       rect:
         serializedVersion: 2
         x: 485
@@ -823,7 +823,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_40"
+      name: l2_status_strip_bg_01
       rect:
         serializedVersion: 2
         x: 581
@@ -845,7 +845,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_45"
+      name: l2_status_strip_bg_02
       rect:
         serializedVersion: 2
         x: 581
@@ -867,16 +867,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_46"
+      name: l2_button_for_left
       rect:
         serializedVersion: 2
-        x: 0
-        y: 444
-        width: 290
-        height: 84
+        x: 17
+        y: 452
+        width: 271
+        height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 18, y: 18, z: 20, w: 16}
       customData: 
       outline: []
       physicsShape: []
@@ -889,16 +889,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_47"
+      name: l2_button_for_right
       rect:
         serializedVersion: 2
-        x: 293
-        y: 444
-        width: 286
-        height: 81
+        x: 296
+        y: 453
+        width: 275
+        height: 69
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 15, y: 15, z: 17, w: 17}
       customData: 
       outline: []
       physicsShape: []
@@ -911,7 +911,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_48"
+      name: l2_dot_micro_01
       rect:
         serializedVersion: 2
         x: 300
@@ -933,7 +933,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_49"
+      name: l2_status_strip_bg_03
       rect:
         serializedVersion: 2
         x: 581
@@ -955,7 +955,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_50"
+      name: l2_line_thin_01
       rect:
         serializedVersion: 2
         x: 583
@@ -977,7 +977,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_51"
+      name: l2_icon_warning_outline_right
       rect:
         serializedVersion: 2
         x: 0
@@ -999,7 +999,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_52"
+      name: l2_icon_warning_outline_left
       rect:
         serializedVersion: 2
         x: 295
@@ -1021,7 +1021,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_53"
+      name: l2_line_thin_02
       rect:
         serializedVersion: 2
         x: 583
@@ -1043,7 +1043,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_54"
+      name: l2_chip_row_small_01
       rect:
         serializedVersion: 2
         x: 582
@@ -1065,7 +1065,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_55"
+      name: l2_chip_row_small_02
       rect:
         serializedVersion: 2
         x: 674
@@ -1087,7 +1087,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_57"
+      name: l2_icon_warning_big
       rect:
         serializedVersion: 2
         x: 22
@@ -1109,7 +1109,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_58"
+      name: l2_icon_snowflake_big
       rect:
         serializedVersion: 2
         x: 140
@@ -1131,7 +1131,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_59"
+      name: l2_icon_drop_amber_big
       rect:
         serializedVersion: 2
         x: 235
@@ -1153,7 +1153,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_60"
+      name: l2_icon_drop_dark_big
       rect:
         serializedVersion: 2
         x: 326
@@ -1175,7 +1175,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_61"
+      name: l2_square_toggle_yellow
       rect:
         serializedVersion: 2
         x: 426
@@ -1197,7 +1197,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_62"
+      name: l2_square_toggle_orange
       rect:
         serializedVersion: 2
         x: 495
@@ -1219,7 +1219,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_63"
+      name: l2_square_toggle_green
       rect:
         serializedVersion: 2
         x: 558
@@ -1241,7 +1241,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_64"
+      name: l2_square_toggle_red
       rect:
         serializedVersion: 2
         x: 625
@@ -1263,7 +1263,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_65"
+      name: l2_meter_track_right_01
       rect:
         serializedVersion: 2
         x: 703
@@ -1285,7 +1285,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_67"
+      name: l2_button_square_frame_01
       rect:
         serializedVersion: 2
         x: 608
@@ -1307,7 +1307,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_75"
+      name: l2_meter_track_right_02
       rect:
         serializedVersion: 2
         x: 694
@@ -1329,7 +1329,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_76"
+      name: l2_icon_hex_left
       rect:
         serializedVersion: 2
         x: 25
@@ -1351,7 +1351,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_77"
+      name: l2_icon_hex_right
       rect:
         serializedVersion: 2
         x: 66
@@ -1373,7 +1373,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_78"
+      name: l2_icon_arrow_left_small
       rect:
         serializedVersion: 2
         x: 104
@@ -1395,7 +1395,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_79"
+      name: l2_toggle_body_small
       rect:
         serializedVersion: 2
         x: 237
@@ -1417,7 +1417,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_81"
+      name: l2_button_pill_small
       rect:
         serializedVersion: 2
         x: 312
@@ -1439,7 +1439,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_82"
+      name: l2_dot_row_micro_01
       rect:
         serializedVersion: 2
         x: 425
@@ -1461,7 +1461,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_83"
+      name: l2_button_square_01
       rect:
         serializedVersion: 2
         x: 503
@@ -1483,7 +1483,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_84"
+      name: l2_button_square_02
       rect:
         serializedVersion: 2
         x: 551
@@ -1505,7 +1505,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_85"
+      name: l2_button_square_frame_02
       rect:
         serializedVersion: 2
         x: 609
@@ -1527,7 +1527,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_86"
+      name: l2_line_thin_03
       rect:
         serializedVersion: 2
         x: 694
@@ -1549,7 +1549,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_97"
+      name: l2_meter_track_right_03
       rect:
         serializedVersion: 2
         x: 683
@@ -1571,7 +1571,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_128"
+      name: l2_meter_track_right_04
       rect:
         serializedVersion: 2
         x: 683
@@ -1593,7 +1593,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_150"
+      name: l2_button_square_frame_03
       rect:
         serializedVersion: 2
         x: 612
@@ -1615,7 +1615,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_15"
+      name: l2_icon_chevrons_right
       rect:
         serializedVersion: 2
         x: 604
@@ -1623,7 +1623,7 @@ TextureImporter:
         width: 73
         height: 44
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1652,167 +1652,76 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_0": -449455655
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_1": 1881441778
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_10": -633119960
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_100": -818426331
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_101": 911127701
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_102": 1711904296
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_103": 605320951
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_104": 1975261131
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_105": -1401486974
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_106": 669156074
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_107": 223013963
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_108": -105338458
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_109": -1783845780
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_11": -1644482744
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_110": -992462474
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_111": -2082599149
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_112": -596420789
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_113": -1968792453
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_114": 2081945559
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_115": -1128535442
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_116": -2061081974
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_117": 1822655701
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_118": -412693928
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_119": -963517381
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_12": -745718677
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_120": 886671480
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_121": -2012986401
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_122": -1331321469
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_123": 63982285
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_124": -2125397608
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_125": 1284517678
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_126": 1287828515
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_127": -2137282324
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_128": -355957327
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_129": -1416059477
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_13": -1207555848
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_130": -1762012771
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_131": 749575801
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_132": -1695293735
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_133": -1023325801
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_134": -7366885
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_135": 949261707
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_136": -1651289384
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_137": 1379791904
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_138": -1189858236
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_139": -1573743648
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_14": 118919460
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_140": -1990919269
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_141": 1581443769
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_142": 1669026049
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_143": -1419233229
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_144": -2099543193
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_145": 2037936029
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_146": 972236504
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_147": -2141393387
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_148": 459512350
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_149": 783116207
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_15": 194845210
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_150": 1318943895
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_151": 120174544
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_152": 1636759564
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_153": 1226254746
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_154": -576522173
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_155": -1368709824
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_156": -1920020493
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_157": -573476652
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_158": -1817180447
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_159": 331198928
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_16": -722948867
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_160": -619140703
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_17": 269337629
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_18": 2090795017
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_19": 1104566107
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_2": -1917897384
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_20": 2133158960
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_21": 1858559718
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_22": 388657803
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_23": -698640332
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_24": 127273543
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_25": -1418063523
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_26": 1523155019
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_27": -1246244993
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_28": 980869054
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_29": -381967484
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_3": -1268483313
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_30": -377586426
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_31": -368851528
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_32": 397612719
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_33": 1723747796
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_34": -1218778953
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_35": -156161543
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_36": -105745981
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_37": -241734912
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_38": -61834709
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_39": -1969707303
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_4": 80200472
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_40": 1587633271
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_41": -1146811064
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_42": -134045970
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_43": 1897501710
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_44": -914819691
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_45": -1844883562
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_46": 1268066311
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_47": -599598626
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_48": -1051655156
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_49": -1356503881
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_5": -2019852985
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_50": -542293805
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_51": -567039187
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_52": -678205517
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_53": 1701216519
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_54": -474669640
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_55": 1575921384
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_56": 1930231177
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_57": 1765848013
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_58": 1170732035
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_59": -1368137429
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_6": 1462580927
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_60": -650138446
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_61": 1735010700
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_62": 1600360730
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_63": 744743168
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_64": -691815495
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_65": 1815376764
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_66": 1690851772
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_67": 1416128688
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_68": -2114558295
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_69": 1222629106
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_7": -302700196
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_70": 680050405
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_71": 907122519
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_72": -1380188027
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_73": 148385869
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_74": 1472757534
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_75": 1433603330
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_76": -738643178
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_77": -1520813457
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_78": -498187129
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_79": -1212183579
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_8": 259702011
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_80": 1882596947
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_81": -1283474250
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_82": 746778164
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_83": 2004739283
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_84": -231852909
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_85": -1840773126
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_86": -1196054349
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_87": 704895326
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_88": -164524029
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_89": 1139002506
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_9": -1624949194
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_90": 2112348744
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_91": 1087482150
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_92": -1153841861
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_93": -2052191464
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_94": 921189019
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_95": 1889349917
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_96": 502176744
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_97": 1430867669
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_98": -30014281
-      "ChatGPT Image 9 \u043C\u0430\u0440. 2026 \u0433., 00_24_05_99": -1189106542
+      l2_bar_fill_wide_01: -1624949194
+      l2_bar_fill_wide_02: -633119960
+      l2_bar_fill_wide_03: -1207555848
+      l2_bar_fill_wide_04: 118919460
+      l2_bar_fill_wide_05: 1104566107
+      l2_bar_track_wide_01: 259702011
+      l2_button_action_bg_01: 2133158960
+      l2_button_action_bg_02: 1858559718
+      l2_button_action_bg_03: -1246244993
+      l2_button_for_left: 1268066311
+      l2_button_for_right: -599598626
+      l2_button_pill_small: -1283474250
+      l2_button_small_blue: -61834709
+      l2_button_square_01: 2004739283
+      l2_button_square_02: -231852909
+      l2_button_square_frame_01: 1416128688
+      l2_button_square_frame_02: -1840773126
+      l2_button_square_frame_03: 1318943895
+      l2_chip_rect_small_01: 388657803
+      l2_chip_rect_small_02: 127273543
+      l2_chip_row_small_01: -474669640
+      l2_chip_row_small_02: 1575921384
+      l2_divider_long_01: -698640332
+      l2_divider_long_02: -1418063523
+      l2_divider_long_03: 980869054
+      l2_divider_long_04: -381967484
+      l2_dot_cluster_bg_01: -1969707303
+      l2_dot_micro_01: -1051655156
+      l2_dot_row_micro_01: 746778164
+      l2_icon_arrow_left_small: -498187129
+      l2_icon_chevrons_right: 194845210
+      l2_icon_drop_amber_big: -1368137429
+      l2_icon_drop_dark_big: -650138446
+      l2_icon_hex_left: -738643178
+      l2_icon_hex_right: -1520813457
+      l2_icon_snowflake_big: 1170732035
+      l2_icon_warning_big: 1765848013
+      l2_icon_warning_outline_left: -678205517
+      l2_icon_warning_outline_right: -567039187
+      l2_light_round_green: -377586426
+      l2_light_round_red: 1723747796
+      l2_light_round_yellow_01: -368851528
+      l2_light_round_yellow_02: 397612719
+      l2_line_thin_01: -542293805
+      l2_line_thin_02: 1701216519
+      l2_line_thin_03: -1196054349
+      l2_meter_track_right_01: 1815376764
+      l2_meter_track_right_02: 1433603330
+      l2_meter_track_right_03: 1430867669
+      l2_meter_track_right_04: -355957327
+      l2_panel_button_col_left_01: 1462580927
+      l2_panel_button_col_left_02: -302700196
+      l2_panel_button_col_left_03: -1644482744
+      l2_panel_button_col_left_04: -745718677
+      l2_panel_button_col_left_05: 269337629
+      l2_panel_button_col_left_06: 2090795017
+      l2_panel_header_main: 1881441778
+      l2_panel_header_top: -449455655
+      l2_panel_info_left_mid: 80200472
+      l2_panel_info_left_top: -1917897384
+      l2_panel_info_right_mid: -2019852985
+      l2_panel_info_right_top: -1268483313
+      l2_square_toggle_green: 744743168
+      l2_square_toggle_orange: 1600360730
+      l2_square_toggle_red: -691815495
+      l2_square_toggle_yellow: 1735010700
+      l2_status_strip_bg_01: 1587633271
+      l2_status_strip_bg_02: -1844883562
+      l2_status_strip_bg_03: -1356503881
+      l2_toggle_body_small: -1212183579
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
