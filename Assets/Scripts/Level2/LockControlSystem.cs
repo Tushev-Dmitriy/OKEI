@@ -5,171 +5,150 @@ using UnityEngine.SceneManagement;
 
 public class LockControlSystem : MonoBehaviour
 {
-    [Header("Config")]
-    [SerializeField] private bool applyConfigOnAwake = true;
     [SerializeField] private LockLevelConfig levelConfig;
-    [SerializeField] private string fallbackConfigResourcePath = "Level2/LockLevelConfig_Default";
+    [SerializeField] private string defaultConfigResourcePath = "Level2/LockLevelConfig_Default";
 
-    [Header("References")]
     [SerializeField] private LockInputs lockInputs;
     [SerializeField] private LockUI lockUi;
-    [SerializeField] private SimpleShipController simpleShipController;
-    [SerializeField] private Transform shipHoldPoint;
-    [SerializeField] private Transform shipExitPoint;
     [SerializeField] private Transform gateTransform;
     [SerializeField] private Transform waterTransform;
     [SerializeField] private AudioSource alarmAudio;
 
-    [Header("Reload")]
-    [SerializeField] private string reloadSceneName = "Level2";
+    private string reloadSceneName = "Level2";
 
-    [Header("Core Params (0-100)")]
-    [SerializeField, Range(0f, 100f)] private float systemIntegrity = 74f;
-    [SerializeField, Range(0f, 100f)] private float pressure = 72f;
-    [SerializeField, Range(0f, 100f)] private float temperature = 18f;
-    [SerializeField, Range(0f, 100f)] private float waterLevel;
-    [SerializeField, Range(0f, 100f)] private float liftPower;
+    private float systemIntegrity = 74f;
+    private float pressure = 72f;
+    private float temperature = 18f;
+    private float waterLevel;
+    private float liftPower;
 
-    [Header("Targets")]
-    [SerializeField, Range(0f, 100f)] private float minPressure = 45f;
-    [SerializeField, Range(0f, 100f)] private float maxTemperature = 82f;
-    [SerializeField, Range(0f, 100f)] private float waterLevelTarget = 80f;
-    [SerializeField, Range(0f, 100f)] private float liftPowerTarget = 100f;
-    [SerializeField] private float waterTargetTolerance = 1f;
+    private float minPressure = 45f;
+    private float maxTemperature = 82f;
+    private float waterLevelTarget = 80f;
+    private float liftPowerTarget = 100f;
+    private float waterTargetTolerance = 1f;
 
-    [Header("Phase 1 / Stabilization")]
-    [SerializeField] private float stabilizationRequiredTime = 110f;
-    [SerializeField] private float requiredIntegrityForPhase2 = 60f;
-    [SerializeField] private float stabilizationTimerLossPerSecond = 1f;
+    private float stabilizationRequiredTime = 110f;
+    private float requiredIntegrityForPhase2 = 60f;
+    private float stabilizationTimerLossPerSecond = 1f;
 
-    [Header("Core Simulation")]
-    [SerializeField] private float pressureDrainPerSecond = 1.15f;
-    [SerializeField] private float coolingPerSecond = 3.25f;
-    [SerializeField] private float passiveHeatPerSecondPhase3 = 0.9f;
-    [SerializeField] private float integrityRecoverPerSecond = 0.9f;
-    [SerializeField] private float integrityDrainPerSecond = 5f;
-    [SerializeField] private float brokenWhileDrainMultiplier = 2.2f;
-    [SerializeField] private float waterPhaseIntegrityRecoveryMultiplier = 0.35f;
-    [SerializeField] private float liftPhaseIntegrityRecoveryMultiplier = 0.3f;
+    private float pressureDrainPerSecond = 1.15f;
+    private float coolingPerSecond = 3.25f;
+    private float passiveHeatPerSecondPhase3 = 0.9f;
+    private float integrityRecoverPerSecond = 0.9f;
+    private float integrityDrainPerSecond = 5f;
+    private float brokenWhileDrainMultiplier = 2.2f;
+    private float waterPhaseIntegrityRecoveryMultiplier = 0.35f;
+    private float liftPhaseIntegrityRecoveryMultiplier = 0.3f;
 
-    [Header("FOR Actions")]
-    [SerializeField] private int pumpIterations = 5;
-    [SerializeField] private float pumpStepValue = 4f;
-    [SerializeField] private float pumpStepDelay = 0.3f;
-    [SerializeField] private float waterStepValue = 0.75f;
-    [SerializeField] private float waterStepDelay = 0.38f;
-    [SerializeField] private float liftStepValue = 0.75f;
-    [SerializeField] private float liftStepDelay = 0.2f;
-    [SerializeField] private float liftHeatPerSmallStep = 0.3f;
-    [SerializeField] private float liftHeatPerBigStep = 0.85f;
-    [SerializeField, Min(1)] private int waterPrimaryIterations = 10;
-    [SerializeField, Min(1)] private int waterSecondaryIterations = 5;
-    [SerializeField, Min(1)] private int liftPrimaryIterations = 25;
-    [SerializeField, Min(1)] private int liftSecondaryIterations = 10;
-    [SerializeField] private float flowSurgeWaterStepRandomMin = 0.55f;
-    [SerializeField] private float flowSurgeWaterStepRandomMax = 1.3f;
+    private int pumpIterations = 5;
+    private float pumpStepValue = 4f;
+    private float pumpStepDelay = 0.3f;
+    private float waterStepValue = 0.75f;
+    private float waterStepDelay = 0.38f;
+    private float liftStepValue = 0.75f;
+    private float liftStepDelay = 0.2f;
+    private float liftHeatPerSmallStep = 0.3f;
+    private float liftHeatPerBigStep = 0.85f;
+    private int waterPrimaryIterations = 10;
+    private int waterSecondaryIterations = 5;
+    private int liftPrimaryIterations = 25;
+    private int liftSecondaryIterations = 10;
+    private float flowSurgeWaterStepRandomMin = 0.55f;
+    private float flowSurgeWaterStepRandomMax = 1.3f;
 
-    [Header("Safety Penalties")]
-    [SerializeField] private float phase2EmergencyDuration = 3f;
-    [SerializeField] private float phase2EmergencyDrainPerSecond = 22f;
-    [SerializeField] private float phase2ImmediateHit = 18f;
-    [SerializeField] private float overheatIntegrityDrainPerSecond = 18f;
+    private float phase2EmergencyDuration = 3f;
+    private float phase2EmergencyDrainPerSecond = 22f;
+    private float phase2ImmediateHit = 18f;
+    private float overheatIntegrityDrainPerSecond = 18f;
 
-    [Header("Incidents")]
-    [SerializeField] private bool enableIncidents = true;
-    [SerializeField] private float firstIncidentDelayMin = 16f;
-    [SerializeField] private float firstIncidentDelayMax = 24f;
-    [SerializeField] private float incidentDelayMin = 20f;
-    [SerializeField] private float incidentDelayMax = 34f;
-    [SerializeField] private float incidentBaseDuration = 14f;
-    [SerializeField] private float incidentDurationPerThreatTier = 2.5f;
-    [SerializeField] private float threatTierStepSeconds = 85f;
-    [SerializeField, Range(1, 6)] private int maxThreatTier = 5;
-    [SerializeField] private float threatStrengthPerTier = 0.22f;
-    [SerializeField] private float incidentTimeoutIntegrityHit = 10f;
-    [SerializeField] private float incidentResolveIntegrityBonus = 1.5f;
-    [SerializeField, Range(0f, 1f)] private float stabilizationPressureLeakChance = 0.6f;
-    [SerializeField, Range(0f, 1f)] private float waterPressureLeakChance = 0.5f;
-    [SerializeField, Range(0f, 1f)] private float liftPressureLeakChance = 0.34f;
-    [SerializeField, Range(0f, 1f)] private float liftCoolingFaultChance = 0.68f;
-    [SerializeField] private float flowSurgeResolveDecayPerSecond = 0.5f;
-    [SerializeField] private float incidentResolvedDelayMin = 12f;
-    [SerializeField] private float incidentResolvedDelayMax = 18f;
-    [SerializeField] private float incidentTimeoutDelayMin = 8f;
-    [SerializeField] private float incidentTimeoutDelayMax = 14f;
-    [SerializeField] private float immediateIncidentDelayMin = 8f;
-    [SerializeField] private float immediateIncidentDelayMax = 12f;
-    [SerializeField] private float incidentTierIntervalReductionSeconds = 2.5f;
-    [SerializeField] private float incidentTierIntervalMaxReductionFactor = 0.8f;
-    [SerializeField] private float incidentMinDelayFloor = 7f;
-    [SerializeField] private float threatTierStepSecondsFloor = 20f;
+    private bool enableIncidents = true;
+    private float firstIncidentDelayMin = 16f;
+    private float firstIncidentDelayMax = 24f;
+    private float incidentDelayMin = 20f;
+    private float incidentDelayMax = 34f;
+    private float incidentBaseDuration = 14f;
+    private float incidentDurationPerThreatTier = 2.5f;
+    private float threatTierStepSeconds = 85f;
+    private int maxThreatTier = 5;
+    private float threatStrengthPerTier = 0.22f;
+    private float incidentTimeoutIntegrityHit = 10f;
+    private float incidentResolveIntegrityBonus = 1.5f;
+    private float stabilizationPressureLeakChance = 0.6f;
+    private float waterPressureLeakChance = 0.5f;
+    private float liftPressureLeakChance = 0.34f;
+    private float liftCoolingFaultChance = 0.68f;
+    private float flowSurgeResolveDecayPerSecond = 0.5f;
+    private float incidentResolvedDelayMin = 12f;
+    private float incidentResolvedDelayMax = 18f;
+    private float incidentTimeoutDelayMin = 8f;
+    private float incidentTimeoutDelayMax = 14f;
+    private float immediateIncidentDelayMin = 8f;
+    private float immediateIncidentDelayMax = 12f;
+    private float incidentTierIntervalReductionSeconds = 2.5f;
+    private float incidentTierIntervalMaxReductionFactor = 0.8f;
+    private float incidentMinDelayFloor = 7f;
+    private float threatTierStepSecondsFloor = 20f;
 
-    [Header("Incident Effects")]
-    [SerializeField] private float pressureLeakExtraDrainPerSecond = 2.9f;
-    [SerializeField] private float pressureLeakIntegrityDrainPerSecond = 0.7f;
-    [SerializeField] private float coolingFaultHeatPerSecond = 1.25f;
-    [SerializeField] private float coolingFaultCoolingEfficiencyMultiplier = 0.35f;
-    [SerializeField] private float flowSurgeWhileBrokenDrainPerSecond = 3.4f;
-    [SerializeField] private float flowSurgeStabilizeTime = 4f;
-    [SerializeField] private float liftJamPassiveDrainPerSecond = 1.5f;
-    [SerializeField] private float liftJamEfficiencyMultiplier = 0.55f;
-    [SerializeField, Min(1)] private int liftJamResolveMinimumIterations = 10;
-    [SerializeField] private float liftJamTimeoutLiftPenalty = 14f;
-    [SerializeField] private float pressureLeakTimeoutPressureLoss = 12f;
-    [SerializeField] private float coolingFaultTimeoutHeatGain = 12f;
-    [SerializeField] private float flowSurgeTimeoutWaterDeltaMin = -8f;
-    [SerializeField] private float flowSurgeTimeoutWaterDeltaMax = 8f;
+    private float pressureLeakExtraDrainPerSecond = 2.9f;
+    private float pressureLeakIntegrityDrainPerSecond = 0.7f;
+    private float coolingFaultHeatPerSecond = 1.25f;
+    private float coolingFaultCoolingEfficiencyMultiplier = 0.35f;
+    private float flowSurgeWhileBrokenDrainPerSecond = 3.4f;
+    private float flowSurgeStabilizeTime = 4f;
+    private float liftJamPassiveDrainPerSecond = 1.5f;
+    private float liftJamEfficiencyMultiplier = 0.55f;
+    private int liftJamResolveMinimumIterations = 10;
+    private float liftJamTimeoutLiftPenalty = 14f;
+    private float pressureLeakTimeoutPressureLoss = 12f;
+    private float coolingFaultTimeoutHeatGain = 12f;
+    private float flowSurgeTimeoutWaterDeltaMin = -8f;
+    private float flowSurgeTimeoutWaterDeltaMax = 8f;
 
-    [Header("Failure")]
-    [SerializeField] private float failureWaterRisePerSecond = 28f;
-    [SerializeField] private float restartDelay = 4f;
+    private float failureWaterRisePerSecond = 28f;
+    private float restartDelay = 4f;
 
-    [Header("Water Visual")]
-    [SerializeField] private float waterMinY = 3f;
-    [SerializeField] private float waterMaxY = 14f;
+    private float waterMinY = 3f;
+    private float waterMaxY = 14f;
 
-    [Header("Gate Visual")]
-    [SerializeField] private Vector3 gateOpenOffset = new Vector3(0f, 8f, 0f);
-    [SerializeField] private Vector3 gateOpenEulerOffset;
-    [SerializeField] private float gateOpenSpeed = 2.5f;
+    private Vector3 gateOpenOffset = new Vector3(0f, 8f, 0f);
+    private Vector3 gateOpenEulerOffset;
+    private float gateOpenSpeed = 2.5f;
+    private float gateClosedYOffset = -55f;
 
-    [Header("Progress")]
-    [SerializeField, Range(0f, 1f)] private float stabilizationProgressWeight = 0.35f;
-    [SerializeField, Range(0f, 1f)] private float waterLevelingProgressWeight = 0.30f;
+    private float stabilizationProgressWeight = 0.35f;
+    private float waterLevelingProgressWeight = 0.30f;
 
-    [Header("Labels")]
-    [SerializeField] private string forIdleLabel = "FOR: ожидание";
-    [SerializeField] private string forInterruptedLabel = "FOR: прерван";
-    [SerializeField] private string pumpForLabelTemplate = "Подкачка FOR x{0}";
-    [SerializeField] private string waterForLabelTemplate = "Вода FOR x{0}";
-    [SerializeField] private string liftForLabelTemplate = "Подъем FOR x{0}";
-    [SerializeField] private string incidentLabelNone = "Нет";
-    [SerializeField] private string pressureLeakIncidentLabel = "Утечка давления";
-    [SerializeField] private string coolingFaultIncidentLabel = "Сбой охлаждения";
-    [SerializeField] private string flowSurgeIncidentLabel = "Турбулентность потока";
-    [SerializeField] private string liftJamIncidentLabel = "Заклинивание подъема";
+    private string forIdleLabel = "FOR: ожидание";
+    private string forInterruptedLabel = "FOR: прерван";
+    private string pumpForLabelTemplate = "Подкачка FOR x{0}";
+    private string waterForLabelTemplate = "Вода FOR x{0}";
+    private string liftForLabelTemplate = "Подъем FOR x{0}";
+    private string incidentLabelNone = "Нет";
+    private string pressureLeakIncidentLabel = "Утечка давления";
+    private string coolingFaultIncidentLabel = "Сбой охлаждения";
+    private string flowSurgeIncidentLabel = "Турбулентность потока";
+    private string liftJamIncidentLabel = "Заклинивание подъема";
 
-    [Header("Hints")]
-    [SerializeField] private string pressureLeakIncidentHint = "Сделайте подкачку FOR x5 один раз.";
-    [SerializeField] private string coolingFaultIncidentHint = "Выключите охлаждение и включите снова.";
-    [SerializeField] private string flowSurgeIncidentHintTemplate = "Удерживайте WHILE {0:0.0}с";
-    [SerializeField] private string liftJamIncidentHint = "Сделайте Подъем FOR x10+ при активном WHILE.";
-    [SerializeField] private string coolingRestartHint = "Включите охлаждение снова для завершения перезапуска.";
-    [SerializeField] private string pressureLeakResolvedMessage = "Утечка устранена циклом подкачки.";
-    [SerializeField] private string flowSurgeResolvedMessage = "Поток стабилизирован.";
-    [SerializeField] private string liftJamResolvedMessage = "Заклинивание снято силовым циклом.";
-    [SerializeField] private string coolingRestartResolvedMessage = "Контур охлаждения перезапущен.";
-    [SerializeField] private string incidentTimeoutHint = "Время инцидента вышло. Системы повреждены.";
+    private string pressureLeakIncidentHint = "Сделайте подкачку FOR x5 один раз.";
+    private string coolingFaultIncidentHint = "Выключите охлаждение и включите снова.";
+    private string flowSurgeIncidentHintTemplate = "Удерживайте WHILE {0:0.0}с";
+    private string liftJamIncidentHint = "Сделайте Подъем FOR x10+ при активном WHILE.";
+    private string coolingRestartHint = "Включите охлаждение снова для завершения перезапуска.";
+    private string pressureLeakResolvedMessage = "Утечка устранена циклом подкачки.";
+    private string flowSurgeResolvedMessage = "Поток стабилизирован.";
+    private string liftJamResolvedMessage = "Заклинивание снято силовым циклом.";
+    private string coolingRestartResolvedMessage = "Контур охлаждения перезапущен.";
+    private string incidentTimeoutHint = "Время инцидента вышло. Системы повреждены.";
 
-    [Header("Debug")]
-    [SerializeField] private bool showDebugCompleteButton = true;
-    [SerializeField] private bool allowDebugButtonInBuild;
-    [SerializeField] private Rect debugCompleteButtonRect = new Rect(20f, 20f, 220f, 36f);
-    [SerializeField] private KeyCode debugCompleteHotkey = KeyCode.F8;
-    [SerializeField] private string debugCompleteButtonLabel = "DEBUG: Пройти уровень";
-    [SerializeField] private float debugCompletePressureBonus = 5f;
-    [SerializeField] private float debugCompleteTemperatureBuffer = 5f;
-    [SerializeField] private float debugCompleteIntegrityFloor = 65f;
+    private bool showDebugCompleteButton = true;
+    private bool allowDebugButtonInBuild;
+    private Rect debugCompleteButtonRect = new Rect(20f, 20f, 220f, 36f);
+    private KeyCode debugCompleteHotkey = KeyCode.F8;
+    private string debugCompleteButtonLabel = "DEBUG: Пройти уровень";
+    private float debugCompletePressureBonus = 5f;
+    private float debugCompleteTemperatureBuffer = 5f;
+    private float debugCompleteIntegrityFloor = 65f;
 
     private LockPhase _phase = LockPhase.Stabilization;
     private Coroutine _activeForRoutine;
@@ -181,7 +160,6 @@ public class LockControlSystem : MonoBehaviour
     private bool _failureTriggered;
     private bool _gateOpening;
     private bool _gatePoseInitialized;
-    private bool _shipStarted;
 
     private string _forLabel;
     private int _forIteration;
@@ -273,7 +251,6 @@ public class LockControlSystem : MonoBehaviour
 
     private void Start()
     {
-        StartShipIfReady();
         ApplyWaterVisual();
         ScheduleNextIncident(isFirst: true);
     }
@@ -511,9 +488,6 @@ public class LockControlSystem : MonoBehaviour
 
         if (alarmAudio != null)
             alarmAudio.Play();
-
-        if (simpleShipController != null)
-            simpleShipController.BeginSinking();
 
         if (_failureRoutine != null)
             StopCoroutine(_failureRoutine);
@@ -909,8 +883,6 @@ public class LockControlSystem : MonoBehaviour
 
         lockInputs?.SetInputEnabled(false);
 
-        if (simpleShipController != null)
-            simpleShipController.BeginExit();
     }
 
     private bool IsWhileConditionTrue()
@@ -1036,10 +1008,10 @@ public class LockControlSystem : MonoBehaviour
 
     private void ResolveAndApplyConfig()
     {
-        if (levelConfig == null && !string.IsNullOrWhiteSpace(fallbackConfigResourcePath))
-            levelConfig = Resources.Load<LockLevelConfig>(fallbackConfigResourcePath);
+        if (levelConfig == null && !string.IsNullOrWhiteSpace(defaultConfigResourcePath))
+            levelConfig = Resources.Load<LockLevelConfig>(defaultConfigResourcePath);
 
-        if (!applyConfigOnAwake || levelConfig == null)
+        if (levelConfig == null)
             return;
 
         levelConfig.ApplyTo(this);
@@ -1071,28 +1043,6 @@ public class LockControlSystem : MonoBehaviour
             if (waterObject != null)
                 waterTransform = waterObject.transform;
         }
-
-        if (simpleShipController == null)
-            simpleShipController = FindFirstObjectByType<SimpleShipController>();
-
-        if (simpleShipController != null)
-        {
-            ShipController legacyShip = simpleShipController.GetComponent<ShipController>();
-            if (legacyShip != null)
-                legacyShip.enabled = false;
-
-            if (shipHoldPoint != null || shipExitPoint != null)
-                simpleShipController.SetRoute(shipHoldPoint, shipExitPoint);
-        }
-    }
-
-    private void StartShipIfReady()
-    {
-        if (_shipStarted || simpleShipController == null)
-            return;
-
-        simpleShipController.BeginApproach();
-        _shipStarted = true;
     }
 
     private void InitializeGatePose()
@@ -1100,7 +1050,7 @@ public class LockControlSystem : MonoBehaviour
         if (gateTransform == null)
             return;
 
-        _gateClosedLocalPosition = gateTransform.localPosition;
+        _gateClosedLocalPosition = gateTransform.localPosition + new Vector3(0f, gateClosedYOffset, 0f);
         _gateClosedLocalRotation = gateTransform.localRotation;
         _gateOpenLocalPosition = _gateClosedLocalPosition + gateOpenOffset;
         _gateOpenLocalRotation = _gateClosedLocalRotation * Quaternion.Euler(gateOpenEulerOffset);

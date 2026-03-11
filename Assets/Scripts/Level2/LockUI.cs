@@ -198,7 +198,6 @@ public class LockUI : MonoBehaviour
             : 100f;
 
         return
-            "СИСТЕМА\n" +
             $"Стабилизация: {stabilizationPercent:0}%\n" +
             $"Целостность: {lockControlSystem.SystemIntegrity:0.0}\n" +
             $"Давление: {lockControlSystem.Pressure:0.0}\n" +
@@ -214,7 +213,6 @@ public class LockUI : MonoBehaviour
             : "нет";
 
         return
-            "СОСТОЯНИЕ ЭТАПА\n" +
             $"Фаза: {GetPhaseName(lockControlSystem.CurrentPhase)}\n" +
             $"Цель: {GetObjective(lockControlSystem.CurrentPhase)}\n" +
             $"Инцидент: {incidentLine}\n" +
@@ -228,7 +226,6 @@ public class LockUI : MonoBehaviour
             forProgress = $"{forProgress} {lockControlSystem.ForIteration}/{lockControlSystem.ForTotal}";
 
         return
-            "ЦИКЛЫ\n" +
             $"WHILE: {(lockControlSystem.WhileActive ? "АКТИВЕН" : "НЕ АКТИВЕН")}\n" +
             forProgress;
     }

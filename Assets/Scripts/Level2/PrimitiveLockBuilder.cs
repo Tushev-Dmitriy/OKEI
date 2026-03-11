@@ -39,11 +39,9 @@ public class PrimitiveLockBuilder : MonoBehaviour
     [SerializeField] private Transform shipTransform;
     [SerializeField] private Transform shipHoldPoint;
     [SerializeField] private Transform shipExitPoint;
-    [SerializeField] private SimpleShipController shipController;
 
     public Transform GateTransform => gateTransform;
     public Transform WaterTransform => waterTransform;
-    public SimpleShipController ShipController => shipController;
     public Transform ShipHoldPoint => shipHoldPoint;
     public Transform ShipExitPoint => shipExitPoint;
 
@@ -156,16 +154,6 @@ public class PrimitiveLockBuilder : MonoBehaviour
 
         if (shipTransform == null)
             return;
-
-        shipController = shipTransform.GetComponent<SimpleShipController>();
-        if (shipController == null)
-            shipController = shipTransform.gameObject.AddComponent<SimpleShipController>();
-
-        ShipController legacyController = shipTransform.GetComponent<ShipController>();
-        if (legacyController != null)
-            legacyController.enabled = false;
-
-        shipController.SetRoute(shipHoldPoint, shipExitPoint);
     }
 
     private void CacheExistingChildren()
