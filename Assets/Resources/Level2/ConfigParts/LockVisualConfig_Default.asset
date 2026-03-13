@@ -16,4 +16,4 @@ MonoBehaviour:
   waterMaxY: 14
   gateOpenOffset: {x: 0, y: 8, z: 0}
   gateOpenEulerOffset: {x: 0, y: 0, z: 0}
-  gateOpenSpeed: 2.5
+  gateOpenSpeed: 10

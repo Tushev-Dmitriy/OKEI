@@ -10,8 +10,10 @@ public class LockControlSystem : MonoBehaviour
 
     [SerializeField] private LockInputs lockInputs;
     [SerializeField] private LockUI lockUi;
+    [SerializeField] private ShipController shipController;
     [SerializeField] private Transform gateTransform;
-    [SerializeField] private Transform waterTransform;
+    [SerializeField] private Transform lockWaterTransform;
+    [SerializeField] private Transform outsideWaterTransform;
     [SerializeField] private AudioSource alarmAudio;
 
     private string reloadSceneName = "Level2";
@@ -111,10 +113,10 @@ public class LockControlSystem : MonoBehaviour
     private float waterMinY = 3f;
     private float waterMaxY = 14f;
 
-    private Vector3 gateOpenOffset = new Vector3(0f, 8f, 0f);
+    private Vector3 gateOpenOffset = new Vector3(0f, -255f, 0f);
     private Vector3 gateOpenEulerOffset;
     private float gateOpenSpeed = 2.5f;
-    private float gateClosedYOffset = -55f;
+    private float gateDropDistance = 55f;
 
     private float stabilizationProgressWeight = 0.35f;
     private float waterLevelingProgressWeight = 0.30f;
@@ -160,6 +162,7 @@ public class LockControlSystem : MonoBehaviour
     private bool _failureTriggered;
     private bool _gateOpening;
     private bool _gatePoseInitialized;
+    private bool _gameplayStarted;
 
     private string _forLabel;
     private int _forIteration;
@@ -184,6 +187,8 @@ public class LockControlSystem : MonoBehaviour
     private bool _coolingRestartRequiresOn;
 
     private bool _previousCoolingState;
+    private bool _lockWaterStartCaptured;
+    private float _lockWaterStartY;
 
     private enum IncidentType
     {
@@ -197,7 +202,7 @@ public class LockControlSystem : MonoBehaviour
     public LockPhase CurrentPhase => _phase;
     public bool WhileActive => IsWhileConditionTrue();
     public bool CanInteract => CanReceiveInput;
-    public bool CanReceiveInput => !_failureTriggered && _phase != LockPhase.Completed && _phase != LockPhase.Failed;
+    public bool CanReceiveInput => _gameplayStarted && !_failureTriggered && _phase != LockPhase.Completed && _phase != LockPhase.Failed;
 
     public float SystemIntegrity => systemIntegrity;
     public float Pressure => pressure;
@@ -252,12 +257,28 @@ public class LockControlSystem : MonoBehaviour
     private void Start()
     {
         ApplyWaterVisual();
-        ScheduleNextIncident(isFirst: true);
+
+        if (shipController == null)
+        {
+            StartGameplay();
+            return;
+        }
+
+        lockInputs?.SetInputEnabled(false);
     }
 
     private void Update()
     {
         float dt = Time.deltaTime;
+
+        if (!_gameplayStarted)
+        {
+            TryStartGameplayAfterShipDocked();
+            UpdateGate(dt);
+            ApplyWaterVisual();
+            lockUi?.Refresh();
+            return;
+        }
 
         if (_failureTriggered)
         {
@@ -488,6 +509,8 @@ public class LockControlSystem : MonoBehaviour
 
         if (alarmAudio != null)
             alarmAudio.Play();
+
+        shipController?.SinkShip();
 
         if (_failureRoutine != null)
             StopCoroutine(_failureRoutine);
@@ -869,6 +892,7 @@ public class LockControlSystem : MonoBehaviour
         if (_phase == LockPhase.Completed)
             return;
 
+        AlignLockWaterWithOutside();
         _phase = LockPhase.Completed;
         _gateOpening = true;
 
@@ -882,6 +906,7 @@ public class LockControlSystem : MonoBehaviour
         ClearIncidentState();
 
         lockInputs?.SetInputEnabled(false);
+        shipController?.MoveToEnd();
 
     }
 
@@ -969,13 +994,30 @@ public class LockControlSystem : MonoBehaviour
 
     private void ApplyWaterVisual()
     {
-        if (waterTransform == null)
+        if (lockWaterTransform == null)
             return;
 
-        float normalized = Mathf.Clamp01(waterLevel / 100f);
-        Vector3 position = waterTransform.position;
-        position.y = Mathf.Lerp(waterMinY, waterMaxY, normalized);
-        waterTransform.position = position;
+        if (!_lockWaterStartCaptured)
+        {
+            _lockWaterStartY = lockWaterTransform.position.y;
+            _lockWaterStartCaptured = true;
+        }
+
+        float targetY;
+        if (outsideWaterTransform != null)
+        {
+            float progress = Mathf.Clamp01(SessionProgress);
+            targetY = Mathf.Lerp(_lockWaterStartY, outsideWaterTransform.position.y, progress);
+        }
+        else
+        {
+            float normalized = Mathf.Clamp01(waterLevel / 100f);
+            targetY = Mathf.Lerp(waterMinY, waterMaxY, normalized);
+        }
+
+        Vector3 position = lockWaterTransform.position;
+        position.y = targetY;
+        lockWaterTransform.position = position;
     }
 
     private IEnumerator FailureSequence()
@@ -1037,12 +1079,42 @@ public class LockControlSystem : MonoBehaviour
 
     private void ResolveReferences()
     {
-        if (waterTransform == null)
+        if (lockWaterTransform == null)
         {
             GameObject waterObject = GameObject.Find("Water");
             if (waterObject != null)
-                waterTransform = waterObject.transform;
+                lockWaterTransform = waterObject.transform;
         }
+
+        if (outsideWaterTransform == null)
+        {
+            GameObject outsideWaterObject = GameObject.Find("OutsideWater");
+            if (outsideWaterObject != null)
+                outsideWaterTransform = outsideWaterObject.transform;
+        }
+
+        if (shipController == null)
+            shipController = FindFirstObjectByType<ShipController>();
+
+        shipController?.SetLockWaterTransform(lockWaterTransform);
+    }
+
+    private void TryStartGameplayAfterShipDocked()
+    {
+        if (shipController != null && !shipController.HasReachedStop)
+            return;
+
+        StartGameplay();
+    }
+
+    private void StartGameplay()
+    {
+        if (_gameplayStarted)
+            return;
+
+        _gameplayStarted = true;
+        lockInputs?.SetInputEnabled(true);
+        ScheduleNextIncident(isFirst: true);
     }
 
     private void InitializeGatePose()
@@ -1050,11 +1122,23 @@ public class LockControlSystem : MonoBehaviour
         if (gateTransform == null)
             return;
 
-        _gateClosedLocalPosition = gateTransform.localPosition + new Vector3(0f, gateClosedYOffset, 0f);
+        _gateClosedLocalPosition = gateTransform.localPosition;
         _gateClosedLocalRotation = gateTransform.localRotation;
-        _gateOpenLocalPosition = _gateClosedLocalPosition + gateOpenOffset;
+        Vector3 openOffset = gateOpenOffset;
+        openOffset.y = -Mathf.Abs(gateDropDistance);
+        _gateOpenLocalPosition = _gateClosedLocalPosition + openOffset;
         _gateOpenLocalRotation = _gateClosedLocalRotation * Quaternion.Euler(gateOpenEulerOffset);
         _gatePoseInitialized = true;
+    }
+
+    private void AlignLockWaterWithOutside()
+    {
+        if (lockWaterTransform == null || outsideWaterTransform == null)
+            return;
+
+        Vector3 position = lockWaterTransform.position;
+        position.y = outsideWaterTransform.position.y;
+        lockWaterTransform.position = position;
     }
 
     private void SnapshotInputStates()

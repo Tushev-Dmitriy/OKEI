@@ -5,6 +5,7 @@ public class ShipController : MonoBehaviour
 {
     [SerializeField] private GameObject posToStopObj;
     [SerializeField] private GameObject posToEndObj;
+    [SerializeField] private Transform lockWaterTransform;
     [SerializeField] private float moveToStopDuration = 10f;
     [SerializeField] private float moveToEndDuration = 12f;
     [SerializeField] private float sinkDepth = 7f;
@@ -17,11 +18,18 @@ public class ShipController : MonoBehaviour
     private Tween _sinkTween;
     private bool _hasStopped;
     private bool _isSinking;
+    private bool _floatOffsetCaptured;
+    private float _floatOffsetY;
+
+    public bool HasReachedStop => _hasStopped;
 
     private void Awake()
     {
-        _posToStop = posToStopObj.transform.position;
-        _posToEnd = posToEndObj.transform.position;
+        if (posToStopObj != null)
+            _posToStop = posToStopObj.transform.position;
+
+        if (posToEndObj != null)
+            _posToEnd = posToEndObj.transform.position;
     }
 
     private void Start()
@@ -29,8 +37,36 @@ public class ShipController : MonoBehaviour
         MoveToStop();
     }
 
+    private void Update()
+    {
+        if (!_hasStopped || _isSinking || lockWaterTransform == null)
+            return;
+
+        if (!_floatOffsetCaptured)
+        {
+            _floatOffsetY = transform.position.y - lockWaterTransform.position.y;
+            _floatOffsetCaptured = true;
+        }
+
+        Vector3 position = transform.position;
+        position.y = lockWaterTransform.position.y + _floatOffsetY;
+        transform.position = position;
+    }
+
+    public void SetLockWaterTransform(Transform waterTransform)
+    {
+        lockWaterTransform = waterTransform;
+        _floatOffsetCaptured = false;
+    }
+
     private void MoveToStop()
     {
+        if (posToStopObj == null)
+        {
+            _hasStopped = true;
+            return;
+        }
+
         KillMovementTweens();
         _moveTween = transform.DOMove(_posToStop, moveToStopDuration)
             .SetEase(Ease.InOutSine)
@@ -44,9 +80,13 @@ public class ShipController : MonoBehaviour
         if (_isSinking)
             return;
 
+        if (posToEndObj == null)
+            return;
+
         KillMovementTweens();
         _moveTween = transform.DOMove(_posToEnd, moveToEndDuration).SetEase(Ease.InOutSine);
         _hasStopped = false;
+        _floatOffsetCaptured = false;
     }
 
     public void SinkShip()
