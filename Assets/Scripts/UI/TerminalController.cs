@@ -14,6 +14,7 @@ public class TerminalController : MonoBehaviour
         _slider = _sliderComponent as IChangeSlider;
 
         _animator = transform.parent.GetComponent<Animator>();
+        _animator.SetTrigger("Close");
     }
 
     private void OpenTerminal()
