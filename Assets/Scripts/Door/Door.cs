@@ -12,7 +12,7 @@ public class Door : MonoBehaviour, ISceneSaveable
     public bool IsOpen => isOpen;
 
     public void SetOpen(bool open)
-    {
+    { 
         if (isOpen == open)
         {
             return;
