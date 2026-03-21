@@ -29,11 +29,21 @@ public class GravitySlider : MonoBehaviour, IChangeSlider
 
     private void OnValueChanged(float value)
     {
+        UpdateValueLabel(value);
         _signalBus.Fire(new PlayerParamChangedSignal
         {
             ParamType = PlayerParamType.Gravity,
             Value = value
         });
+    }
+
+    private void UpdateValueLabel(float value)
+    {
+        Transform valueTransform = transform.parent != null ? transform.parent.Find("Value") : null;
+        if (valueTransform != null && valueTransform.TryGetComponent(out Text valueText))
+        {
+            valueText.text = value.ToString("0.00");
+        }
     }
 
     float IChangeSlider.CurrentValue()

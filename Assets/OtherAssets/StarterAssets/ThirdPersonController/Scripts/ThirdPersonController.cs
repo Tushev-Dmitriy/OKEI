@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Unity.Cinemachine;
 using Zenject;
 #if ENABLE_INPUT_SYSTEM 
 using UnityEngine.InputSystem;
@@ -16,12 +17,19 @@ namespace StarterAssets
 #endif
     public class ThirdPersonController : MonoBehaviour
     {
+        private const float StockMoveSpeed = 2.0f;
+        private const float StockSprintSpeed = 5.335f;
+        private const float StockJumpHeight = 1.2f;
+        private const float StockGravity = -15.0f;
+        private const float StockSize = 1.35f;
+        private const float SprintSpeedMultiplier = StockSprintSpeed / StockMoveSpeed;
+
         [Header("Player")]
         [Tooltip("Move speed of the character in m/s")]
-        public float MoveSpeed = 2.0f;
+        public float MoveSpeed = StockMoveSpeed;
 
         [Tooltip("Sprint speed of the character in m/s")]
-        public float SprintSpeed = 5.335f;
+        public float SprintSpeed = StockSprintSpeed;
 
         [Tooltip("How fast the character turns to face movement direction")]
         [Range(0.0f, 0.3f)]
@@ -40,6 +48,12 @@ namespace StarterAssets
 
         [Tooltip("The character uses its own gravity value. The engine default is -9.81f")]
         public float Gravity = -15.0f;
+
+        [Space(10)]
+        [Header("Player Visual")]
+        [Tooltip("Scale multiplier applied to the player root object")]
+        public float Size = StockSize;
+        [SerializeField] private Transform _sizeRoot;
 
         [Space(10)]
         [Tooltip("Time required to pass before being able to jump again. Set to 0f to instantly jump again")]
@@ -112,6 +126,29 @@ namespace StarterAssets
         private const float _threshold = 0.01f;
 
         private bool _hasAnimator;
+        private bool _isSizeInitialized;
+        private float _baseGroundedOffset;
+        private float _baseGroundedRadius;
+        private float _baseControllerStepOffset;
+        private float _baseMoveSpeed;
+        private float _baseSprintSpeed;
+        private float _baseJumpHeight;
+        private float _baseGravity;
+        private float _lastAppliedSizeScale = 1f;
+        private Transform _attachedScaleCamera;
+        private Vector3 _attachedScaleCameraBaseLocalPosition;
+        private Transform _attachedFollowCamera;
+        private Vector3 _attachedFollowCameraBaseLocalPosition;
+        private CinemachineThirdPersonFollow _thirdPersonFollow;
+        private Vector3 _thirdPersonFollowBaseShoulderOffset;
+        private float _thirdPersonFollowBaseVerticalArmLength;
+        private float _thirdPersonFollowBaseCameraDistance;
+        private float _thirdPersonFollowBaseCameraRadius;
+        private Cinemachine3rdPersonFollow _legacyThirdPersonFollow;
+        private Vector3 _legacyThirdPersonFollowBaseShoulderOffset;
+        private float _legacyThirdPersonFollowBaseVerticalArmLength;
+        private float _legacyThirdPersonFollowBaseCameraDistance;
+        private float _legacyThirdPersonFollowBaseCameraRadius;
 
         private bool IsCurrentDeviceMouse
         {
@@ -154,8 +191,9 @@ namespace StarterAssets
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
 
-            // SprintSpeed всегда в 2 раза больше MoveSpeed
-            SprintSpeed = MoveSpeed * 2f;
+            Size = Size > 0.01f ? Size : StockSize;
+            InitializeSizeData();
+            ApplySize(Size);
         }
 
         private void Update()
@@ -186,8 +224,14 @@ namespace StarterAssets
             // set sphere position, with offset
             Vector3 spherePosition = new Vector3(transform.position.x, transform.position.y - GroundedOffset,
                 transform.position.z);
-            Grounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
-                QueryTriggerInteraction.Ignore);
+            bool sphereGrounded = Physics.CheckSphere(
+                spherePosition,
+                GroundedRadius,
+                GroundLayers,
+                QueryTriggerInteraction.Ignore
+            );
+            bool controllerGrounded = _controller != null && _controller.isGrounded;
+            Grounded = controllerGrounded || sphereGrounded;
 
             // update animator if using character
             if (_hasAnimator)
@@ -219,11 +263,20 @@ namespace StarterAssets
 
         private void Move()
         {
+            if (_controller == null || !_controller.enabled)
+            {
+                return;
+            }
+
             // set target speed based on move speed, sprint speed and if sprint is pressed
             float targetSpeed = _input.sprint ? SprintSpeed : MoveSpeed;
+            float animationTargetSpeed = _input.sprint ? _baseSprintSpeed : _baseMoveSpeed;
 
             if (_input.move == Vector2.zero)
+            {
                 targetSpeed = 0.0f;
+                animationTargetSpeed = 0.0f;
+            }
 
             float currentHorizontalSpeed =
                 new Vector3(_controller.velocity.x, 0.0f, _controller.velocity.z).magnitude;
@@ -247,7 +300,7 @@ namespace StarterAssets
                 _speed = targetSpeed;
             }
 
-            _animationBlend = Mathf.Lerp(_animationBlend, targetSpeed, Time.deltaTime * SpeedChangeRate);
+            _animationBlend = Mathf.Lerp(_animationBlend, animationTargetSpeed, Time.deltaTime * SpeedChangeRate);
             if (_animationBlend < 0.01f) _animationBlend = 0f;
 
             Vector3 inputDirection = new Vector3(_input.move.x, 0.0f, _input.move.y).normalized;
@@ -292,14 +345,265 @@ namespace StarterAssets
             if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude * GetSizeScaleMultiplier());
             }
+        }
+
+        private float GetSizeScaleMultiplier()
+        {
+            return Mathf.Max(0.01f, Size / StockSize);
+        }
+
+        private void ApplyScaledGameplayParameters()
+        {
+            float sizeScale = GetSizeScaleMultiplier();
+            float runtimeScale = _lastAppliedSizeScale > 0.0001f ? sizeScale / _lastAppliedSizeScale : 1f;
+
+            MoveSpeed = _baseMoveSpeed * sizeScale;
+            SprintSpeed = _baseSprintSpeed * sizeScale;
+            JumpHeight = _baseJumpHeight * sizeScale;
+            Gravity = _baseGravity * sizeScale;
+
+            _speed *= runtimeScale;
+            _verticalVelocity *= runtimeScale;
+            _externalVelocity *= runtimeScale;
+
+            _lastAppliedSizeScale = sizeScale;
         }
 
 
         public void SetExternalVelocity(Vector3 velocity)
         {
             _externalVelocity = velocity;
+        }
+
+        public void RestoreDefaultParameters()
+        {
+            _baseMoveSpeed = StockMoveSpeed;
+            _baseSprintSpeed = StockSprintSpeed;
+            _baseJumpHeight = StockJumpHeight;
+            _baseGravity = StockGravity;
+            ApplySize(StockSize);
+        }
+
+        private void InitializeSizeData()
+        {
+            if (_isSizeInitialized)
+            {
+                return;
+            }
+
+            if (_controller == null)
+            {
+                _controller = GetComponent<CharacterController>();
+            }
+
+            _sizeRoot = ResolveSizeRoot();
+            float normalizedSize = Size > 0.01f ? Size : StockSize;
+            _baseGroundedOffset = GroundedOffset / normalizedSize;
+            _baseGroundedRadius = GroundedRadius / normalizedSize;
+            _baseControllerStepOffset = _controller.stepOffset / normalizedSize;
+            _baseMoveSpeed = MoveSpeed;
+            _baseSprintSpeed = SprintSpeed;
+            _baseJumpHeight = JumpHeight;
+            _baseGravity = Gravity;
+            InitializeAttachedScaleCamera();
+            _isSizeInitialized = true;
+        }
+
+        private Transform ResolveSizeRoot()
+        {
+            if (_sizeRoot != null)
+            {
+                return _sizeRoot;
+            }
+
+            for (Transform current = transform; current != null; current = current.parent)
+            {
+                if (current.name == "MainPlayer")
+                {
+                    return current;
+                }
+            }
+
+            return transform.root != null ? transform.root : transform;
+        }
+
+        private void InitializeAttachedScaleCamera()
+        {
+            _attachedScaleCamera = ResolveAttachedScaleCamera();
+            if (_attachedScaleCamera != null && _sizeRoot != null)
+            {
+                _attachedScaleCameraBaseLocalPosition = _attachedScaleCamera.localPosition;
+            }
+
+            _attachedFollowCamera = ResolveAttachedFollowCamera();
+            if (_attachedFollowCamera != null && _sizeRoot != null)
+            {
+                _attachedFollowCameraBaseLocalPosition = _attachedFollowCamera.localPosition;
+            }
+
+            if (_attachedFollowCamera != null)
+            {
+                _thirdPersonFollow = _attachedFollowCamera.GetComponent<CinemachineThirdPersonFollow>();
+                if (_thirdPersonFollow != null)
+                {
+                    _thirdPersonFollowBaseShoulderOffset = _thirdPersonFollow.ShoulderOffset;
+                    _thirdPersonFollowBaseVerticalArmLength = _thirdPersonFollow.VerticalArmLength;
+                    _thirdPersonFollowBaseCameraDistance = _thirdPersonFollow.CameraDistance;
+                    _thirdPersonFollowBaseCameraRadius = _thirdPersonFollow.AvoidObstacles.CameraRadius;
+                }
+
+                _legacyThirdPersonFollow = _attachedFollowCamera.GetComponent<Cinemachine3rdPersonFollow>();
+                if (_legacyThirdPersonFollow != null)
+                {
+                    _legacyThirdPersonFollowBaseShoulderOffset = _legacyThirdPersonFollow.ShoulderOffset;
+                    _legacyThirdPersonFollowBaseVerticalArmLength = _legacyThirdPersonFollow.VerticalArmLength;
+                    _legacyThirdPersonFollowBaseCameraDistance = _legacyThirdPersonFollow.CameraDistance;
+                    _legacyThirdPersonFollowBaseCameraRadius = _legacyThirdPersonFollow.CameraRadius;
+                }
+            }
+        }
+
+        private Transform ResolveAttachedScaleCamera()
+        {
+            if (_sizeRoot == null)
+            {
+                return null;
+            }
+
+            if (_mainCamera == null)
+            {
+                _mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+            }
+
+            if (_mainCamera != null && _mainCamera.transform.IsChildOf(_sizeRoot))
+            {
+                return _mainCamera.transform;
+            }
+
+            foreach (Transform child in _sizeRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.CompareTag("MainCamera"))
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+        private Transform ResolveAttachedFollowCamera()
+        {
+            if (_sizeRoot == null)
+            {
+                return null;
+            }
+
+            foreach (Transform child in _sizeRoot.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == "PlayerFollowCamera")
+                {
+                    return child;
+                }
+            }
+
+            return null;
+        }
+
+        private void RestoreAttachedLocalPosition(Transform target, Vector3 baseLocalPosition)
+        {
+            if (target == null || _sizeRoot == null || !target.IsChildOf(_sizeRoot))
+            {
+                return;
+            }
+
+            float sizeScale = GetSizeScaleMultiplier();
+            target.localPosition = baseLocalPosition / sizeScale;
+        }
+
+        private void ApplyScaledFollowCameraSettings()
+        {
+            float sizeScale = GetSizeScaleMultiplier();
+
+            if (_thirdPersonFollow != null)
+            {
+                _thirdPersonFollow.ShoulderOffset = _thirdPersonFollowBaseShoulderOffset * sizeScale;
+                _thirdPersonFollow.VerticalArmLength = _thirdPersonFollowBaseVerticalArmLength * sizeScale;
+                _thirdPersonFollow.CameraDistance = Mathf.Max(0.2f, _thirdPersonFollowBaseCameraDistance * sizeScale);
+
+                var obstacles = _thirdPersonFollow.AvoidObstacles;
+                obstacles.CameraRadius = Mathf.Max(0.02f, _thirdPersonFollowBaseCameraRadius * sizeScale);
+                _thirdPersonFollow.AvoidObstacles = obstacles;
+            }
+
+            if (_legacyThirdPersonFollow != null)
+            {
+                _legacyThirdPersonFollow.ShoulderOffset = _legacyThirdPersonFollowBaseShoulderOffset * sizeScale;
+                _legacyThirdPersonFollow.VerticalArmLength = _legacyThirdPersonFollowBaseVerticalArmLength * sizeScale;
+                _legacyThirdPersonFollow.CameraDistance = Mathf.Max(0.2f, _legacyThirdPersonFollowBaseCameraDistance * sizeScale);
+                _legacyThirdPersonFollow.CameraRadius = Mathf.Max(0.02f, _legacyThirdPersonFollowBaseCameraRadius * sizeScale);
+            }
+        }
+
+        private void RestoreAttachedScaleCamera()
+        {
+            RestoreAttachedLocalPosition(_attachedScaleCamera, _attachedScaleCameraBaseLocalPosition);
+            RestoreAttachedLocalPosition(_attachedFollowCamera, _attachedFollowCameraBaseLocalPosition);
+            ApplyScaledFollowCameraSettings();
+        }
+
+        private void ApplySize(float size)
+        {
+            Size = Mathf.Max(0.01f, size);
+            InitializeSizeData();
+
+            if (_controller == null)
+            {
+                _controller = GetComponent<CharacterController>();
+            }
+
+            Vector3 controllerAnchorBeforeScale = GetControllerAnchorPoint();
+
+            if (_sizeRoot != null)
+            {
+                _sizeRoot.localScale = Vector3.one * Size;
+            }
+
+            GroundedOffset = _baseGroundedOffset * Size;
+            GroundedRadius = Mathf.Max(0.01f, _baseGroundedRadius * Size);
+            _controller.stepOffset = Mathf.Max(0f, _baseControllerStepOffset * Size);
+            ApplyScaledGameplayParameters();
+            RestoreAttachedScaleCamera();
+
+            Vector3 controllerAnchorAfterScale = GetControllerAnchorPoint();
+            Vector3 controllerAnchorOffset = controllerAnchorBeforeScale - controllerAnchorAfterScale;
+            transform.position += controllerAnchorOffset;
+
+            Physics.SyncTransforms();
+
+            Physics.SyncTransforms();
+            GroundedCheck();
+        }
+
+        private Vector3 GetControllerAnchorPoint()
+        {
+            if (_controller == null)
+            {
+                return transform.position;
+            }
+
+            Bounds controllerBounds = _controller.bounds;
+            if (controllerBounds.size.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return transform.position;
+            }
+
+            return new Vector3(
+                controllerBounds.center.x,
+                controllerBounds.min.y,
+                controllerBounds.center.z
+            );
         }
 
         private void JumpAndGravity()
@@ -432,16 +736,23 @@ namespace StarterAssets
             switch (signal.ParamType)
             {
                 case PlayerParamType.JumpHeight:
-                    JumpHeight = signal.Value;
+                    _baseJumpHeight = signal.Value / GetSizeScaleMultiplier();
+                    ApplyScaledGameplayParameters();
                     break;
 
                 case PlayerParamType.MoveSpeed:
-                    MoveSpeed = signal.Value;
-                    SprintSpeed = MoveSpeed * 2f;
+                    _baseMoveSpeed = signal.Value / GetSizeScaleMultiplier();
+                    _baseSprintSpeed = _baseMoveSpeed * SprintSpeedMultiplier;
+                    ApplyScaledGameplayParameters();
                     break;
 
                 case PlayerParamType.Gravity:
-                    Gravity = signal.Value;
+                    _baseGravity = signal.Value / GetSizeScaleMultiplier();
+                    ApplyScaledGameplayParameters();
+                    break;
+
+                case PlayerParamType.Size:
+                    ApplySize(signal.Value);
                     break;
             }
         }

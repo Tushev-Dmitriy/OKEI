@@ -8,5 +8,6 @@ public enum PlayerParamType
 {
     JumpHeight,
     MoveSpeed,
-    Gravity
+    Gravity,
+    Size
 }

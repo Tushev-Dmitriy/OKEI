@@ -1227,6 +1227,8 @@ MonoBehaviour:
   FootstepAudioVolume: 0.3
   JumpHeight: 1.2
   Gravity: -15
+  Size: 1.35
+  _sizeRoot: {fileID: 0}
   JumpTimeout: 0.3
   FallTimeout: 0.15
   Grounded: 1
