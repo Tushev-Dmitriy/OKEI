@@ -345,7 +345,7 @@ namespace StarterAssets
             if (_hasAnimator)
             {
                 _animator.SetFloat(_animIDSpeed, _animationBlend);
-                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude * GetSizeScaleMultiplier());
+                _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
             }
         }
 
@@ -747,7 +747,7 @@ namespace StarterAssets
                     break;
 
                 case PlayerParamType.Gravity:
-                    _baseGravity = signal.Value / GetSizeScaleMultiplier();
+                    _baseGravity = Mathf.Min(signal.Value / GetSizeScaleMultiplier(), -0.01f);
                     ApplyScaledGameplayParameters();
                     break;
 

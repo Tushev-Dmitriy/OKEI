@@ -84,10 +84,7 @@ public class TerminalController : MonoBehaviour
 
             if (isOpened)
             {
-                _activePlayerInputs.MoveInput(Vector2.zero);
                 _activePlayerInputs.LookInput(Vector2.zero);
-                _activePlayerInputs.JumpInput(false);
-                _activePlayerInputs.SprintInput(false);
             }
         }
 
@@ -132,6 +129,7 @@ public class TerminalController : MonoBehaviour
     private void OnDisable()
     {
         SetTerminalInteractionMode(false);
+        _activePlayer = null;
         _activePlayerInputs = null;
     }
 
