@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using DevionGames.InventorySystem;
 using DG.Tweening;
 using UnityEngine;
@@ -310,12 +311,12 @@ public class DoorCondition : MonoBehaviour
             return CompareStrings(actualItemName, clause.Operator, clause.ExpectedValue);
         }
 
-        if (!int.TryParse(actualItemName, out int actualNumber))
+        if (!double.TryParse(actualItemName, NumberStyles.Float | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out double actualNumber))
         {
             return false;
         }
 
-        if (!int.TryParse(clause.ExpectedValue, out int expectedNumber))
+        if (!double.TryParse(clause.ExpectedValue, NumberStyles.Float | NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out double expectedNumber))
         {
             return false;
         }
@@ -391,7 +392,7 @@ public class DoorCondition : MonoBehaviour
         return value.Trim();
     }
 
-    private static bool CompareNumbers(int actual, DoorComparisonOperator op, int expected)
+    private static bool CompareNumbers(double actual, DoorComparisonOperator op, double expected)
     {
         switch (op)
         {
