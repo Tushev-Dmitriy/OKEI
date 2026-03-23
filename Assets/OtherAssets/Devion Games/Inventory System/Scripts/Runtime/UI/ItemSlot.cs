@@ -164,7 +164,7 @@ namespace DevionGames.InventorySystem
             }
             if (InventoryManager.UI.tooltip != null && ObservedItem != null)
             {
-                InventoryManager.UI.tooltip.Show(UnityTools.ColorString(ObservedItem.DisplayName, ObservedItem.Rarity.Color), ObservedItem.Description, ObservedItem.Icon, ObservedItem.GetPropertyInfo());
+                InventoryManager.UI.tooltip.Show(ObservedItem.DisplayName, ObservedItem.Description, ObservedItem.Icon, ObservedItem.GetPropertyInfo());
                 if (InventoryManager.UI.sellPriceTooltip != null && ObservedItem.IsSellable && ObservedItem.SellPrice > 0)
                 {
                     InventoryManager.UI.sellPriceTooltip.RemoveItems();

@@ -43,6 +43,7 @@ public class FinalPortal : MonoBehaviour
     private IEnumerator TransitionToScene()
     {
         _isTransitionRunning = true;
+        DontDestroyOnLoad(gameObject);
 
         if (triggerOnce && TryGetComponent(out Collider portalCollider))
         {
@@ -57,18 +58,16 @@ public class FinalPortal : MonoBehaviour
             yield return new WaitForSeconds(delayBeforeLoad);
         }
 
-        AsyncOperation loadOperation = SceneManager.LoadSceneAsync(targetSceneBuildIndex, LoadSceneMode.Single);
-        if (loadOperation != null)
-        {
-            while (!loadOperation.isDone)
-            {
-                yield return null;
-            }
-        }
+        yield return overlay.LoadSceneWithFadeOut(targetSceneBuildIndex, fadeDuration);
 
-        yield return null;
-        yield return overlay.Fade(1f, 0f, fadeDuration);
-        overlay.DestroySelf();
+        if (triggerOnce)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     private sealed class ScreenFadeOverlay : MonoBehaviour
@@ -121,6 +120,23 @@ public class FinalPortal : MonoBehaviour
             }
 
             SetAlpha(to);
+        }
+
+        public IEnumerator LoadSceneWithFadeOut(int buildIndex, float fadeOutDuration)
+        {
+            AsyncOperation loadOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single);
+            if (loadOperation != null)
+            {
+                while (!loadOperation.isDone)
+                {
+                    yield return null;
+                }
+            }
+
+            // Wait one frame so the new scene can initialize its UI/cameras before we fade back out.
+            yield return null;
+            yield return Fade(1f, 0f, fadeOutDuration);
+            DestroySelf();
         }
 
         public void DestroySelf()

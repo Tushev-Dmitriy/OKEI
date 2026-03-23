@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using DevionGames.InventorySystem;
 using DG.Tweening;
 using UnityEngine;
@@ -25,6 +26,7 @@ public class DoorCondition : MonoBehaviour
     private readonly List<ItemCollection> _runtimeSlotCollections = new List<ItemCollection>();
     private bool _isOpen;
     private bool _slotEventsSubscribed;
+    private bool _isDestroyingRuntimeUi;
 
     private void Awake()
     {
@@ -141,9 +143,10 @@ public class DoorCondition : MonoBehaviour
 
     private int GetRequiredSlotCountFromCondition()
     {
+        int requiredCount = Mathf.Max(1, _slotCount);
         if (_condition == null || _condition.Clauses == null || _condition.Clauses.Count == 0)
         {
-            return 1;
+            return requiredCount;
         }
 
         int maxIndex = 0;
@@ -160,7 +163,7 @@ public class DoorCondition : MonoBehaviour
             }
         }
 
-        return maxIndex + 1;
+        return Mathf.Max(requiredCount, maxIndex + 1);
     }
 
     private void EnsureSlotsForCondition()
@@ -547,6 +550,8 @@ public class DoorCondition : MonoBehaviour
 
     private void HideRuntimeUi(bool animate)
     {
+        _isDestroyingRuntimeUi = false;
+
         if (_runtimeDoorTextController != null)
         {
             HideUiObject(_runtimeDoorTextController.gameObject, animate);
@@ -561,6 +566,70 @@ public class DoorCondition : MonoBehaviour
 
             HideUiObject(_slotUiObjects[i], animate);
         }
+    }
+
+    private void HideRuntimeUiAndDestroyAfterAnimation()
+    {
+        if (_runtimeUiRoot == null || _isDestroyingRuntimeUi)
+        {
+            return;
+        }
+
+        _isDestroyingRuntimeUi = true;
+        UnsubscribeFromSlotEvents();
+
+        Sequence sequence = DOTween.Sequence();
+        bool hasAnimatedObjects = false;
+
+        if (_runtimeDoorTextController != null)
+        {
+            hasAnimatedObjects = true;
+            _runtimeDoorTextController.transform.DOKill();
+            sequence.Join(_runtimeDoorTextController.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack));
+        }
+
+        for (int i = 0; i < _slotUiObjects.Count; i++)
+        {
+            var slotObject = _slotUiObjects[i];
+            if (slotObject == null)
+            {
+                continue;
+            }
+
+            hasAnimatedObjects = true;
+            slotObject.transform.DOKill();
+            sequence.Join(slotObject.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack));
+        }
+
+        if (!hasAnimatedObjects)
+        {
+            _isDestroyingRuntimeUi = false;
+            DestroyRuntimeUi();
+            sequence.Kill();
+            return;
+        }
+
+        sequence.OnComplete(() =>
+        {
+            _isDestroyingRuntimeUi = false;
+            DestroyRuntimeUi();
+        });
+    }
+
+    private void DestroyRuntimeUi()
+    {
+        UnsubscribeFromSlotEvents();
+        _isDestroyingRuntimeUi = false;
+
+        if (_runtimeUiRoot != null)
+        {
+            Destroy(_runtimeUiRoot.gameObject);
+            _runtimeUiRoot = null;
+        }
+
+        _runtimeDoorTextController = null;
+        _slotUiObjects.Clear();
+        _runtimeSlotCollections.Clear();
     }
 
     private static void HideUiObject(GameObject target, bool animate)
@@ -627,7 +696,8 @@ public class DoorCondition : MonoBehaviour
             successController.SetupConsoleSuccess();
         }
 
-        UnsubscribeFromSlotEvents();
+        SaveDoorOpenProgress();
+        HideRuntimeUiAndDestroyAfterAnimation();
         return true;
     }
 
@@ -652,6 +722,21 @@ public class DoorCondition : MonoBehaviour
             {
                 itemSlot.ClearSlot();
             }
+        }
+    }
+
+    private void SaveDoorOpenProgress()
+    {
+        var playerSaver = FindFirstObjectByType<PlayerSaver>();
+        if (playerSaver != null)
+        {
+            playerSaver.SavePlayerData();
+        }
+
+        var inventorySavers = FindObjectsByType<InventorySaver>(FindObjectsSortMode.None);
+        foreach (var inventorySaver in inventorySavers.Where(x => x != null))
+        {
+            inventorySaver.SaveInventory();
         }
     }
 }
