@@ -17,117 +17,126 @@ public class DoorCondition : MonoBehaviour
     [SerializeField] private Vector2 _slotOffset = new Vector2(170f, 0f);
     [SerializeField] private bool _ignoreCase = true;
 
-    private GameObject _slotUiObj;
-    private GameObject _textUiObj;
+    private GameObject _slotTemplate;
+    private GameObject _textTemplate;
+    private RectTransform _runtimeUiRoot;
+    private DoorTextController _runtimeDoorTextController;
     private readonly List<GameObject> _slotUiObjects = new List<GameObject>();
-    private RectTransform _slotParentRoot;
+    private readonly List<ItemCollection> _runtimeSlotCollections = new List<ItemCollection>();
     private bool _isOpen;
+    private bool _slotEventsSubscribed;
 
     private void Awake()
     {
-        _slotUiObj = _doorUI.transform.GetChild(1).gameObject;
-        _textUiObj = _doorUI.transform.GetChild(0).gameObject;
-        _slotUiObjects.Clear();
-        _slotUiObjects.Add(_slotUiObj);
-        EnsureSlotParent();
-        EnsureSlotCollections();
-        EnsureSlotsForCondition();
-        ApplySlotVisibility();
+        EnsureDoorUiRootReady();
+        CacheTemplates();
+        HideTemplateUi();
+        SyncOpenState();
     }
 
     private void OnEnable()
     {
+        EnsureDoorUiRootReady();
         SyncOpenState();
-        SubscribeToSlotEvents();
+
+        if (_isOpen)
+        {
+            HideRuntimeUi(false);
+            UnsubscribeFromSlotEvents();
+        }
     }
 
     private void OnDisable()
     {
+        HideRuntimeUi(false);
         UnsubscribeFromSlotEvents();
     }
 
-    private void EnsureSlotCollections()
+    private void OnDestroy()
     {
-        if (_slotCollections.Count > 0)
+        if (_runtimeUiRoot != null)
         {
-            return;
-        }
-
-        if (_doorItemCollection != null)
-        {
-            _slotCollections.Add(_doorItemCollection);
-            EnsureSlotsForCondition();
-            return;
-        }
-
-        var slotCollectionOnUi = _slotUiObj.GetComponent<ItemCollection>();
-        if (slotCollectionOnUi != null)
-        {
-            _slotCollections.Add(slotCollectionOnUi);
-            EnsureSlotsForCondition();
+            Destroy(_runtimeUiRoot.gameObject);
         }
     }
 
-    private void EnsureSlotInstances(int requiredSlots)
+    private void EnsureDoorUiRootReady()
     {
-        if (requiredSlots <= 1)
+        if (_doorUI == null)
         {
             return;
         }
 
-        var baseRect = _slotUiObj.GetComponent<RectTransform>();
-        if (baseRect == null)
+        if (!_doorUI.activeSelf)
         {
-            return;
+            _doorUI.SetActive(true);
         }
 
-        EnsureSlotParent();
-        _slotUiObj.transform.SetParent(_slotParentRoot, true);
-        baseRect.anchorMin = new Vector2(0.5f, 0.5f);
-        baseRect.anchorMax = new Vector2(0.5f, 0.5f);
-        baseRect.pivot = new Vector2(0.5f, 0.5f);
-        baseRect.anchoredPosition = Vector2.zero;
-
-        for (int i = _slotCollections.Count; i < requiredSlots; i++)
+        if (_doorUI.transform.localScale == Vector3.zero)
         {
-            var clone = Instantiate(_slotUiObj, _slotParentRoot);
-            clone.name = $"{_slotUiObj.name} ({i})";
-
-            var rect = clone.GetComponent<RectTransform>();
-            rect.anchoredPosition = baseRect.anchoredPosition + _slotOffset * i;
-
-            var collection = clone.GetComponent<ItemCollection>();
-            if (collection != null)
-            {
-                _slotCollections.Add(collection);
-                _slotUiObjects.Add(clone);
-            }
+            _doorUI.transform.localScale = Vector3.one;
         }
     }
 
-    private void EnsureSlotParent()
+    private void CacheTemplates()
     {
-        if (_slotParentRoot != null)
+        if (_doorUI == null)
         {
             return;
         }
 
-        var baseRect = _slotUiObj.GetComponent<RectTransform>();
-        if (baseRect == null)
+        if (_textTemplate == null)
         {
-            return;
+            _textTemplate = _doorTextController != null
+                ? _doorTextController.gameObject
+                : _doorUI.transform.GetChild(0).gameObject;
         }
 
-        var parent = _slotUiObj.transform.parent;
-        var go = new GameObject("DoorSlots", typeof(RectTransform));
-        _slotParentRoot = go.GetComponent<RectTransform>();
-        _slotParentRoot.SetParent(parent, false);
-        _slotParentRoot.anchorMin = baseRect.anchorMin;
-        _slotParentRoot.anchorMax = baseRect.anchorMax;
-        _slotParentRoot.pivot = baseRect.pivot;
-        _slotParentRoot.anchoredPosition = baseRect.anchoredPosition;
-        _slotParentRoot.sizeDelta = Vector2.zero;
-        _slotParentRoot.localScale = Vector3.one;
+        if (_slotTemplate == null && _doorUI.transform.childCount > 1)
+        {
+            _slotTemplate = _doorUI.transform.GetChild(1).gameObject;
+        }
+    }
+
+    private void HideTemplateUi()
+    {
+        if (_textTemplate != null)
+        {
+            _textTemplate.SetActive(false);
+            _textTemplate.transform.localScale = Vector3.zero;
+        }
+
+        if (_slotTemplate != null)
+        {
+            _slotTemplate.SetActive(false);
+            _slotTemplate.transform.localScale = Vector3.zero;
+        }
+    }
+
+    private void EnsureRuntimeUi()
+    {
+        if (_runtimeUiRoot == null)
+        {
+            var rootObject = new GameObject($"DoorRuntimeUI_{name}", typeof(RectTransform));
+            _runtimeUiRoot = rootObject.GetComponent<RectTransform>();
+            _runtimeUiRoot.SetParent(_doorUI.transform, false);
+            _runtimeUiRoot.anchorMin = Vector2.zero;
+            _runtimeUiRoot.anchorMax = Vector2.one;
+            _runtimeUiRoot.offsetMin = Vector2.zero;
+            _runtimeUiRoot.offsetMax = Vector2.zero;
+            _runtimeUiRoot.localScale = Vector3.one;
+        }
+
+        if (_runtimeDoorTextController == null && _textTemplate != null)
+        {
+            var textInstance = Instantiate(_textTemplate, _runtimeUiRoot, false);
+            textInstance.name = $"{_textTemplate.name}_{name}";
+            textInstance.SetActive(true);
+            textInstance.transform.localScale = Vector3.zero;
+            _runtimeDoorTextController = textInstance.GetComponent<DoorTextController>();
+        }
+
+        EnsureSlotsForCondition();
     }
 
     private int GetRequiredSlotCountFromCondition()
@@ -156,19 +165,52 @@ public class DoorCondition : MonoBehaviour
 
     private void EnsureSlotsForCondition()
     {
-        int requiredSlots = GetRequiredSlotCountFromCondition();
-        if (requiredSlots < 1)
+        if (_slotTemplate == null || _runtimeUiRoot == null)
         {
-            requiredSlots = 1;
+            return;
         }
 
+        int requiredSlots = Mathf.Max(1, GetRequiredSlotCountFromCondition());
         _slotCount = Mathf.Max(_slotCount, requiredSlots);
-        EnsureSlotInstances(requiredSlots);
+
+        var templateRect = _slotTemplate.GetComponent<RectTransform>();
+        if (templateRect == null)
+        {
+            return;
+        }
+
+        for (int i = _slotUiObjects.Count; i < requiredSlots; i++)
+        {
+            var slotObject = Instantiate(_slotTemplate, _runtimeUiRoot, false);
+            slotObject.name = $"{_slotTemplate.name}_{name}_{i}";
+            slotObject.SetActive(true);
+
+            var rect = slotObject.GetComponent<RectTransform>();
+            if (rect != null)
+            {
+                rect.anchorMin = templateRect.anchorMin;
+                rect.anchorMax = templateRect.anchorMax;
+                rect.pivot = templateRect.pivot;
+                rect.anchoredPosition = templateRect.anchoredPosition + _slotOffset * i;
+                rect.sizeDelta = templateRect.sizeDelta;
+                rect.localScale = Vector3.zero;
+            }
+
+            _slotUiObjects.Add(slotObject);
+
+            var collection = slotObject.GetComponent<ItemCollection>();
+            if (collection != null)
+            {
+                _runtimeSlotCollections.Add(collection);
+            }
+        }
+
+        ApplySlotVisibility();
     }
 
     private void ApplySlotVisibility()
     {
-        int requiredSlots = GetRequiredSlotCountFromCondition();
+        int requiredSlots = Mathf.Max(1, GetRequiredSlotCountFromCondition());
         for (int i = 0; i < _slotUiObjects.Count; i++)
         {
             if (_slotUiObjects[i] == null)
@@ -176,13 +218,24 @@ public class DoorCondition : MonoBehaviour
                 continue;
             }
 
-            _slotUiObjects[i].SetActive(i < requiredSlots);
+            bool shouldBeActive = i < requiredSlots;
+            _slotUiObjects[i].SetActive(shouldBeActive);
+
+            if (!shouldBeActive)
+            {
+                _slotUiObjects[i].transform.localScale = Vector3.zero;
+            }
         }
     }
 
     private void SubscribeToSlotEvents()
     {
-        foreach (var slotCollection in _slotCollections)
+        if (_slotEventsSubscribed)
+        {
+            return;
+        }
+
+        foreach (var slotCollection in _runtimeSlotCollections)
         {
             if (slotCollection == null)
             {
@@ -192,11 +245,18 @@ public class DoorCondition : MonoBehaviour
             slotCollection.onItemAdded.AddListener(OnItemAddedToSlot);
             slotCollection.onItemRemoved.AddListener(OnItemRemovedFromSlot);
         }
+
+        _slotEventsSubscribed = true;
     }
 
     private void UnsubscribeFromSlotEvents()
     {
-        foreach (var slotCollection in _slotCollections)
+        if (!_slotEventsSubscribed)
+        {
+            return;
+        }
+
+        foreach (var slotCollection in _runtimeSlotCollections)
         {
             if (slotCollection == null)
             {
@@ -206,6 +266,8 @@ public class DoorCondition : MonoBehaviour
             slotCollection.onItemAdded.RemoveListener(OnItemAddedToSlot);
             slotCollection.onItemRemoved.RemoveListener(OnItemRemovedFromSlot);
         }
+
+        _slotEventsSubscribed = false;
     }
 
     public void OnItemAddedToSlot()
@@ -215,7 +277,11 @@ public class DoorCondition : MonoBehaviour
 
     private void OnItemRemovedFromSlot()
     {
-        _doorTextController.ClearText();
+        var textController = GetDoorTextController();
+        if (textController != null)
+        {
+            textController.ClearText();
+        }
     }
 
     private bool EvaluateCondition()
@@ -263,9 +329,9 @@ public class DoorCondition : MonoBehaviour
             return false;
         }
 
-        for (int i = 0; i < requiredSlots && i < _slotCollections.Count; i++)
+        for (int i = 0; i < requiredSlots && i < _runtimeSlotCollections.Count; i++)
         {
-            var slotCollection = _slotCollections[i];
+            var slotCollection = _runtimeSlotCollections[i];
             if (slotCollection == null)
             {
                 return false;
@@ -288,12 +354,12 @@ public class DoorCondition : MonoBehaviour
             return false;
         }
 
-        if (clause.SlotIndex < 0 || clause.SlotIndex >= _slotCollections.Count)
+        if (clause.SlotIndex < 0 || clause.SlotIndex >= _runtimeSlotCollections.Count)
         {
             return false;
         }
 
-        var slotCollection = _slotCollections[clause.SlotIndex];
+        var slotCollection = _runtimeSlotCollections[clause.SlotIndex];
         if (slotCollection == null)
         {
             return false;
@@ -336,7 +402,6 @@ public class DoorCondition : MonoBehaviour
             return string.Empty;
         }
 
-        // Prefer VariableItemSpawn data from prefab/override prefab.
         var prefab = item.OverridePrefab != null ? item.OverridePrefab : item.Prefab;
         if (prefab != null)
         {
@@ -420,23 +485,25 @@ public class DoorCondition : MonoBehaviour
             return;
         }
 
-        _slotUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
-        _textUiObj.transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
-        EnsureSlotsForCondition();
-        ApplySlotVisibility();
-
-        for (int i = 1; i < _slotUiObjects.Count; i++)
+        SyncOpenState();
+        if (_isOpen)
         {
-            if (_slotUiObjects[i] == null || !_slotUiObjects[i].activeSelf)
-            {
-                continue;
-            }
-
-            _slotUiObjects[i].transform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack);
+            HideRuntimeUi(false);
+            return;
         }
 
-        _doorTextController.SetupConditionText(_condition);
-        _doorTextController.ClearText();
+        EnsureRuntimeUi();
+        ApplySlotVisibility();
+        SubscribeToSlotEvents();
+        ShowRuntimeUi();
+
+        var textController = GetDoorTextController();
+        if (textController != null)
+        {
+            textController.SetupConditionText(_condition);
+            textController.ClearText();
+        }
+
         TryOpenDoorFromCondition(false);
     }
 
@@ -447,20 +514,71 @@ public class DoorCondition : MonoBehaviour
             return;
         }
 
-        _slotUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
-        _textUiObj.transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+        HideRuntimeUi(true);
 
-        for (int i = 1; i < _slotUiObjects.Count; i++)
+        var textController = GetDoorTextController();
+        if (textController != null)
+        {
+            textController.ClearText();
+        }
+    }
+
+    private void ShowRuntimeUi()
+    {
+        if (_runtimeDoorTextController != null)
+        {
+            _runtimeDoorTextController.gameObject.SetActive(true);
+            _runtimeDoorTextController.transform.DOKill();
+            _runtimeDoorTextController.transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack);
+        }
+
+        for (int i = 0; i < _slotUiObjects.Count; i++)
+        {
+            var slotObject = _slotUiObjects[i];
+            if (slotObject == null || !slotObject.activeSelf)
+            {
+                continue;
+            }
+
+            slotObject.transform.DOKill();
+            slotObject.transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack);
+        }
+    }
+
+    private void HideRuntimeUi(bool animate)
+    {
+        if (_runtimeDoorTextController != null)
+        {
+            HideUiObject(_runtimeDoorTextController.gameObject, animate);
+        }
+
+        for (int i = 0; i < _slotUiObjects.Count; i++)
         {
             if (_slotUiObjects[i] == null)
             {
                 continue;
             }
 
-            _slotUiObjects[i].transform.DOScale(Vector3.zero, 1f).SetEase(Ease.OutBack);
+            HideUiObject(_slotUiObjects[i], animate);
+        }
+    }
+
+    private static void HideUiObject(GameObject target, bool animate)
+    {
+        if (target == null)
+        {
+            return;
         }
 
-        _doorTextController.ClearText();
+        target.transform.DOKill();
+        if (animate)
+        {
+            target.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack);
+        }
+        else
+        {
+            target.transform.localScale = Vector3.zero;
+        }
     }
 
     private void SyncOpenState()
@@ -468,11 +586,17 @@ public class DoorCondition : MonoBehaviour
         _isOpen = _door != null && _door.IsOpen;
     }
 
+    private DoorTextController GetDoorTextController()
+    {
+        return _runtimeDoorTextController != null ? _runtimeDoorTextController : _doorTextController;
+    }
+
     private bool TryOpenDoorFromCondition(bool showErrorOnFail)
     {
         SyncOpenState();
         if (_isOpen)
         {
+            HideRuntimeUi(false);
             return true;
         }
 
@@ -480,22 +604,36 @@ public class DoorCondition : MonoBehaviour
         {
             if (showErrorOnFail)
             {
-                _doorTextController.SetupConsoleError();
+                var textController = GetDoorTextController();
+                if (textController != null)
+                {
+                    textController.SetupConsoleError();
+                }
             }
             return false;
         }
 
-        _door.SetOpen(true);
+        if (_door != null)
+        {
+            _door.SetOpen(true);
+        }
+
         _isOpen = true;
         ConsumeItemsInSlots();
-        _doorTextController.SetupConsoleSuccess();
+
+        var successController = GetDoorTextController();
+        if (successController != null)
+        {
+            successController.SetupConsoleSuccess();
+        }
+
         UnsubscribeFromSlotEvents();
         return true;
     }
 
     private void ConsumeItemsInSlots()
     {
-        foreach (var slotCollection in _slotCollections)
+        foreach (var slotCollection in _runtimeSlotCollections)
         {
             if (slotCollection == null)
             {
@@ -516,5 +654,4 @@ public class DoorCondition : MonoBehaviour
             }
         }
     }
-
 }
