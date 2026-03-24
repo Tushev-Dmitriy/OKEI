@@ -20,9 +20,7 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
     private Color _normalBackgroundColor;
     private Color _hoverBackgroundColor;
     private Color _pressedBackgroundColor;
-    private Color _normalLabelColor;
-    private Color _hoverLabelColor;
-    private Color _pressedLabelColor;
+    private Color _labelBaseColor = Color.white;
 
     public void Configure(RectTransform targetRect, Graphic graphic, TMP_Text labelText, bool isAccent)
     {
@@ -34,7 +32,8 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
         ResolveReferences();
         CacheBaseScale();
         BuildPalette();
-        ApplyState(_baseScale, _normalBackgroundColor, _normalLabelColor, true);
+        CacheLabelBaseColor();
+        ApplyState(_baseScale, _normalBackgroundColor, true);
     }
 
     private void Awake()
@@ -42,43 +41,44 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
         ResolveReferences();
         CacheBaseScale();
         BuildPalette();
+        CacheLabelBaseColor();
     }
 
     private void OnEnable()
     {
-        ApplyState(_baseScale, _normalBackgroundColor, _normalLabelColor, true);
+        CacheLabelBaseColor();
+        ApplyState(_baseScale, _normalBackgroundColor, true);
     }
 
     private void OnDisable()
     {
         KillTweens();
-        ApplyState(_baseScale, _normalBackgroundColor, _normalLabelColor, true);
+        ApplyState(_baseScale, _normalBackgroundColor, true);
         _isPointerInside = false;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         _isPointerInside = true;
-        AnimateTo(_baseScale * hoverScale, _hoverBackgroundColor, _hoverLabelColor);
+        AnimateTo(_baseScale * hoverScale, _hoverBackgroundColor);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         _isPointerInside = false;
-        AnimateTo(_baseScale, _normalBackgroundColor, _normalLabelColor);
+        AnimateTo(_baseScale, _normalBackgroundColor);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        AnimateTo(_baseScale * pressedScale, _pressedBackgroundColor, _pressedLabelColor);
+        AnimateTo(_baseScale * pressedScale, _pressedBackgroundColor);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
         AnimateTo(
             _isPointerInside ? _baseScale * hoverScale : _baseScale,
-            _isPointerInside ? _hoverBackgroundColor : _normalBackgroundColor,
-            _isPointerInside ? _hoverLabelColor : _normalLabelColor);
+            _isPointerInside ? _hoverBackgroundColor : _normalBackgroundColor);
     }
 
     private void ResolveReferences()
@@ -114,26 +114,20 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
             _normalBackgroundColor = Color.white;
             _hoverBackgroundColor = new Color(0.99f, 0.97f, 0.94f, 1f);
             _pressedBackgroundColor = new Color(0.88f, 0.83f, 0.76f, 1f);
-            _normalLabelColor = new Color(0.21f, 0.19f, 0.16f, 1f);
-            _hoverLabelColor = new Color(0.14f, 0.13f, 0.11f, 1f);
-            _pressedLabelColor = new Color(0.26f, 0.23f, 0.19f, 1f);
             return;
         }
 
         _normalBackgroundColor = Color.white;
         _hoverBackgroundColor = new Color(0.96f, 0.96f, 0.96f, 1f);
         _pressedBackgroundColor = new Color(0.84f, 0.84f, 0.84f, 1f);
-        _normalLabelColor = new Color(0.96f, 0.94f, 0.90f, 1f);
-        _hoverLabelColor = Color.white;
-        _pressedLabelColor = new Color(0.84f, 0.81f, 0.76f, 1f);
     }
 
-    private void AnimateTo(Vector3 scale, Color backgroundColor, Color labelColor)
+    private void AnimateTo(Vector3 scale, Color backgroundColor)
     {
-        ApplyState(scale, backgroundColor, labelColor, false);
+        ApplyState(scale, backgroundColor, false);
     }
 
-    private void ApplyState(Vector3 scale, Color backgroundColor, Color labelColor, bool immediate)
+    private void ApplyState(Vector3 scale, Color backgroundColor, bool immediate)
     {
         if (target == null)
         {
@@ -153,7 +147,7 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
 
             if (label != null)
             {
-                label.color = labelColor;
+                label.color = _labelBaseColor;
             }
 
             return;
@@ -166,9 +160,13 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
             backgroundGraphic.DOColor(backgroundColor, duration).SetEase(Ease.OutQuad).SetUpdate(true);
         }
 
+    }
+
+    private void CacheLabelBaseColor()
+    {
         if (label != null)
         {
-            label.DOColor(labelColor, duration).SetEase(Ease.OutQuad).SetUpdate(true);
+            _labelBaseColor = label.color;
         }
     }
 

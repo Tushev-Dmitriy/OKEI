@@ -84,9 +84,6 @@ public class LevelCardUI : MonoBehaviour
 
         if (cardBackground != null)
         {
-            cardBackground.sprite = isUnlocked || lockedBackgroundSprite == null
-                ? unlockedBackgroundSprite
-                : lockedBackgroundSprite;
             cardBackground.color = isUnlocked ? Color.white : lockedTint;
         }
 

@@ -69,14 +69,13 @@ public class LevelProgressManager : MonoBehaviour
 
     public void EnsureDefaults()
     {
-        if (PlayerPrefs.HasKey(MaxUnlockedLevelKey))
-        {
-            return;
-        }
+        int configuredLevelCount = Mathf.Max(1, levels.Count);
+        int initialUnlockedLevel = Mathf.Clamp(defaultUnlockedLevel, 1, configuredLevelCount);
+        int currentUnlockedLevel = initialUnlockedLevel;
+        int currentLastPlayedLevel = Mathf.Clamp(PlayerPrefs.GetInt(LastPlayedLevelKey, initialUnlockedLevel), 1, currentUnlockedLevel);
 
-        int initialUnlockedLevel = Mathf.Max(1, defaultUnlockedLevel);
-        PlayerPrefs.SetInt(MaxUnlockedLevelKey, initialUnlockedLevel);
-        PlayerPrefs.SetInt(LastPlayedLevelKey, initialUnlockedLevel);
+        PlayerPrefs.SetInt(MaxUnlockedLevelKey, currentUnlockedLevel);
+        PlayerPrefs.SetInt(LastPlayedLevelKey, currentLastPlayedLevel);
         PlayerPrefs.Save();
     }
 

@@ -7598,6 +7598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   posToStopObj: {fileID: 1805864906}
   posToEndObj: {fileID: 1180639245}
+  lockWaterTransform: {fileID: 0}
   moveToStopDuration: 10
   moveToEndDuration: 12
   sinkDepth: 28

@@ -27,11 +27,6 @@ public class LevelSelectPanelController : MonoBehaviour
 
     private void Awake()
     {
-        if (headerText != null && string.IsNullOrWhiteSpace(headerText.text))
-        {
-            headerText.text = "ВЫБОР УРОВНЯ";
-        }
-
         WireButtons();
         RefreshCards();
     }

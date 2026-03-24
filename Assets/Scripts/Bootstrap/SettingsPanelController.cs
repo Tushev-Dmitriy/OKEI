@@ -25,6 +25,8 @@ public class SettingsPanelController : MonoBehaviour
 
     private readonly List<Vector2Int> _availableResolutions = new List<Vector2Int>();
     private bool _isRefreshingUi;
+    private Sprite _runtimeFullscreenOffSprite;
+    private bool _isFullscreenVisualInitialized;
 
     public void Configure(
         MainMenuController owner,
@@ -54,11 +56,7 @@ public class SettingsPanelController : MonoBehaviour
 
     private void Awake()
     {
-        if (headerText != null && string.IsNullOrWhiteSpace(headerText.text))
-        {
-            headerText.text = "НАСТРОЙКИ";
-        }
-
+        InitializeFullscreenVisuals();
         BuildOptions();
         WireControls();
         RefreshUI();
@@ -66,6 +64,7 @@ public class SettingsPanelController : MonoBehaviour
 
     private void OnEnable()
     {
+        InitializeFullscreenVisuals();
         BuildOptions();
         WireControls();
         RefreshUI();
@@ -304,13 +303,34 @@ public class SettingsPanelController : MonoBehaviour
     {
         if (fullscreenToggleGraphic != null)
         {
-            fullscreenToggleGraphic.sprite = isFullscreen ? fullscreenOnSprite : fullscreenOffSprite;
+            Sprite targetSprite = isFullscreen
+                ? (fullscreenOnSprite != null ? fullscreenOnSprite : _runtimeFullscreenOffSprite)
+                : _runtimeFullscreenOffSprite;
+
+            if (targetSprite != null)
+            {
+                fullscreenToggleGraphic.sprite = targetSprite;
+            }
         }
 
         if (fullscreenValueText != null)
         {
             fullscreenValueText.text = isFullscreen ? "On" : "Off";
         }
+    }
+
+    private void InitializeFullscreenVisuals()
+    {
+        if (_isFullscreenVisualInitialized)
+        {
+            return;
+        }
+
+        _runtimeFullscreenOffSprite = fullscreenToggleGraphic != null && fullscreenToggleGraphic.sprite != null
+            ? fullscreenToggleGraphic.sprite
+            : fullscreenOffSprite;
+
+        _isFullscreenVisualInitialized = true;
     }
 
     private int GetCurrentResolutionIndex()

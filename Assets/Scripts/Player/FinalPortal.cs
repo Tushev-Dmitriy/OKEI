@@ -1,20 +1,19 @@
-using System.Collections;
+using System;
 using StarterAssets;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider))]
 public class FinalPortal : MonoBehaviour
 {
     [SerializeField] private int targetSceneBuildIndex = 0;
-    [SerializeField] private float fadeDuration = 1f;
-    [SerializeField] private float delayBeforeLoad = 0.1f;
+    [SerializeField] private int completedLevelIndex = 1;
+    [SerializeField] private float fadeInDuration = 0.8f;
+    [SerializeField] private float fadeOutDuration = 0.35f;
     [SerializeField] private bool triggerOnce = true;
-    [SerializeField] private Color fadeColor = Color.black;
 
     private bool _isTransitionRunning;
+    private ThirdPersonController _currentPlayer;
 
     private void Awake()
     {
@@ -37,159 +36,58 @@ public class FinalPortal : MonoBehaviour
             return;
         }
 
-        StartCoroutine(TransitionToScene());
+        _currentPlayer = player;
+        _isTransitionRunning = true;
+
+        bool started = SceneTransitionService.StartPortalTransition(
+            targetSceneBuildIndex,
+            completedLevelIndex,
+            fadeInDuration,
+            fadeOutDuration,
+            "Завершение уровня",
+            "Возвращаемся в меню",
+            "Сохраняем прогресс и открываем следующий уровень",
+            false,
+            HandleTransitionCommitted,
+            HandleTransitionCancelled);
+
+        if (!started)
+        {
+            _isTransitionRunning = false;
+            _currentPlayer = null;
+        }
     }
 
-    private IEnumerator TransitionToScene()
+    private void OnTriggerExit(Collider other)
     {
-        _isTransitionRunning = true;
-        DontDestroyOnLoad(gameObject);
-
-        if (triggerOnce && TryGetComponent(out Collider portalCollider))
+        if (!_isTransitionRunning)
         {
-            portalCollider.enabled = false;
+            return;
         }
 
-        ScreenFadeOverlay overlay = ScreenFadeOverlay.GetOrCreate(fadeColor);
-        yield return overlay.Fade(0f, 1f, fadeDuration);
-
-        if (delayBeforeLoad > 0f)
+        ThirdPersonController player = other.GetComponentInParent<ThirdPersonController>();
+        if (player == null || player != _currentPlayer)
         {
-            yield return new WaitForSeconds(delayBeforeLoad);
+            return;
         }
 
-        yield return overlay.LoadSceneWithFadeOut(targetSceneBuildIndex, fadeDuration);
+        SceneTransitionService.CancelPortalTransition();
+    }
 
+    private void HandleTransitionCommitted()
+    {
         if (triggerOnce)
         {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Destroy(this);
+            if (TryGetComponent(out Collider portalCollider))
+            {
+                portalCollider.enabled = false;
+            }
         }
     }
 
-    private sealed class ScreenFadeOverlay : MonoBehaviour
+    private void HandleTransitionCancelled()
     {
-        private const string OverlayName = "RuntimeScreenFadeOverlay";
-
-        private Canvas _canvas;
-        private Image _image;
-
-        public static ScreenFadeOverlay GetOrCreate(Color color)
-        {
-            ScreenFadeOverlay existing = FindFirstObjectByType<ScreenFadeOverlay>(FindObjectsInactive.Include);
-            if (existing != null)
-            {
-                existing.SetColor(color);
-                existing.SetAlpha(0f);
-                return existing;
-            }
-
-            GameObject root = new GameObject(OverlayName);
-            DontDestroyOnLoad(root);
-
-            ScreenFadeOverlay overlay = root.AddComponent<ScreenFadeOverlay>();
-            overlay.Initialize(color);
-            return overlay;
-        }
-
-        public IEnumerator Fade(float from, float to, float duration)
-        {
-            if (_image == null)
-            {
-                yield break;
-            }
-
-            if (duration <= 0f)
-            {
-                SetAlpha(to);
-                yield break;
-            }
-
-            float elapsed = 0f;
-            SetAlpha(from);
-
-            while (elapsed < duration)
-            {
-                elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.Clamp01(elapsed / duration);
-                SetAlpha(Mathf.Lerp(from, to, t));
-                yield return null;
-            }
-
-            SetAlpha(to);
-        }
-
-        public IEnumerator LoadSceneWithFadeOut(int buildIndex, float fadeOutDuration)
-        {
-            AsyncOperation loadOperation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Single);
-            if (loadOperation != null)
-            {
-                while (!loadOperation.isDone)
-                {
-                    yield return null;
-                }
-            }
-
-            // Wait one frame so the new scene can initialize its UI/cameras before we fade back out.
-            yield return null;
-            yield return Fade(1f, 0f, fadeOutDuration);
-            DestroySelf();
-        }
-
-        public void DestroySelf()
-        {
-            Destroy(gameObject);
-        }
-
-        private void Initialize(Color color)
-        {
-            _canvas = gameObject.AddComponent<Canvas>();
-            _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            _canvas.sortingOrder = short.MaxValue;
-
-            gameObject.AddComponent<GraphicRaycaster>();
-
-            GameObject imageObject = new GameObject("FadeImage");
-            imageObject.transform.SetParent(transform, false);
-
-            RectTransform rectTransform = imageObject.AddComponent<RectTransform>();
-            rectTransform.anchorMin = Vector2.zero;
-            rectTransform.anchorMax = Vector2.one;
-            rectTransform.offsetMin = Vector2.zero;
-            rectTransform.offsetMax = Vector2.zero;
-
-            _image = imageObject.AddComponent<Image>();
-            _image.raycastTarget = false;
-
-            SetColor(color);
-            SetAlpha(0f);
-        }
-
-        private void SetColor(Color color)
-        {
-            if (_image == null)
-            {
-                return;
-            }
-
-            Color nextColor = color;
-            nextColor.a = _image.color.a;
-            _image.color = nextColor;
-        }
-
-        private void SetAlpha(float alpha)
-        {
-            if (_image == null)
-            {
-                return;
-            }
-
-            Color color = _image.color;
-            color.a = Mathf.Clamp01(alpha);
-            _image.color = color;
-        }
+        _isTransitionRunning = false;
+        _currentPlayer = null;
     }
 }
