@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using StarterAssets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,10 +12,6 @@ using UnityEngine.UI;
 public sealed class GameplayPauseMenuController : MonoBehaviour
 {
     private const string BootstrapSceneName = "Bootstrap";
-    private const string VolumeKey = "BootstrapMenu.Settings.SoundVolume";
-    private const string QualityKey = "BootstrapMenu.Settings.Quality";
-    private const string FullscreenKey = "BootstrapMenu.Settings.Fullscreen";
-    private const string ResolutionKey = "BootstrapMenu.Settings.Resolution";
 
     [SerializeField] private CanvasGroup rootGroup;
     [SerializeField] private CanvasGroup pausePanelGroup;
@@ -38,6 +35,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
     private bool _isSettingsOpen;
     private bool _isRefreshingUi;
     private bool _isBound;
+    private StarterAssetsInputs _activePlayerInputs;
 
     private void Awake()
     {
@@ -97,10 +95,14 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         if (scene.name == BootstrapSceneName)
         {
             HideImmediate(true);
+            SetGameplayInputEnabled(false);
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             return;
         }
 
         HideImmediate(false);
+        SetGameplayInputEnabled(true);
     }
 
     private void OpenPause()
@@ -112,8 +114,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         _isSettingsOpen = false;
         Time.timeScale = 0f;
         AudioListener.pause = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        SetGameplayInputEnabled(false);
 
         rootGroup.blocksRaycasts = true;
         rootGroup.interactable = true;
@@ -156,9 +157,15 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         _isSettingsOpen = false;
         Time.timeScale = 1f;
         AudioListener.pause = false;
+        SetGameplayInputEnabled(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        SceneManager.LoadScene(BootstrapSceneName, LoadSceneMode.Single);
+        HideImmediate(true);
+
+        if (!BootstrapSceneLoader.Load(BootstrapSceneName, null))
+        {
+            SceneManager.LoadScene(BootstrapSceneName, LoadSceneMode.Single);
+        }
     }
 
     private void HideImmediate(bool keepCursorState)
@@ -179,9 +186,11 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
         if (!keepCursorState && SceneManager.GetActiveScene().name != BootstrapSceneName)
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            SetGameplayInputEnabled(true);
+            return;
         }
+
+        SetGameplayInputEnabled(false);
     }
 
     private void RefreshSettingsUi()
@@ -198,10 +207,11 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
         _isRefreshingUi = true;
 
-        float volume = PlayerPrefs.GetFloat(VolumeKey, 0.8f);
-        int qualityIndex = Mathf.Clamp(PlayerPrefs.GetInt(QualityKey, QualitySettings.GetQualityLevel()), 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
-        bool isFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
-        int resolutionIndex = Mathf.Clamp(PlayerPrefs.GetInt(ResolutionKey, GetCurrentResolutionIndex()), 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
+        BootstrapMenuSaveData saveData = BootstrapMenuSaveSystem.Load();
+        float volume = saveData.soundVolume;
+        int qualityIndex = Mathf.Clamp(saveData.qualityIndex, 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
+        bool isFullscreen = saveData.fullscreen;
+        int resolutionIndex = Mathf.Clamp(saveData.resolutionIndex, 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
 
         soundSlider.SetValueWithoutNotify(volume);
         graphicsDropdown.SetValueWithoutNotify(qualityIndex);
@@ -375,8 +385,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         ApplyVolume(value);
-        PlayerPrefs.SetFloat(VolumeKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.soundVolume = value);
     }
 
     private void HandleGraphicsChanged(int value)
@@ -387,8 +396,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         ApplyQuality(value);
-        PlayerPrefs.SetInt(QualityKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.qualityIndex = value);
     }
 
     private void HandleFullscreenChanged(bool isFullscreen)
@@ -400,8 +408,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
         ApplyFullscreen(isFullscreen);
         UpdateFullscreenVisuals(isFullscreen);
-        PlayerPrefs.SetInt(FullscreenKey, isFullscreen ? 1 : 0);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.fullscreen = isFullscreen);
     }
 
     private void HandleResolutionChanged(int value)
@@ -412,8 +419,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         ApplyResolution(value);
-        PlayerPrefs.SetInt(ResolutionKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.resolutionIndex = value);
     }
 
     private void UpdateFullscreenVisuals(bool isFullscreen)
@@ -530,6 +536,38 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         return Input.GetKeyDown(KeyCode.Escape);
+    }
+
+    private void SetGameplayInputEnabled(bool enabled)
+    {
+        CacheActivePlayerInputs();
+
+        if (_activePlayerInputs != null)
+        {
+            _activePlayerInputs.cursorLocked = enabled;
+            _activePlayerInputs.cursorInputForLook = enabled;
+            _activePlayerInputs.LookInput(Vector2.zero);
+
+            if (!enabled)
+            {
+                _activePlayerInputs.MoveInput(Vector2.zero);
+                _activePlayerInputs.JumpInput(false);
+                _activePlayerInputs.SprintInput(false);
+            }
+        }
+
+        Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !enabled;
+    }
+
+    private void CacheActivePlayerInputs()
+    {
+        if (_activePlayerInputs != null && _activePlayerInputs.gameObject.scene.IsValid())
+        {
+            return;
+        }
+
+        _activePlayerInputs = FindFirstObjectByType<StarterAssetsInputs>();
     }
 
     private void ResolveReferences()

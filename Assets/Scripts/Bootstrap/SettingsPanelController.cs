@@ -6,11 +6,6 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public class SettingsPanelController : MonoBehaviour
 {
-    private const string VolumeKey = "BootstrapMenu.Settings.SoundVolume";
-    private const string QualityKey = "BootstrapMenu.Settings.Quality";
-    private const string FullscreenKey = "BootstrapMenu.Settings.Fullscreen";
-    private const string ResolutionKey = "BootstrapMenu.Settings.Resolution";
-
     [SerializeField] private MainMenuController mainMenuController;
     [SerializeField] private TMP_Text headerText;
     [SerializeField] private Button backButton;
@@ -86,10 +81,11 @@ public class SettingsPanelController : MonoBehaviour
 
         _isRefreshingUi = true;
 
-        float volume = PlayerPrefs.GetFloat(VolumeKey, 0.8f);
-        int qualityIndex = Mathf.Clamp(PlayerPrefs.GetInt(QualityKey, QualitySettings.GetQualityLevel()), 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
-        bool isFullscreen = PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) == 1;
-        int resolutionIndex = Mathf.Clamp(PlayerPrefs.GetInt(ResolutionKey, GetCurrentResolutionIndex()), 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
+        BootstrapMenuSaveData saveData = BootstrapMenuSaveSystem.Load();
+        float volume = saveData.soundVolume;
+        int qualityIndex = Mathf.Clamp(saveData.qualityIndex, 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
+        bool isFullscreen = saveData.fullscreen;
+        int resolutionIndex = Mathf.Clamp(saveData.resolutionIndex, 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
 
         soundSlider.SetValueWithoutNotify(volume);
         graphicsDropdown.SetValueWithoutNotify(qualityIndex);
@@ -231,8 +227,7 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         ApplyVolume(value);
-        PlayerPrefs.SetFloat(VolumeKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.soundVolume = value);
     }
 
     private void HandleGraphicsChanged(int value)
@@ -243,8 +238,7 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         ApplyQuality(value);
-        PlayerPrefs.SetInt(QualityKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.qualityIndex = value);
     }
 
     private void HandleFullscreenChanged(bool isFullscreen)
@@ -256,8 +250,7 @@ public class SettingsPanelController : MonoBehaviour
 
         ApplyFullscreen(isFullscreen);
         UpdateFullscreenVisuals(isFullscreen);
-        PlayerPrefs.SetInt(FullscreenKey, isFullscreen ? 1 : 0);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.fullscreen = isFullscreen);
     }
 
     private void HandleResolutionChanged(int value)
@@ -268,8 +261,7 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         ApplyResolution(value);
-        PlayerPrefs.SetInt(ResolutionKey, value);
-        PlayerPrefs.Save();
+        BootstrapMenuSaveSystem.Update(data => data.resolutionIndex = value);
     }
 
     private static void ApplyVolume(float value)

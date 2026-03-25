@@ -10,11 +10,17 @@ public class SaveResetter : MonoBehaviour
     [SerializeField] private List<MonoBehaviour> sceneSaveables = new();
     [SerializeField] private List<InventorySaver> inventorySavers = new();
 
-    public void ResetSaves()
+    public static void ResetGameplayProgress()
     {
         PlayerSaveSystem.DeleteSave();
         InventorySaveSystem.DeleteSave();
         VariableItemSaveSystem.DeleteSave();
+    }
+
+    public void ResetSaves()
+    {
+        ResetGameplayProgress();
+        BootstrapMenuSaveSystem.DeleteSave();
     }
 
     public void CollectSaveablesInScene()

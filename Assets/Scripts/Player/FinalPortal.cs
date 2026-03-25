@@ -76,6 +76,8 @@ public class FinalPortal : MonoBehaviour
 
     private void HandleTransitionCommitted()
     {
+        SaveResetter.ResetGameplayProgress();
+
         if (triggerOnce)
         {
             if (TryGetComponent(out Collider portalCollider))

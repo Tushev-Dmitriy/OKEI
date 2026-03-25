@@ -635,7 +635,10 @@ internal sealed class SceneTransitionService : MonoBehaviour
         EnsureOverlay();
 
         _overlayCanvas.gameObject.SetActive(true);
-        _overlayCanvasGroup.alpha = 1f;
+        _overlayCanvasGroup.DOKill();
+        _overlayPanelGroup.DOKill();
+        _overlayPanel.DOKill();
+        _overlayCanvasGroup.alpha = 0f;
         _overlayCanvasGroup.interactable = true;
         _overlayCanvasGroup.blocksRaycasts = true;
         _overlayPanel.localScale = Vector3.one * 0.96f;
@@ -648,15 +651,18 @@ internal sealed class SceneTransitionService : MonoBehaviour
 
         yield return null;
 
+        Tween canvasFadeTween = _overlayCanvasGroup.DOFade(1f, duration).SetEase(Ease.OutQuad).SetUpdate(true);
         Tween fadeTween = _overlayPanelGroup.DOFade(1f, duration).SetEase(Ease.OutQuad).SetUpdate(true);
         Tween scaleTween = _overlayPanel.DOScale(1f, duration).SetEase(Ease.OutCubic).SetUpdate(true);
         Tween moveTween = _overlayPanel.DOAnchorPos(Vector2.zero, duration).SetEase(Ease.OutCubic).SetUpdate(true);
 
-        while (fadeTween.IsActive() && fadeTween.IsPlaying())
+        while ((canvasFadeTween.IsActive() && canvasFadeTween.IsPlaying()) ||
+               (fadeTween.IsActive() && fadeTween.IsPlaying()))
         {
             yield return null;
         }
 
+        canvasFadeTween.Kill(false);
         fadeTween.Kill(false);
         scaleTween.Kill(false);
         moveTween.Kill(false);
@@ -671,6 +677,9 @@ internal sealed class SceneTransitionService : MonoBehaviour
     {
         EnsureOverlay();
 
+        _overlayCanvasGroup.DOKill();
+        _overlayPanelGroup.DOKill();
+        _overlayPanel.DOKill();
         Tween panelFadeTween = _overlayPanelGroup.DOFade(0f, duration * 0.75f).SetEase(Ease.InQuad).SetUpdate(true);
         Tween scaleTween = _overlayPanel.DOScale(1.02f, duration).SetEase(Ease.InQuad).SetUpdate(true);
         Tween fadeTween = _overlayCanvasGroup.DOFade(0f, duration).SetEase(Ease.InQuad).SetUpdate(true);
