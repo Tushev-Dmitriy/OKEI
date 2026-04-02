@@ -157,28 +157,20 @@ public class RobotSelectionUI : MonoBehaviour
         if (unlockManager != null && !unlockManager.IsRobotUnlocked(type))
             return;
 
-        _selectedType = type;
-        UpdateVisuals();
-
-        if (spawner != null)
+        if (spawner != null && spawnOnSelection && !spawner.CanSpawnType(type, out string denyReason))
         {
-            spawner.SetSelectedRobotType(type, spawnOnSelection);
+            spawner.NotifySpawnDenied(type, denyReason);
+            return;
         }
 
-        OnSelectedRobotChanged?.Invoke(type);
+        SetSelectedRobot(type, spawnOnSelection);
     }
 
     private void SelectInitial()
     {
         _selectedType = defaultSelected;
         EnsureValidSelection();
-
-        if (spawner != null)
-        {
-            spawner.SetSelectedRobotType(_selectedType, false);
-        }
-
-        OnSelectedRobotChanged?.Invoke(_selectedType);
+        SetSelectedRobot(_selectedType, false);
     }
 
     private void EnsureValidSelection()
@@ -208,6 +200,25 @@ public class RobotSelectionUI : MonoBehaviour
     public RobotType GetSelectedType()
     {
         return _selectedType;
+    }
+
+    public void SetSelectedRobot(RobotType type, bool spawnNow = false)
+    {
+        if (type == RobotType.None)
+            return;
+
+        if (unlockManager != null && !unlockManager.IsRobotUnlocked(type))
+            return;
+
+        _selectedType = type;
+        UpdateVisuals();
+
+        if (spawner != null)
+        {
+            spawner.SetSelectedRobotType(type, spawnNow);
+        }
+
+        OnSelectedRobotChanged?.Invoke(type);
     }
 
     private void UpdateVisuals()

@@ -9,6 +9,7 @@ public class CombatSystem : MonoBehaviour
 
     [Header("Attack Effect (Optional)")]
     [SerializeField] private ParticleSystem attackEffect;
+    [SerializeField] private bool autoResolveAttackEffect = true;
 
     private Health targetHealth;
     private bool isInCombat;
@@ -17,6 +18,11 @@ public class CombatSystem : MonoBehaviour
     public float DamagePerHit => damagePerHit;
     public float AttackInterval => attackInterval;
     public bool IsInCombat => isInCombat;
+
+    private void Awake()
+    {
+        TryResolveAttackEffect();
+    }
 
     public void InitializeCombat(float damage, float interval)
     {
@@ -36,7 +42,13 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
+        if (targetHealth != null)
+        {
+            targetHealth.OnDeath -= HandleTargetDeath;
+        }
+
         targetHealth = target;
+        targetHealth.OnDeath += HandleTargetDeath;
         isInCombat = true;
 
         combatCoroutine = StartCoroutine(CombatRoutine());
@@ -51,7 +63,11 @@ public class CombatSystem : MonoBehaviour
         }
 
         isInCombat = false;
-        targetHealth = null;
+        if (targetHealth != null)
+        {
+            targetHealth.OnDeath -= HandleTargetDeath;
+            targetHealth = null;
+        }
 
         StopAttackEffect();
     }
@@ -78,10 +94,7 @@ public class CombatSystem : MonoBehaviour
     {
         if (targetHealth != null && targetHealth.IsAlive)
         {
-            if (attackEffect != null)
-            {
-                attackEffect.Play();
-            }
+            PlayAttackEffect();
 
             Vector3 hitPosition = targetHealth.transform.position;
             Collider targetCollider = targetHealth.GetComponent<Collider>();
@@ -90,7 +103,16 @@ public class CombatSystem : MonoBehaviour
                 hitPosition = targetCollider.ClosestPoint(transform.position);
             }
 
-            targetHealth.TakeDamage(damagePerHit, hitPosition);
+            OrientAttackEffect(hitPosition);
+
+            float finalDamage = Mathf.Max(0f, damagePerHit);
+            Robot targetRobot = targetHealth.GetComponent<Robot>();
+            if (targetRobot != null)
+            {
+                finalDamage = targetRobot.ModifyIncomingDamage(finalDamage);
+            }
+
+            targetHealth.TakeDamage(finalDamage, hitPosition);
         }
     }
 
@@ -99,11 +121,58 @@ public class CombatSystem : MonoBehaviour
         StopAttackEffect();
     }
 
+    private void HandleTargetDeath()
+    {
+        StopCombat();
+    }
+
     private void StopAttackEffect()
     {
         if (attackEffect != null && attackEffect.isPlaying)
         {
             attackEffect.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+    }
+
+    private void OrientAttackEffect(Vector3 hitPosition)
+    {
+        if (attackEffect == null)
+            return;
+
+        Vector3 direction = hitPosition - attackEffect.transform.position;
+        if (direction.sqrMagnitude <= 0.0001f)
+            return;
+
+        attackEffect.transform.rotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+    }
+
+    private void PlayAttackEffect()
+    {
+        if (attackEffect == null)
+            return;
+
+        if (!attackEffect.isPlaying)
+        {
+            attackEffect.Play(true);
+        }
+    }
+
+    private void TryResolveAttackEffect()
+    {
+        if (!autoResolveAttackEffect || attackEffect != null)
+            return;
+
+        ParticleSystem[] effects = GetComponentsInChildren<ParticleSystem>(true);
+        foreach (ParticleSystem effect in effects)
+        {
+            if (effect == null)
+                continue;
+
+            if (effect.gameObject.name.IndexOf("lightning", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                attackEffect = effect;
+                return;
+            }
         }
     }
 

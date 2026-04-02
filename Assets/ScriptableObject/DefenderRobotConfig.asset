@@ -16,7 +16,7 @@ MonoBehaviour:
   robotName: "\u0417\u0430\u0449\u0438\u0442\u043D\u044B\u0439 \u0440\u043E\u0431\u043E\u0442"
   robotIcon: {fileID: 559946888, guid: 7558fbf386fc57248bfb66b0e9d16444, type: 3}
   health: 5
-  damage: 3
+  damage: 1
   speed: 2
   methodNames:
   - Move();
@@ -27,11 +27,11 @@ MonoBehaviour:
     requiredDeaths: 2
   - robotType: 3
     requiredDeaths: 1
-  moveSpeed: 10
+  moveSpeed: 6.5
   rotationSpeed: 15
-  maxHealth: 200
-  damagePerHit: 30
-  attackInterval: 1.25
+  maxHealth: 100
+  damagePerHit: 10
+  attackInterval: 1.1
   healAmount: 0
   healInterval: 0
   healRange: 0

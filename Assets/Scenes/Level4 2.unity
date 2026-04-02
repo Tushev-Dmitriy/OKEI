@@ -166,7 +166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vcam: {fileID: 214192}
   moveSpeed: 100
-  minZ: -5
+  minZ: -15
   maxZ: 150
   minX: -3
   maxX: 15
@@ -1565,7 +1565,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2475,7 +2475,6 @@ MonoBehaviour:
   spawnOnStart: 0
   replaceExisting: 0
   defaultRobotType: 1
-  spawnCooldownSeconds: 1.8
 --- !u!4 &691915220
 Transform:
   m_ObjectHideFlags: 0
@@ -2629,7 +2628,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5842,7 +5841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -5907,7 +5906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -6309,19 +6308,13 @@ MonoBehaviour:
   unlockManager: {fileID: 0}
   selectionUI: {fileID: 0}
   statusText: {fileID: 0}
-  cameraController: {fileID: 0}
   statusTextObjectName: HintText
   completedLevelIndex: 4
-  disableLegacyConveyors: 1
-  disableLegacyExitTrigger: 1
-  stageMessageDelay: 0.85
-  unlockHintReplayCooldown: 1.1
-  playerRobotMoveSpeedMultiplier: 1.35
-  corridorEnemyBaseHealth: 70
-  corridorEnemyHealthStep: 18
-  corridorEnemyBaseDamage: 7
-  corridorEnemyDamageStep: 1.75
-  cameraRoomOffset: {x: 0, y: 14, z: -6}
+  baseEnemyMaxHealth: 35
+  baseEnemyDamage: 5
+  escortDamageFraction: 0.45
+  healerExitPadding: 8
+  escortSpawnOffset: {x: 1.5, y: 0, z: 4}
 --- !u!1 &1742496877
 GameObject:
   m_ObjectHideFlags: 0
@@ -6971,7 +6964,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -7422,7 +7415,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -8227,7 +8220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8744757b7e3c4ecca4472b2b3d288810, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCamera: {fileID: 0}
+  targetCamera: {fileID: 214192}
 --- !u!33 &13195166216363910
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -9378,7 +9371,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5737636414164160673, guid: 315a96e2d27d9b44bac8535ccc4c16e0, type: 3}
       propertyPath: m_LocalPosition.y

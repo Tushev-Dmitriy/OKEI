@@ -72277,84 +72277,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 167a9a92973be294aa5cbab682d02b79, type: 3}
   m_PrefabInstance: {fileID: 1980537463}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1981079813
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 929211135713736283, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2269837147817283981, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_Name
-      value: LeaveObjTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 2269837147817283981, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2269837147817283981, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3785496433842395414, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1125.5266
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.00003
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1780.9237
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7997489365862387645, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8100095561405835261, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1858491759438614199, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a6438dab63e2520409fce7d0acc5f72d, type: 3}
 --- !u!1001 &1982605162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82469,6 +82391,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FinalPortal
   targetSceneBuildIndex: 0
   completedLevelIndex: 0
+  fadeInDuration: 0.8
+  fadeOutDuration: 0.35
   triggerOnce: 0
 --- !u!4 &8897785426547091353
 Transform:
@@ -82865,7 +82789,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 399957403}
-  - {fileID: 1981079813}
   - {fileID: 900000001}
   - {fileID: 1394846002499497428}
   - {fileID: 1024908722}

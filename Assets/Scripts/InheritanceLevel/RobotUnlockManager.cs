@@ -7,6 +7,7 @@ using Zenject;
 public class RobotUnlockManager : MonoBehaviour
 {
     [SerializeField] private List<RobotConfigSO> allRobotConfigs = new List<RobotConfigSO>();
+    [SerializeField] private bool enableDeathBasedUnlocks = true;
     private HashSet<RobotType> _unlockedRobots = new HashSet<RobotType>();
     private RobotUnlockEvents _events;
     private readonly Dictionary<RobotType, int> _deathCounts = new Dictionary<RobotType, int>();
@@ -170,6 +171,9 @@ public class RobotUnlockManager : MonoBehaviour
 
     private void HandleRobotDied(RobotType robotType)
     {
+        if (!enableDeathBasedUnlocks)
+            return;
+
         if (robotType == RobotType.None)
             return;
 

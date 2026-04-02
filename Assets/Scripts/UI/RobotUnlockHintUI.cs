@@ -13,6 +13,7 @@ public class RobotUnlockHintUI : MonoBehaviour
     [SerializeField] private float fadeInDuration = 0.5f;
     [SerializeField] private float showDuration = 3f;
     [SerializeField] private float fadeOutDuration = 0.5f;
+    [SerializeField] private float maxTotalHintDuration = 1.8f;
 
     private RobotUnlockManager _unlockManager;
     private RobotUnlockEvents _events;
@@ -27,6 +28,12 @@ public class RobotUnlockHintUI : MonoBehaviour
 
     private void Awake()
     {
+        float safeMax = Mathf.Max(0.6f, maxTotalHintDuration);
+        fadeInDuration = Mathf.Min(fadeInDuration, safeMax * 0.25f);
+        fadeOutDuration = Mathf.Min(fadeOutDuration, safeMax * 0.25f);
+        float remaining = Mathf.Max(0.2f, safeMax - fadeInDuration - fadeOutDuration);
+        showDuration = Mathf.Min(showDuration, remaining);
+
         if (hintPanel != null)
         {
             hintPanel.gameObject.SetActive(false);
@@ -53,7 +60,11 @@ public class RobotUnlockHintUI : MonoBehaviour
 
     private void ShowUnlockHint(RobotType robotType)
     {
+        ShowHintForRobot(robotType);
+    }
 
+    public void ShowHintForRobot(RobotType robotType)
+    {
         RobotConfigSO config = _unlockManager?.GetRobotConfig(robotType);
         if (config == null)
         {

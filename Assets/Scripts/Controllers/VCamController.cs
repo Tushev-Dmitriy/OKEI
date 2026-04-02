@@ -19,6 +19,14 @@ public class VCamController : MonoBehaviour
     [SerializeField] private bool allowWS = false;
 
     private Vector2 inputValue;
+    private Vector3 _desiredPosition;
+    private bool _hasDesiredPosition;
+
+    private void Awake()
+    {
+        _desiredPosition = transform.position;
+        _hasDesiredPosition = true;
+    }
 
     private void OnEnable()
     {
@@ -51,11 +59,42 @@ public class VCamController : MonoBehaviour
         float moveX = allowWS ? -inputValue.y * moveSpeed * Time.deltaTime : 0f;
 
         Vector3 move = new Vector3(moveX, 0, moveZ);
-        Vector3 targetPos = transform.position + move;
+        Vector3 basePos = _hasDesiredPosition ? _desiredPosition : transform.position;
+        Vector3 targetPos = basePos + move;
 
         targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
         targetPos.z = Mathf.Clamp(targetPos.z, minZ, maxZ);
 
+        _desiredPosition = targetPos;
+        _hasDesiredPosition = true;
+
         transform.position = Vector3.Lerp(transform.position, targetPos, 0.15f);
+    }
+
+    public void SetMovementBounds(float newMinX, float newMaxX, float newMinZ, float newMaxZ)
+    {
+        minX = newMinX;
+        maxX = newMaxX;
+        minZ = newMinZ;
+        maxZ = newMaxZ;
+    }
+
+    public void SnapTo(Vector3 position)
+    {
+        Vector3 targetPos = position;
+        targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
+        targetPos.z = Mathf.Clamp(targetPos.z, minZ, maxZ);
+        _desiredPosition = targetPos;
+        _hasDesiredPosition = true;
+        transform.position = targetPos;
+    }
+
+    public void MoveTo(Vector3 position)
+    {
+        Vector3 targetPos = position;
+        targetPos.x = Mathf.Clamp(targetPos.x, minX, maxX);
+        targetPos.z = Mathf.Clamp(targetPos.z, minZ, maxZ);
+        _desiredPosition = targetPos;
+        _hasDesiredPosition = true;
     }
 }

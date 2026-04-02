@@ -11,7 +11,7 @@ public class FloatingTextSpawner : MonoBehaviour
     [SerializeField] private int prewarmCount = 30;
 
     [Header("Position")]
-    [SerializeField] private float offsetY = 1.5f;
+    [SerializeField] private float offsetY = 2.35f;
     [SerializeField] private float randomSpreadX = 0.3f;
     [SerializeField] private float randomSpreadZ = 0.3f;
 
@@ -27,6 +27,9 @@ public class FloatingTextSpawner : MonoBehaviour
     [SerializeField] private Color healColor = new Color(0.2f, 0.78f, 0.35f);
 
     private SimpleObjectPool<FloatingTextView> pool;
+    private Canvas targetCanvas;
+    private RectTransform canvasRect;
+    private Camera worldCamera;
 
     private void Awake()
     {
@@ -36,6 +39,10 @@ public class FloatingTextSpawner : MonoBehaviour
             enabled = false;
             return;
         }
+
+        targetCanvas = canvasRoot.GetComponentInParent<Canvas>();
+        canvasRect = canvasRoot as RectTransform;
+        worldCamera = ResolveWorldCamera();
 
         pool = new SimpleObjectPool<FloatingTextView>(floatingTextPrefab, canvasRoot, prewarmCount);
     }
@@ -65,18 +72,102 @@ public class FloatingTextSpawner : MonoBehaviour
 
         FloatingTextView view = pool.Get();
         view.transform.SetParent(canvasRoot, false);
+        EnsureBillboard(view);
 
         Vector3 randomOffset = new Vector3(
             Random.Range(-randomSpreadX, randomSpreadX),
             offsetY,
             Random.Range(-randomSpreadZ, randomSpreadZ));
-        Vector3 localPosition = canvasRoot.InverseTransformPoint(worldPos + randomOffset);
-        view.transform.localPosition = localPosition;
+
+        Vector3 spawnWorldPosition = worldPos + randomOffset;
+        SetViewPosition(view.transform, spawnWorldPosition);
 
         view.Initialize(ReturnToPool);
         view.Setup(value, color);
-        float localDistanceUp = Mathf.Abs(canvasRoot.InverseTransformVector(Vector3.up * distanceUp).y);
+        float localDistanceUp = GetVerticalAnimationDistance();
         view.PlayAnimation(duration, localDistanceUp, popScale, moveEase);
+    }
+
+    private static void EnsureBillboard(FloatingTextView view)
+    {
+        if (view == null)
+            return;
+
+        FloatingTextBillboard legacyBillboard = view.GetComponent<FloatingTextBillboard>();
+        if (legacyBillboard != null)
+        {
+            legacyBillboard.enabled = false;
+            Destroy(legacyBillboard);
+        }
+
+        if (view.GetComponent<Billboard>() == null)
+        {
+            view.gameObject.AddComponent<Billboard>();
+        }
+    }
+
+    private void SetViewPosition(Transform viewTransform, Vector3 spawnWorldPosition)
+    {
+        if (viewTransform == null)
+            return;
+
+        if (targetCanvas == null || targetCanvas.renderMode == RenderMode.WorldSpace)
+        {
+            viewTransform.position = spawnWorldPosition;
+            return;
+        }
+
+        Camera cameraForProjection = worldCamera != null ? worldCamera : Camera.main;
+        if (cameraForProjection == null || canvasRect == null)
+        {
+            viewTransform.position = spawnWorldPosition;
+            return;
+        }
+
+        Vector3 screenPoint = cameraForProjection.WorldToScreenPoint(spawnWorldPosition);
+        if (screenPoint.z < 0f)
+        {
+            viewTransform.position = spawnWorldPosition;
+            return;
+        }
+
+        Camera uiCamera = targetCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : targetCanvas.worldCamera;
+        RectTransform rectTransform = viewTransform as RectTransform;
+        if (rectTransform == null)
+        {
+            viewTransform.position = spawnWorldPosition;
+            return;
+        }
+
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, uiCamera, out Vector2 anchoredPos))
+        {
+            rectTransform.anchoredPosition = anchoredPos;
+        }
+    }
+
+    private float GetVerticalAnimationDistance()
+    {
+        if (targetCanvas == null || targetCanvas.renderMode == RenderMode.WorldSpace)
+        {
+            return distanceUp;
+        }
+
+        return distanceUp * 60f;
+    }
+
+    private static Camera ResolveWorldCamera()
+    {
+        if (Camera.main != null)
+            return Camera.main;
+
+        Camera[] cameras = FindObjectsByType<Camera>(FindObjectsSortMode.None);
+        foreach (Camera cam in cameras)
+        {
+            if (cam != null && cam.enabled)
+                return cam;
+        }
+
+        return null;
     }
 
     private void ReturnToPool(FloatingTextView view)

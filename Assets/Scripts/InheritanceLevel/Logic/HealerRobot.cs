@@ -5,14 +5,25 @@ public class HealerRobot : Robot
     private float _healTimer;
     private float _scanTimer;
     private Robot _currentTarget;
+    private Health _selfHealth;
     [SerializeField] private float scanInterval = 0.5f;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _selfHealth = GetComponent<Health>();
+    }
 
     protected override void Update()
     {
-        base.Update();
-
         if (!isAutonomous || config == null || !health.IsAlive)
             return;
+
+        if (combatSystem != null && combatSystem.IsInCombat)
+        {
+            TryHealSelf();
+            return;
+        }
 
         _scanTimer -= Time.deltaTime;
         if (_scanTimer <= 0f || _currentTarget == null || !IsValidTarget(_currentTarget))
@@ -22,7 +33,11 @@ public class HealerRobot : Robot
         }
 
         if (_currentTarget == null)
+        {
+            Move();
+            TryHealSelf();
             return;
+        }
 
         FollowTarget(_currentTarget);
         TryHeal(_currentTarget);
@@ -30,7 +45,11 @@ public class HealerRobot : Robot
 
     public override void TryEngageCombat(EnemyUnit enemy)
     {
-        // Healer does not engage in combat.
+        Health enemyHealth = enemy != null ? enemy.GetComponent<Health>() : null;
+        if (enemyHealth != null && enemyHealth.IsAlive)
+        {
+            combatSystem.StartCombat(enemyHealth);
+        }
     }
 
     private Robot FindHealTarget()
@@ -68,6 +87,23 @@ public class HealerRobot : Robot
         return targetHealth != null && targetHealth.IsAlive;
     }
 
+    private void TryHealSelf()
+    {
+        if (_selfHealth == null || !_selfHealth.IsAlive)
+            return;
+
+        _healTimer += Time.deltaTime;
+        if (_healTimer < config.healInterval)
+            return;
+
+        if (_selfHealth.CurrentHealth < _selfHealth.MaxHealth)
+        {
+            _selfHealth.Heal(config.healAmount, transform.position);
+        }
+
+        _healTimer = 0f;
+    }
+
     private void FollowTarget(Robot target)
     {
         var targetTransform = target.transform;
@@ -76,16 +112,12 @@ public class HealerRobot : Robot
             return;
 
         var direction = (targetTransform.position - transform.position).normalized;
-        var move = direction * config.moveSpeed * Time.deltaTime;
+        if (direction.sqrMagnitude > 0.0001f)
+        {
+            transform.forward = direction;
+        }
 
-        if (TryGetComponent<Rigidbody>(out var rb))
-        {
-            rb.MovePosition(rb.position + move);
-        }
-        else
-        {
-            transform.position += move;
-        }
+        MoveInDirection(direction, GetEffectiveMoveSpeed());
     }
 
     private void TryHeal(Robot target)
