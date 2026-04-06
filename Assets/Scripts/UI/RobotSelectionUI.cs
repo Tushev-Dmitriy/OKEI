@@ -21,8 +21,11 @@ public class RobotSelectionUI : MonoBehaviour
 
     private readonly List<ButtonEntry> _entries = new List<ButtonEntry>();
     private RobotType _selectedType = RobotType.Base;
+    private bool _spawnOnSelectionRuntime = true;
 
     public event System.Action<RobotType> OnSelectedRobotChanged;
+    public event System.Action<RobotType> OnRobotButtonClicked;
+    public static event System.Action<RobotType> OnAnyRobotButtonClicked;
 
     private static readonly RobotType[] DefaultOrder =
     {
@@ -40,6 +43,7 @@ public class RobotSelectionUI : MonoBehaviour
         if (unlockManager == null)
             unlockManager = FindFirstObjectByType<RobotUnlockManager>();
 
+        _spawnOnSelectionRuntime = true;
         BuildEntries();
     }
 
@@ -92,6 +96,46 @@ public class RobotSelectionUI : MonoBehaviour
     {
         _entries.Clear();
 
+        var typedRoots = GetComponentsInChildren<RobotSelectionButton>(true)
+            .Where(r => r != null && r.robotType != RobotType.None)
+            .ToList();
+
+        typedRoots.Sort((a, b) =>
+        {
+            var ap = a.transform.parent != null ? a.transform.parent.GetSiblingIndex() : a.transform.GetSiblingIndex();
+            var bp = b.transform.parent != null ? b.transform.parent.GetSiblingIndex() : b.transform.GetSiblingIndex();
+            return ap.CompareTo(bp);
+        });
+
+        var usedTypes = new HashSet<RobotType>();
+        foreach (var typedRoot in typedRoots)
+        {
+            if (typedRoot == null || usedTypes.Contains(typedRoot.robotType))
+                continue;
+
+            var button = typedRoot.GetComponentsInChildren<Button>(true)
+                .FirstOrDefault(b => b != null && b.gameObject.name == "RobotIcon");
+
+            if (button == null)
+                continue;
+
+            var image = button.GetComponent<Image>();
+            var entry = new ButtonEntry
+            {
+                button = button,
+                image = image,
+                type = typedRoot.robotType,
+                root = button.transform,
+                lockOverlay = FindLockOverlay(typedRoot.transform)
+            };
+
+            _entries.Add(entry);
+            usedTypes.Add(typedRoot.robotType);
+        }
+
+        if (_entries.Count > 0)
+            return;
+
         var buttons = GetComponentsInChildren<Button>(true)
             .Where(b => b.gameObject.name == "RobotIcon")
             .ToList();
@@ -112,13 +156,14 @@ public class RobotSelectionUI : MonoBehaviour
             var image = button.GetComponent<Image>();
             var typeSource = button.GetComponentInParent<RobotSelectionButton>();
             var resolvedType = typeSource != null ? typeSource.robotType : DefaultOrder[i];
+            var root = typeSource != null ? typeSource.transform : button.transform.parent;
             var entry = new ButtonEntry
             {
                 button = button,
                 image = image,
                 type = resolvedType,
                 root = button.transform,
-                lockOverlay = FindLockOverlay(button.transform)
+                lockOverlay = FindLockOverlay(root)
             };
 
             _entries.Add(entry);
@@ -157,13 +202,17 @@ public class RobotSelectionUI : MonoBehaviour
         if (unlockManager != null && !unlockManager.IsRobotUnlocked(type))
             return;
 
-        if (spawner != null && spawnOnSelection && !spawner.CanSpawnType(type, out string denyReason))
+        OnRobotButtonClicked?.Invoke(type);
+        OnAnyRobotButtonClicked?.Invoke(type);
+
+        bool shouldSpawnNow = spawnOnSelection && _spawnOnSelectionRuntime;
+        if (spawner != null && shouldSpawnNow && !spawner.CanSpawnType(type, out string denyReason))
         {
             spawner.NotifySpawnDenied(type, denyReason);
             return;
         }
 
-        SetSelectedRobot(type, spawnOnSelection);
+        SetSelectedRobot(type, shouldSpawnNow);
     }
 
     private void SelectInitial()
@@ -221,6 +270,11 @@ public class RobotSelectionUI : MonoBehaviour
         OnSelectedRobotChanged?.Invoke(type);
     }
 
+    public void SetSpawnOnSelectionEnabled(bool enabled)
+    {
+        _spawnOnSelectionRuntime = enabled;
+    }
+
     private void UpdateVisuals()
     {
         foreach (var entry in _entries)
@@ -249,18 +303,16 @@ public class RobotSelectionUI : MonoBehaviour
                 entry.lockOverlay.SetActive(!unlocked);
             }
         }
+
+        ForceRefreshLocksByTypedRoots();
     }
 
-    private GameObject FindLockOverlay(Transform buttonTransform)
+    private GameObject FindLockOverlay(Transform rootTransform)
     {
-        if (buttonTransform == null)
+        if (rootTransform == null)
             return null;
 
-        var parent = buttonTransform.parent;
-        if (parent == null)
-            return null;
-
-        var overlays = parent.GetComponentsInChildren<Transform>(true);
+        var overlays = rootTransform.GetComponentsInChildren<Transform>(true);
         foreach (var overlay in overlays)
         {
             if (overlay.name == "CloseIcon")
@@ -268,6 +320,28 @@ public class RobotSelectionUI : MonoBehaviour
         }
 
         return null;
+    }
+
+    // Safety net: keep lock overlays tied to RobotSelectionButton.robotType,
+    // even if button-entry mapping was altered by hierarchy/order changes.
+    private void ForceRefreshLocksByTypedRoots()
+    {
+        if (unlockManager == null)
+            return;
+
+        var typedRoots = GetComponentsInChildren<RobotSelectionButton>(true);
+        foreach (var typedRoot in typedRoots)
+        {
+            if (typedRoot == null)
+                continue;
+
+            GameObject closeIcon = FindLockOverlay(typedRoot.transform);
+            if (closeIcon == null)
+                continue;
+
+            bool unlocked = unlockManager.IsRobotUnlocked(typedRoot.robotType);
+            closeIcon.SetActive(!unlocked);
+        }
     }
 
     private class ButtonEntry

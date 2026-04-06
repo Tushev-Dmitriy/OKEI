@@ -85,6 +85,53 @@ public class RobotUnlockHintUI : MonoBehaviour
         AnimatePanel();
     }
 
+    public void ShowCustomHint(string message, Sprite icon = null)
+    {
+        ShowCustomHint(message, icon, hideIconWhenMissing: true);
+    }
+
+    public void ShowSystemHint(string title, string message, Sprite icon = null)
+    {
+        if (string.IsNullOrWhiteSpace(message) && string.IsNullOrWhiteSpace(title))
+            return;
+
+        string formattedMessage = string.IsNullOrWhiteSpace(title)
+            ? message
+            : $"{title}\n{message}";
+
+        ShowCustomHint(formattedMessage, icon, hideIconWhenMissing: false);
+    }
+
+    private void ShowCustomHint(string message, Sprite icon, bool hideIconWhenMissing)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        if (hintText != null)
+        {
+            hintText.text = message;
+        }
+
+        if (robotIconImage != null)
+        {
+            if (icon != null)
+            {
+                robotIconImage.sprite = icon;
+                robotIconImage.gameObject.SetActive(true);
+            }
+            else if (hideIconWhenMissing)
+            {
+                robotIconImage.gameObject.SetActive(false);
+            }
+            else
+            {
+                robotIconImage.gameObject.SetActive(robotIconImage.sprite != null);
+            }
+        }
+
+        AnimatePanel();
+    }
+
     private void AnimatePanel()
     {
         if (hintPanel == null) return;
