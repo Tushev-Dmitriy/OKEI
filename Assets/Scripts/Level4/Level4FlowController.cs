@@ -94,6 +94,15 @@ public class Level4FlowController : MonoBehaviour
     [SerializeField, Min(0f)] private float squadGroundOffset = 0.03f;
     [SerializeField] private LayerMask squadGroundMask = ~0;
 
+    [Header("Completion Transition")]
+    [SerializeField] private int completionTargetSceneBuildIndex = 0;
+    [SerializeField, Min(0.01f)] private float completionFadeInDuration = 0.8f;
+    [SerializeField, Min(0.01f)] private float completionFadeOutDuration = 0.35f;
+    [SerializeField] private string completionLoadingStatus = "Завершение уровня";
+    [SerializeField] private string completionFinalStatus = "Возвращаемся в меню";
+    [SerializeField] private string completionHintText = "Сохраняем прогресс и открываем следующий уровень";
+    [SerializeField] private bool completionLockCursorAfterLoad = false;
+
     private readonly List<SectionDefinition> _sections = new();
     private readonly Dictionary<string, Transform> _sceneTransforms = new(StringComparer.Ordinal);
     private readonly Dictionary<string, EnemyUnit> _sceneEnemies = new(StringComparer.Ordinal);
@@ -129,6 +138,7 @@ public class Level4FlowController : MonoBehaviour
     private string _statusOverride;
     private bool _squadHintShownThisSession;
     private bool _isFinalDeploying;
+    private bool _completionTransitionStarted;
     private GameObject _levelUpWindowObject;
     internal RobotSpawner Spawner => spawner; internal RobotSpawner SpawnerMutable { get => spawner; set => spawner = value; }
     internal RobotUnlockManager UnlockManager => unlockManager; internal RobotUnlockManager UnlockManagerMutable { get => unlockManager; set => unlockManager = value; }
@@ -161,6 +171,10 @@ public class Level4FlowController : MonoBehaviour
     internal float EnemyRespawnScaleDuration => enemyRespawnScaleDuration; internal float EnemyRespawnStartScaleFactor => enemyRespawnStartScaleFactor; internal float PlayerRobotMoveSpeedMultiplierValue => playerRobotMoveSpeedMultiplier;
     internal float SquadMinMoveSpacing => squadMinMoveSpacing; internal float SquadMinSpeedFactorWhenBlocked => squadMinSpeedFactorWhenBlocked; internal float SquadGroundProbeHeight => squadGroundProbeHeight; internal float SquadGroundOffset => squadGroundOffset; internal LayerMask SquadGroundMask => squadGroundMask;
     internal float SquadHudFadeDuration => squadHudFadeDuration; internal float SquadSpawnDelay => squadSpawnDelay; internal float CorridorEnemyBaseHealthValue => corridorEnemyBaseHealth; internal float CorridorEnemyHealthStepValue => corridorEnemyHealthStep; internal float CorridorEnemyBaseDamageValue => corridorEnemyBaseDamage; internal float CorridorEnemyDamageStepValue => corridorEnemyDamageStep;
+    internal int CompletionTargetSceneBuildIndex => completionTargetSceneBuildIndex; internal bool CompletionLockCursorAfterLoad => completionLockCursorAfterLoad;
+    internal float CompletionFadeInDuration => completionFadeInDuration; internal float CompletionFadeOutDuration => completionFadeOutDuration;
+    internal string CompletionLoadingStatus => completionLoadingStatus; internal string CompletionFinalStatus => completionFinalStatus; internal string CompletionHintText => completionHintText;
+    internal bool CompletionTransitionStarted { get => _completionTransitionStarted; set => _completionTransitionStarted = value; }
     internal float PlayerPulseTimer { get => _playerPulseTimer; set => _playerPulseTimer = value; } internal float EscortPulseTimer { get => _escortPulseTimer; set => _escortPulseTimer = value; } internal float SquadPulseTimer { get => _squadPulseTimer; set => _squadPulseTimer = value; }
     internal int FinalCommittedAttackers { get => _finalCommittedAttackers; set => _finalCommittedAttackers = value; } internal int FinalCommittedHealers { get => _finalCommittedHealers; set => _finalCommittedHealers = value; } internal int FinalCommittedDefenders { get => _finalCommittedDefenders; set => _finalCommittedDefenders = value; } internal int FinalCommittedBases { get => _finalCommittedBases; set => _finalCommittedBases = value; } internal int FinalCommittedTotal { get => _finalCommittedTotal; set => _finalCommittedTotal = value; }
     internal float UnlockHintReplayCooldownValue => unlockHintReplayCooldown; internal float LastUnlockHintTime { get => _lastUnlockHintTime; set => _lastUnlockHintTime = value; } internal RobotType LastHintRobotType { get => _lastHintRobotType; set => _lastHintRobotType = value; }
@@ -181,6 +195,7 @@ public class Level4FlowController : MonoBehaviour
     internal bool AreAllActiveEnemiesDefeatedForModule() => AreAllActiveEnemiesDefeated(); internal void CompleteCurrentSectionForModule() => CompleteCurrentSection(); internal Sprite GetRobotIconForModule(RobotType robotType) => GetRobotIcon(robotType); internal void RefreshSectionFromProgressForModule() => RefreshSectionFromProgress(); internal void AdvanceAfterRequiredRobotTestForModule(string message, bool openGate) => AdvanceAfterRequiredRobotTest(message, openGate); internal void FailCurrentSectionForModule(string message) => FailCurrentSection(message); internal bool HasLivingFinalRobotForModule() => HasLivingFinalRobot();
     internal void UnsubscribeFinalRobotDeathForModule(Robot robot) { if (robot != null) robot.Died -= HandleFinalRobotDied; } internal void UnsubscribePlayerRobotDeathForModule(Robot robot) { if (robot != null) robot.Died -= HandlePlayerRobotDied; } internal void UnsubscribeEscortRobotDeathForModule(Robot robot) { if (robot != null) robot.Died -= HandleEscortRobotDied; }
     internal void CancelUnlockStageTransitionInvokeForModule() => CancelInvoke(nameof(UnlockStageTransition)); internal void CancelSquadDeploymentForModule() => squadDeploymentModule.CancelDeployment(); internal void SetGateClosedForModule(string gateName, bool closed) => SetGateClosed(gateName, closed); internal void EnterSectionForModule(SectionDefinition section, string statusOverride) => EnterSection(section, statusOverride); internal SectionDefinition GetSectionForModule(SectionId id) => GetSection(id); internal SectionDefinition DetermineCurrentSectionForModule() => DetermineCurrentSection(); internal void ClampProgressStageToUnlocksForModule() => ClampProgressStageToUnlocks();
+    internal bool TryStartCompletionTransitionForModule() => TryStartCompletionTransition();
 
     private void Awake() { EnsureModules(); setupModule.RunAwake(this); }
     private void OnEnable() { EnsureModules(); eventsModule.RunOnEnable(this); }
@@ -384,6 +399,35 @@ internal void BuildSquadHudSnapshot(
 private string GetRobotName(RobotType robotType) => localizationModule.GetRobotName(this, robotType);
 private Sprite GetRobotIcon(RobotType robotType) => localizationModule.GetRobotIcon(this, robotType);
 internal void NormalizeLocalizedHintText() => localizationModule.NormalizeLocalizedHintText(this);
+
+private bool TryStartCompletionTransition()
+    {
+        if (_completionTransitionStarted)
+            return true;
+
+        if (SceneTransitionService.IsRunning)
+        {
+            _completionTransitionStarted = true;
+            return true;
+        }
+
+        bool started = SceneTransitionService.StartPortalTransition(
+            completionTargetSceneBuildIndex,
+            completedLevelIndex,
+            completionFadeInDuration,
+            completionFadeOutDuration,
+            completionLoadingStatus,
+            completionFinalStatus,
+            completionHintText,
+            completionLockCursorAfterLoad,
+            null,
+            null);
+
+        if (started)
+            _completionTransitionStarted = true;
+
+        return started;
+    }
 
     // ===== from Level4FlowController.Effects.cs =====
 private void PlayEnemyRespawnScale(EnemyUnit enemy) => effectsModule.PlayEnemyRespawnScale(this, enemy);

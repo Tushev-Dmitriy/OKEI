@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public sealed class Level4SectionLifecycleModule : MonoBehaviour
@@ -86,10 +87,21 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
             flow.SetGateClosedForModule(flow.CurrentSectionDef.ExitGateName, closed: false);
             CleanupAttempt(flow, destroyPlayerRobot: true);
             flow.LevelCompletedValue = true;
-            LevelProgressManager.CompleteLevel(flow.CompletedLevelIndex);
             flow.TrySaveProgressForModule();
             flow.StatusOverride = flow.CurrentSectionDef.SuccessText;
             flow.RefreshStatus();
+
+            bool transitionStarted = flow.TryStartCompletionTransitionForModule();
+            if (!transitionStarted)
+            {
+                LevelProgressManager.CompleteLevel(flow.CompletedLevelIndex);
+                flow.TrySaveProgressForModule();
+
+                int targetBuildIndex = flow.CompletionTargetSceneBuildIndex;
+                if (targetBuildIndex >= 0)
+                    SceneManager.LoadScene(targetBuildIndex, LoadSceneMode.Single);
+            }
+
             return;
         }
 

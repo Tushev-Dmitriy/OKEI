@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using StarterAssets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,7 @@ public class LockControlSystem : MonoBehaviour
     [SerializeField] private Transform lockWaterTransform;
     [SerializeField] private Transform outsideWaterTransform;
     [SerializeField] private AudioSource alarmAudio;
+    [SerializeField] private bool forceUnlockedCursorOnLevel2 = true;
 
     private string reloadSceneName = "Level2";
 
@@ -189,6 +191,7 @@ public class LockControlSystem : MonoBehaviour
     private bool _previousCoolingState;
     private bool _lockWaterStartCaptured;
     private float _lockWaterStartY;
+    private StarterAssetsInputs _starterAssetsInputs;
 
     private enum IncidentType
     {
@@ -241,6 +244,7 @@ public class LockControlSystem : MonoBehaviour
 
     private void Awake()
     {
+        EnforceLevel2CursorState();
         ResolveAndApplyConfig();
         InitializeRuntimeLabels();
         ResolveLocalReferences();
@@ -256,6 +260,7 @@ public class LockControlSystem : MonoBehaviour
 
     private void Start()
     {
+        EnforceLevel2CursorState();
         ApplyWaterVisual();
 
         if (shipController == null)
@@ -269,6 +274,7 @@ public class LockControlSystem : MonoBehaviour
 
     private void Update()
     {
+        EnforceLevel2CursorState();
         float dt = Time.deltaTime;
 
         if (!_gameplayStarted)
@@ -320,6 +326,25 @@ public class LockControlSystem : MonoBehaviour
         UpdateGate(dt);
         ApplyWaterVisual();
         lockUi?.Refresh();
+    }
+
+    private void EnforceLevel2CursorState()
+    {
+        if (!forceUnlockedCursorOnLevel2)
+            return;
+
+        if (_starterAssetsInputs == null || !_starterAssetsInputs.gameObject.scene.IsValid())
+            _starterAssetsInputs = FindFirstObjectByType<StarterAssetsInputs>();
+
+        if (_starterAssetsInputs != null)
+        {
+            _starterAssetsInputs.cursorLocked = false;
+            _starterAssetsInputs.cursorInputForLook = false;
+            _starterAssetsInputs.LookInput(Vector2.zero);
+        }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void OnGUI()
