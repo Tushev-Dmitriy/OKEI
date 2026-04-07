@@ -140,6 +140,7 @@ public class Level4FlowController : MonoBehaviour
     internal bool DisableLegacyConveyors => disableLegacyConveyors; internal bool DisableLegacyExitTrigger => disableLegacyExitTrigger;
     internal Button SquadHudClearButton => squadHudModule != null ? squadHudModule.ClearButton : null;
     internal bool LevelCompleted => _levelCompleted; internal bool LevelCompletedValue { get => _levelCompleted; set => _levelCompleted = value; }
+    internal bool IsSquadModeUnlockedForHud() => IsSquadModeUnlocked();
     internal bool FinalRunStarted => _finalRunStarted; internal bool FinalRunStartedMutable { get => _finalRunStarted; set => _finalRunStarted = value; } internal bool FinalRunStartedValue => _finalRunStarted;
     internal bool IsFinalDeploying { get => _isFinalDeploying; set => _isFinalDeploying = value; } internal bool IsInFinalSection => _currentSection != null && _currentSection.Id == SectionId.Final;
     internal int FinalSectionSpawnLimit => Mathf.Max(1, _currentSection != null ? _currentSection.MaxSpawns : 1); internal List<RobotType> PlannedFinalSquad => _plannedFinalSquad; internal List<Robot> FinalSquad => _finalSquad;
@@ -163,7 +164,7 @@ public class Level4FlowController : MonoBehaviour
     internal float PlayerPulseTimer { get => _playerPulseTimer; set => _playerPulseTimer = value; } internal float EscortPulseTimer { get => _escortPulseTimer; set => _escortPulseTimer = value; } internal float SquadPulseTimer { get => _squadPulseTimer; set => _squadPulseTimer = value; }
     internal int FinalCommittedAttackers { get => _finalCommittedAttackers; set => _finalCommittedAttackers = value; } internal int FinalCommittedHealers { get => _finalCommittedHealers; set => _finalCommittedHealers = value; } internal int FinalCommittedDefenders { get => _finalCommittedDefenders; set => _finalCommittedDefenders = value; } internal int FinalCommittedBases { get => _finalCommittedBases; set => _finalCommittedBases = value; } internal int FinalCommittedTotal { get => _finalCommittedTotal; set => _finalCommittedTotal = value; }
     internal float UnlockHintReplayCooldownValue => unlockHintReplayCooldown; internal float LastUnlockHintTime { get => _lastUnlockHintTime; set => _lastUnlockHintTime = value; } internal RobotType LastHintRobotType { get => _lastHintRobotType; set => _lastHintRobotType = value; }
-    internal void RefreshSquadHud() => UpdateSquadHud(); internal void SetStatusTextValue(string value) { if (statusText != null) statusText.text = value; }
+    internal void RefreshSquadHud() => UpdateSquadHud(); internal void SetStatusTextValue(string value) { }
     internal void GetFinalCompositionCountsForModule(out int attackers, out int healers, out int defenders, out int bases, out int total) => GetFinalCompositionCounts(out attackers, out healers, out defenders, out bases, out total);
     internal void GetCommittedFinalCompositionCountsForModule(out int attackers, out int healers, out int defenders, out int bases, out int total) => GetCommittedFinalCompositionCounts(out attackers, out healers, out defenders, out bases, out total);
     internal bool IsAllowedFinalCompositionForModule() => IsAllowedFinalComposition(); internal void SetActiveWaveIndexValue(int value) => _activeWaveIndex = value;
@@ -364,7 +365,9 @@ internal void BuildSquadHudSnapshot(
         out int total)
     {
         visible = _currentSection != null && _currentSection.Id == SectionId.Final && !_levelCompleted;
-        limit = Mathf.Max(1, _currentSection != null ? _currentSection.MaxSpawns : 5);
+        limit = _currentSection != null && _currentSection.Id == SectionId.Final
+            ? Mathf.Max(1, _currentSection.MaxSpawns)
+            : 5;
 
         if (_finalRunStarted)
             GetCommittedFinalCompositionCounts(out attackers, out healers, out defenders, out bases, out total);
@@ -457,11 +460,8 @@ public sealed class Level4BootstrapModule : MonoBehaviour
         if (flow.CameraControllerMutable == null)
             flow.CameraControllerMutable = FindFirstObjectByType<VCamController>();
 
-        if (flow.StatusTextMutable == null)
-        {
-            flow.StatusTextMutable = FindObjectsByType<TMP_Text>(FindObjectsSortMode.None)
-                .FirstOrDefault(text => text != null && text.name == flow.StatusTextObjectName);
-        }
+        // Intentionally do not auto-resolve status text by name.
+        // This prevents accidental writes into scene-authored HintText labels.
 
         if (flow.LevelUpWindowObjectMutable == null && !string.IsNullOrWhiteSpace(flow.LevelUpWindowObjectName))
         {
@@ -511,6 +511,7 @@ public sealed class Level4BootstrapModule : MonoBehaviour
             }
         }
     }
+
 }
 
 [DisallowMultipleComponent]

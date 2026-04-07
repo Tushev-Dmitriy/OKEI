@@ -21,6 +21,8 @@ public class Robot : MonoBehaviour
     private EnemyUnit cachedTargetEnemy;
     private float enemyScanTimer;
     private bool isDying;
+    [SerializeField, Min(0.1f)] private float minRobotSpacing = 1.1f;
+    [SerializeField] private LayerMask robotSpacingMask = ~0;
 
     protected virtual void Awake()
     {
@@ -151,6 +153,10 @@ public class Robot : MonoBehaviour
         if (moveDistance <= 0f)
             return;
 
+        Vector3 desiredPosition = transform.position + normalizedDirection * moveDistance;
+        if (!CanOccupyPosition(desiredPosition))
+            return;
+
         if (TryGetComponent<Rigidbody>(out var rb))
         {
             // Let physics resolve contacts naturally so robots can actually collide with enemies and enter combat.
@@ -158,7 +164,7 @@ public class Robot : MonoBehaviour
             return;
         }
 
-        transform.position += normalizedDirection * moveDistance;
+        transform.position = desiredPosition;
     }
 
     public virtual void TryEngageCombat(EnemyUnit enemy)
@@ -331,5 +337,27 @@ public class Robot : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private bool CanOccupyPosition(Vector3 desiredPosition)
+    {
+        float radius = Mathf.Max(0.1f, minRobotSpacing * 0.5f);
+        Vector3 probe = desiredPosition + Vector3.up * 0.35f;
+        Collider[] hits = Physics.OverlapSphere(probe, radius, robotSpacingMask, QueryTriggerInteraction.Ignore);
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider hit = hits[i];
+            if (hit == null)
+                continue;
+
+            Robot other = hit.GetComponentInParent<Robot>();
+            if (other == null || other == this || !other.IsAlive)
+                continue;
+
+            return false;
+        }
+
+        return true;
     }
 }

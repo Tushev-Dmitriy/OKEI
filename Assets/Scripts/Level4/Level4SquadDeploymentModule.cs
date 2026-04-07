@@ -1,9 +1,10 @@
-using System.Collections;
+п»їusing System.Collections;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public sealed class Level4SquadDeploymentModule : MonoBehaviour
 {
+    private const float SquadSpawnHoldSeconds = 1.5f;
     private Coroutine _deployCoroutine;
 
     public void HandleRobotSelectionButtonClicked(Level4FlowController flow, RobotType selectedType)
@@ -16,7 +17,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
 
         if (flow.IsFinalDeploying)
         {
-            flow.StatusOverride = "Отряд уже разворачивается. Дождись выхода всех роботов.";
+            flow.StatusOverride = "РћС‚СЂСЏРґ СѓР¶Рµ СЂР°Р·РІРѕСЂР°С‡РёРІР°РµС‚СЃСЏ. Р”РѕР¶РґРёСЃСЊ РІС‹С…РѕРґР° РІСЃРµС… СЂРѕР±РѕС‚РѕРІ.";
             flow.RefreshStatus();
             return;
         }
@@ -24,7 +25,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
         int limit = flow.FinalSectionSpawnLimit;
         if (flow.PlannedFinalSquad.Count >= limit)
         {
-            flow.StatusOverride = "Состав уже собран. Сейчас начнется выход роботов.";
+            flow.StatusOverride = "РЎРѕСЃС‚Р°РІ СѓР¶Рµ СЃРѕР±СЂР°РЅ. РЎРµР№С‡Р°СЃ РЅР°С‡РЅРµС‚СЃСЏ РІС‹С…РѕРґ СЂРѕР±РѕС‚РѕРІ.";
             flow.RefreshStatus();
             return;
         }
@@ -33,7 +34,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
             flow.BeginFinalAssemblyFromModule();
 
         flow.PlannedFinalSquad.Add(selectedType);
-        flow.StatusOverride = $"Добавлен: {flow.GetRobotDisplayName(selectedType)} ({flow.PlannedFinalSquad.Count}/{limit})";
+        flow.StatusOverride = $"Р”РѕР±Р°РІР»РµРЅ: {flow.GetRobotDisplayName(selectedType)} ({flow.PlannedFinalSquad.Count}/{limit})";
         flow.RefreshStatus();
 
         if (flow.PlannedFinalSquad.Count >= limit)
@@ -58,7 +59,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
             yield break;
 
         flow.IsFinalDeploying = true;
-        flow.StatusOverride = "Развертываем отряд: роботы выходят по очереди.";
+        flow.StatusOverride = "Р Р°Р·РІРµСЂС‚С‹РІР°РµРј РѕС‚СЂСЏРґ: СЂРѕР±РѕС‚С‹ РІС‹С…РѕРґСЏС‚ РїРѕ РѕС‡РµСЂРµРґРё.";
         flow.RefreshStatus();
 
         for (int i = 0; i < flow.PlannedFinalSquad.Count; i++)
@@ -78,7 +79,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
                     bypassValidation: true);
             }
 
-            yield return new WaitForSeconds(flow.SquadSpawnDelay);
+            yield return new WaitForSeconds(SquadSpawnHoldSeconds);
         }
 
         flow.IsFinalDeploying = false;

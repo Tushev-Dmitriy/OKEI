@@ -58,6 +58,21 @@ public sealed class Level4SquadMovementModule : MonoBehaviour
         if (flow == null || robot == null)
             return;
 
+        Transform spawnPoint = flow.Spawner != null ? flow.Spawner.SpawnPoint : null;
+        if (spawnPoint != null)
+        {
+            robot.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+            if (robot.TryGetComponent(out Rigidbody spawnRb))
+            {
+                spawnRb.position = spawnPoint.position;
+                spawnRb.rotation = spawnPoint.rotation;
+                spawnRb.linearVelocity = Vector3.zero;
+                spawnRb.angularVelocity = Vector3.zero;
+            }
+
+            return;
+        }
+
         Transform tr = robot.transform;
         Vector3 origin = tr.position + Vector3.up * flow.SquadGroundProbeHeight;
         float maxDistance = flow.SquadGroundProbeHeight * 2f + 3f;
