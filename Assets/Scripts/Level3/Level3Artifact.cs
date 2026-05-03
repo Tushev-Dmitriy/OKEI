@@ -2,10 +2,11 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider))]
-public class Level3Artifact : MonoBehaviour
+public class Level3Artifact : MonoBehaviour, ISceneSaveable
 {
     [Header("Links")]
     [SerializeField] private Level3ArtifactManager _artifactManager;
+    [SerializeField] private string _saveId;
     [SerializeField] private string _playerTag = "Player";
     [SerializeField] private Light _roomDoorLight;
     [SerializeField] private Color _collectedLightColor = Color.green;
@@ -16,7 +17,10 @@ public class Level3Artifact : MonoBehaviour
 
     private Collider _triggerCollider;
     private bool _isCollected;
+    private Color _defaultLightColor;
+
     public bool IsCollected => _isCollected;
+    public string SaveId => string.IsNullOrWhiteSpace(_saveId) ? BuildFallbackSaveId() : _saveId;
 
     private void Awake()
     {
@@ -34,6 +38,11 @@ public class Level3Artifact : MonoBehaviour
         if (_objectToDisableOnPickup == null)
         {
             _objectToDisableOnPickup = gameObject;
+        }
+
+        if (_roomDoorLight != null)
+        {
+            _defaultLightColor = _roomDoorLight.color;
         }
     }
 
@@ -63,25 +72,65 @@ public class Level3Artifact : MonoBehaviour
 
         MarkAsCollected();
         _artifactManager.NotifyArtifactCollected(this);
+        GameplaySaveManager.SaveCurrentGame();
+    }
+
+    public SceneObjectStateData CaptureState()
+    {
+        return new SceneObjectStateData
+        {
+            id = SaveId,
+            type = SceneObjectType.Artifact,
+            state = _isCollected ? 1 : 0
+        };
+    }
+
+    public void RestoreState(SceneObjectStateData data)
+    {
+        bool collected = data != null && data.state == 1;
+        ApplyCollectedState(collected);
+
+        if (collected && _artifactManager != null)
+        {
+            _artifactManager.NotifyArtifactRestored(this);
+        }
     }
 
     private void MarkAsCollected()
     {
-        _isCollected = true;
+        ApplyCollectedState(true);
+    }
+
+    private void ApplyCollectedState(bool collected)
+    {
+        _isCollected = collected;
 
         if (_disableTriggerAfterPickup && _triggerCollider != null)
         {
-            _triggerCollider.enabled = false;
+            _triggerCollider.enabled = !collected;
         }
 
         if (_objectToDisableOnPickup != null)
         {
-            _objectToDisableOnPickup.SetActive(false);
+            _objectToDisableOnPickup.SetActive(!collected);
         }
 
         if (_roomDoorLight != null)
         {
-            _roomDoorLight.color = _collectedLightColor;
+            _roomDoorLight.color = collected ? _collectedLightColor : _defaultLightColor;
         }
+    }
+
+    private string BuildFallbackSaveId()
+    {
+        string path = name;
+        Transform current = transform.parent;
+        while (current != null)
+        {
+            path = current.name + "/" + path;
+            current = current.parent;
+        }
+
+        return $"{nameof(Level3Artifact)}:{path}";
     }
 }

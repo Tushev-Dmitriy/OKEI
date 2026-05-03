@@ -68,12 +68,12 @@ namespace StarterAssets
 
 		private void OnApplicationFocus(bool hasFocus)
 		{
-			SetCursorState(cursorLocked);
+			GameplayCursorPolicy.ApplyForActiveScene(cursorLocked);
 		}
 
 		private void SetCursorState(bool newState)
 		{
-			Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+			GameplayCursorPolicy.ApplyForActiveScene(newState);
 		}
 	}
 	

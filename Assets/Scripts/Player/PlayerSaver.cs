@@ -39,6 +39,13 @@ public class PlayerSaver : MonoBehaviour
 
     public void SavePlayerData()
     {
+        GameplaySaveManager saveManager = Object.FindFirstObjectByType<GameplaySaveManager>();
+        if (saveManager != null)
+        {
+            saveManager.SaveNow();
+            return;
+        }
+
         if (_player == null)
         {
             return;
@@ -99,6 +106,11 @@ public class PlayerSaver : MonoBehaviour
 
     public void LoadPlayerData()
     {
+        if (Object.FindFirstObjectByType<GameplaySaveManager>() != null)
+        {
+            return;
+        }
+
         PlayerSaveSystem.Load(out SaveData data);
 
         if (data == null)

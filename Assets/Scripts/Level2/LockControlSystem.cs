@@ -4,10 +4,11 @@ using StarterAssets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LockControlSystem : MonoBehaviour
+public class LockControlSystem : MonoBehaviour, ISceneSaveable
 {
     [SerializeField] private LockLevelConfig levelConfig;
     [SerializeField] private string defaultConfigResourcePath = "Level2/LockLevelConfig_Default";
+    [SerializeField] private string saveId = "Level2.LockControlSystem";
 
     [SerializeField] private LockInputs lockInputs;
     [SerializeField] private LockUI lockUi;
@@ -193,6 +194,8 @@ public class LockControlSystem : MonoBehaviour
     private float _lockWaterStartY;
     private StarterAssetsInputs _starterAssetsInputs;
 
+    public string SaveId => saveId;
+
     private enum IncidentType
     {
         None,
@@ -200,6 +203,34 @@ public class LockControlSystem : MonoBehaviour
         CoolingFault,
         FlowSurge,
         LiftJam
+    }
+
+    [Serializable]
+    private sealed class LockControlSaveState
+    {
+        public int phase;
+        public float systemIntegrity;
+        public float pressure;
+        public float temperature;
+        public float waterLevel;
+        public float liftPower;
+        public float stabilizationTimer;
+        public float phase2EmergencyTimer;
+        public bool failureTriggered;
+        public bool gateOpening;
+        public bool gameplayStarted;
+        public float sessionTimer;
+        public float nextIncidentTimer;
+        public int threatTier;
+        public int activeIncident;
+        public float incidentTimer;
+        public float incidentDuration;
+        public float incidentResolveProgress;
+        public string incidentLabel;
+        public string incidentHint;
+        public bool coolingRestartRequiresOff;
+        public bool coolingRestartRequiresOn;
+        public bool previousCoolingState;
     }
 
     public LockPhase CurrentPhase => _phase;
@@ -354,6 +385,88 @@ public class LockControlSystem : MonoBehaviour
 
         if (GUI.Button(debugCompleteButtonRect, debugCompleteButtonLabel))
             DebugCompleteLevel();
+    }
+
+    public SceneObjectStateData CaptureState()
+    {
+        LockControlSaveState state = new LockControlSaveState
+        {
+            phase = (int)_phase,
+            systemIntegrity = systemIntegrity,
+            pressure = pressure,
+            temperature = temperature,
+            waterLevel = waterLevel,
+            liftPower = liftPower,
+            stabilizationTimer = _stabilizationTimer,
+            phase2EmergencyTimer = _phase2EmergencyTimer,
+            failureTriggered = _failureTriggered,
+            gateOpening = _gateOpening,
+            gameplayStarted = _gameplayStarted,
+            sessionTimer = _sessionTimer,
+            nextIncidentTimer = _nextIncidentTimer,
+            threatTier = _threatTier,
+            activeIncident = (int)_activeIncident,
+            incidentTimer = _incidentTimer,
+            incidentDuration = _incidentDuration,
+            incidentResolveProgress = _incidentResolveProgress,
+            incidentLabel = _incidentLabel,
+            incidentHint = _incidentHint,
+            coolingRestartRequiresOff = _coolingRestartRequiresOff,
+            coolingRestartRequiresOn = _coolingRestartRequiresOn,
+            previousCoolingState = _previousCoolingState
+        };
+
+        return new SceneObjectStateData
+        {
+            id = SaveId,
+            type = SceneObjectType.Platform,
+            state = (int)_phase,
+            json = JsonUtility.ToJson(state)
+        };
+    }
+
+    public void RestoreState(SceneObjectStateData data)
+    {
+        if (data == null || string.IsNullOrWhiteSpace(data.json))
+        {
+            return;
+        }
+
+        LockControlSaveState state = JsonUtility.FromJson<LockControlSaveState>(data.json);
+        if (state == null)
+        {
+            return;
+        }
+
+        _phase = Enum.IsDefined(typeof(LockPhase), state.phase) ? (LockPhase)state.phase : LockPhase.Stabilization;
+        systemIntegrity = state.systemIntegrity;
+        pressure = state.pressure;
+        temperature = state.temperature;
+        waterLevel = state.waterLevel;
+        liftPower = state.liftPower;
+        _stabilizationTimer = state.stabilizationTimer;
+        _phase2EmergencyTimer = state.phase2EmergencyTimer;
+        _failureTriggered = state.failureTriggered;
+        _gateOpening = state.gateOpening;
+        _gameplayStarted = state.gameplayStarted;
+        _sessionTimer = state.sessionTimer;
+        _nextIncidentTimer = state.nextIncidentTimer;
+        _threatTier = Mathf.Max(1, state.threatTier);
+        _activeIncident = Enum.IsDefined(typeof(IncidentType), state.activeIncident) ? (IncidentType)state.activeIncident : IncidentType.None;
+        _incidentTimer = state.incidentTimer;
+        _incidentDuration = state.incidentDuration;
+        _incidentResolveProgress = state.incidentResolveProgress;
+        _incidentLabel = state.incidentLabel;
+        _incidentHint = state.incidentHint ?? string.Empty;
+        _coolingRestartRequiresOff = state.coolingRestartRequiresOff;
+        _coolingRestartRequiresOn = state.coolingRestartRequiresOn;
+        _previousCoolingState = state.previousCoolingState;
+
+        ClampCoreValues();
+        ApplyWaterVisual();
+        UpdateGate(0f);
+        lockUi?.Refresh();
+        EnforceLevel2CursorState();
     }
 
     public void DebugCompleteLevel()

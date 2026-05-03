@@ -15,6 +15,8 @@ public class SaveResetter : MonoBehaviour
         PlayerSaveSystem.DeleteSave();
         InventorySaveSystem.DeleteSave();
         VariableItemSaveSystem.DeleteSave();
+        PlayerPrefs.DeleteKey("Level4RoomStage");
+        PlayerPrefs.Save();
     }
 
     public void ResetSaves()

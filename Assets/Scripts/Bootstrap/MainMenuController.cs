@@ -732,15 +732,19 @@ internal sealed class SceneTransitionService : MonoBehaviour
 
     private static void ApplyCursorState(bool lockCursorAfterLoad)
     {
-        if (lockCursorAfterLoad)
+        if (GameplayCursorPolicy.ActiveSceneNeedsFreeCursor())
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+            GameplayCursorPolicy.ApplyForActiveScene(false);
             return;
         }
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (lockCursorAfterLoad)
+        {
+            GameplayCursorPolicy.ApplyLockedCursor();
+            return;
+        }
+
+        GameplayCursorPolicy.ApplyFreeCursor();
     }
 
     private void EnsureOverlay()

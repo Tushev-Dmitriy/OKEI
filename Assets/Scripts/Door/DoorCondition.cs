@@ -727,11 +727,7 @@ public class DoorCondition : MonoBehaviour
 
     private void SaveDoorOpenProgress()
     {
-        var playerSaver = FindFirstObjectByType<PlayerSaver>();
-        if (playerSaver != null)
-        {
-            playerSaver.SavePlayerData();
-        }
+        GameplaySaveManager.SaveCurrentGame();
 
         var inventorySavers = FindObjectsByType<InventorySaver>(FindObjectsSortMode.None);
         foreach (var inventorySaver in inventorySavers.Where(x => x != null))

@@ -64,4 +64,9 @@ public class Level3ArtifactManager : MonoBehaviour
 
         Debug.LogWarning($"{nameof(Level3ArtifactManager)}: FinalDoorController is not assigned.", this);
     }
+
+    public void NotifyArtifactRestored(Level3Artifact artifact)
+    {
+        NotifyArtifactCollected(artifact);
+    }
 }

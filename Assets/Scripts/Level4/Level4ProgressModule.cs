@@ -12,6 +12,13 @@ public sealed class Level4ProgressModule : MonoBehaviour
         if (saver != null)
         {
             saver.SavePlayerData();
+            return;
+        }
+
+        GameplaySaveManager saveManager = FindFirstObjectByType<GameplaySaveManager>();
+        if (saveManager != null)
+        {
+            saveManager.SaveNow();
         }
     }
 
@@ -20,7 +27,12 @@ public sealed class Level4ProgressModule : MonoBehaviour
         if (flow == null)
             return;
 
-        flow.ProgressStage = Mathf.Clamp(PlayerPrefs.GetInt(flow.ProgressStagePrefsKeyName, 0), 0, 4);
+        PlayerSaveSystem.Load(out SaveData saveData);
+        int savedStage = saveData?.gameplayProgress != null
+            ? saveData.gameplayProgress.level4ProgressStage
+            : PlayerPrefs.GetInt(flow.ProgressStagePrefsKeyName, 0);
+
+        flow.ProgressStage = Mathf.Clamp(savedStage, 0, 4);
         ClampProgressStageToUnlocks(flow);
     }
 
@@ -30,8 +42,12 @@ public sealed class Level4ProgressModule : MonoBehaviour
             return;
 
         flow.ProgressStage = Mathf.Clamp(stage, 0, 4);
-        PlayerPrefs.SetInt(flow.ProgressStagePrefsKeyName, flow.ProgressStage);
-        PlayerPrefs.Save();
+
+        PlayerSaveSystem.Load(out SaveData saveData);
+        saveData ??= new SaveData();
+        saveData.gameplayProgress ??= new GameplayProgressData();
+        saveData.gameplayProgress.level4ProgressStage = flow.ProgressStage;
+        PlayerSaveSystem.Save(saveData);
     }
 
     public void ClampProgressStageToUnlocks(Level4FlowController flow)

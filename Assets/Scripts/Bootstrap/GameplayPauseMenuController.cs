@@ -96,8 +96,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         {
             HideImmediate(true);
             SetGameplayInputEnabled(false);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            GameplayCursorPolicy.ApplyForActiveScene(false);
             return;
         }
 
@@ -158,8 +157,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
         AudioListener.pause = false;
         SetGameplayInputEnabled(false);
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        GameplayCursorPolicy.ApplyForActiveScene(false);
         HideImmediate(true);
 
         if (!BootstrapSceneLoader.Load(BootstrapSceneName, null))
@@ -556,8 +554,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
             }
         }
 
-        Cursor.lockState = enabled ? CursorLockMode.Locked : CursorLockMode.None;
-        Cursor.visible = !enabled;
+        GameplayCursorPolicy.ApplyForActiveScene(enabled);
     }
 
     private void CacheActivePlayerInputs()
