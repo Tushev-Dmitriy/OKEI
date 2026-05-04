@@ -30,6 +30,11 @@ public class SizeSlider : MonoBehaviour, IChangeSlider
     private void OnValueChanged(float value)
     {
         UpdateValueLabel(value);
+        if (_signalBus == null)
+        {
+            return;
+        }
+
         _signalBus.Fire(new PlayerParamChangedSignal
         {
             ParamType = PlayerParamType.Size,
@@ -48,6 +53,11 @@ public class SizeSlider : MonoBehaviour, IChangeSlider
 
     float IChangeSlider.CurrentValue()
     {
-        return _player.Size;
+        if (_player == null)
+        {
+            _player = FindFirstObjectByType<ThirdPersonController>();
+        }
+
+        return _player != null ? _player.Size : (_slider != null ? _slider.value : 0f);
     }
 }

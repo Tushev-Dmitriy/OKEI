@@ -81,5 +81,6 @@ public enum SceneObjectType
     Bridge,
     Platform,
     VariableItem,
-    Artifact
+    Artifact,
+    Ship
 }

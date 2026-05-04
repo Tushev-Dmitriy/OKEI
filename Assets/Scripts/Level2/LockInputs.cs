@@ -23,12 +23,24 @@ public class LockInputs : MonoBehaviour
         inputEnabled = enabled;
     }
 
+    public void RestoreState(bool power, bool cooling, bool safeMode, bool enabled)
+    {
+        powerEnabled = power;
+        coolingEnabled = cooling;
+        safeModeEnabled = safeMode;
+        inputEnabled = enabled;
+    }
+
     public void SetPowerState(bool enabled)
     {
         if (!CanChangeSwitchState())
             return;
 
+        if (powerEnabled == enabled)
+            return;
+
         powerEnabled = enabled;
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     public void SetCoolingState(bool enabled)
@@ -36,7 +48,11 @@ public class LockInputs : MonoBehaviour
         if (!CanChangeSwitchState())
             return;
 
+        if (coolingEnabled == enabled)
+            return;
+
         coolingEnabled = enabled;
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     public void SetSafeModeState(bool enabled)
@@ -44,7 +60,11 @@ public class LockInputs : MonoBehaviour
         if (!CanChangeSwitchState())
             return;
 
+        if (safeModeEnabled == enabled)
+            return;
+
         safeModeEnabled = enabled;
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     public void TogglePower()
@@ -67,7 +87,8 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartPumpFor5();
+        if (lockControlSystem.TryStartPumpFor5())
+            GameplaySaveManager.SaveCurrentGame();
     }
 
     public void WaterForTen()
@@ -75,7 +96,8 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartWaterPrimaryFor();
+        if (lockControlSystem.TryStartWaterPrimaryFor())
+            GameplaySaveManager.SaveCurrentGame();
     }
 
     public void WaterForFive()
@@ -83,7 +105,8 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartWaterSecondaryFor();
+        if (lockControlSystem.TryStartWaterSecondaryFor())
+            GameplaySaveManager.SaveCurrentGame();
     }
 
     public void LiftForTen()
@@ -91,7 +114,8 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartLiftSecondaryFor();
+        if (lockControlSystem.TryStartLiftSecondaryFor())
+            GameplaySaveManager.SaveCurrentGame();
     }
 
     public void LiftForTwentyFive()
@@ -99,7 +123,8 @@ public class LockInputs : MonoBehaviour
         if (!CanUseForActions())
             return;
 
-        lockControlSystem.TryStartLiftPrimaryFor();
+        if (lockControlSystem.TryStartLiftPrimaryFor())
+            GameplaySaveManager.SaveCurrentGame();
     }
 
     private bool CanChangeSwitchState()

@@ -40,6 +40,15 @@ public sealed class Level4EffectsModule : MonoBehaviour
 
         float startFactor = Mathf.Clamp(flow.EnemyRespawnStartScaleFactor, 0.05f, 1f);
         tr.localScale = targetScale * startFactor;
+
+        if (!isActiveAndEnabled || !gameObject.activeInHierarchy)
+        {
+            tr.localScale = targetScale;
+            _enemyBaseScales[enemy] = targetScale;
+            _enemyScaleCoroutines.Remove(enemy);
+            return;
+        }
+
         Coroutine routine = StartCoroutine(AnimateEnemyScaleRoutine(flow, enemy, targetScale));
         _enemyScaleCoroutines[enemy] = routine;
     }

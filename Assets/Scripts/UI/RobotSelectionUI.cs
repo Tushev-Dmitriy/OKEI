@@ -275,6 +275,22 @@ public class RobotSelectionUI : MonoBehaviour
         _spawnOnSelectionRuntime = enabled;
     }
 
+    public void RefreshUnlockState()
+    {
+        if (spawner == null)
+            spawner = FindFirstObjectByType<RobotSpawner>();
+
+        if (unlockManager == null)
+            unlockManager = FindFirstObjectByType<RobotUnlockManager>();
+
+        if (unlockManager != null && unlockManager.GetAllRobotConfigs().Count > 0)
+            ApplyIconsFromConfigs();
+
+        RebindButtons();
+        EnsureValidSelection();
+        UpdateVisuals();
+    }
+
     private void UpdateVisuals()
     {
         foreach (var entry in _entries)

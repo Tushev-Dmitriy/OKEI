@@ -4,6 +4,7 @@ using StarterAssets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[DefaultExecutionOrder(100)]
 public class LockControlSystem : MonoBehaviour, ISceneSaveable
 {
     [SerializeField] private LockLevelConfig levelConfig;
@@ -18,6 +19,16 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
     [SerializeField] private Transform outsideWaterTransform;
     [SerializeField] private AudioSource alarmAudio;
     [SerializeField] private bool forceUnlockedCursorOnLevel2 = true;
+
+    [Header("Completion Transition")]
+    [SerializeField] private int completionTargetSceneBuildIndex = 0;
+    [SerializeField] private int completedLevelIndex = 2;
+    [SerializeField, Min(0.01f)] private float completionFadeInDuration = 0.8f;
+    [SerializeField, Min(0.01f)] private float completionFadeOutDuration = 0.35f;
+    [SerializeField] private string completionLoadingStatus = "Завершение уровня";
+    [SerializeField] private string completionFinalStatus = "Возвращаемся в меню";
+    [SerializeField] private string completionHintText = "Сохраняем прогресс и открываем следующий уровень";
+    [SerializeField] private bool completionLockCursorAfterLoad = false;
 
     private string reloadSceneName = "Level2";
 
@@ -193,6 +204,9 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
     private bool _lockWaterStartCaptured;
     private float _lockWaterStartY;
     private StarterAssetsInputs _starterAssetsInputs;
+    private bool _startupRestorePending;
+    private float _startupRestoreUntil;
+    private bool _completionTransitionStarted;
 
     public string SaveId => saveId;
 
@@ -231,6 +245,10 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         public bool coolingRestartRequiresOff;
         public bool coolingRestartRequiresOn;
         public bool previousCoolingState;
+        public bool powerEnabled;
+        public bool coolingEnabled;
+        public bool safeModeEnabled;
+        public bool inputEnabled;
     }
 
     public LockPhase CurrentPhase => _phase;
@@ -289,6 +307,11 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         lockUi?.Refresh();
     }
 
+    private void OnDestroy()
+    {
+        UnsubscribeShipControllerEvents();
+    }
+
     private void Start()
     {
         EnforceLevel2CursorState();
@@ -297,15 +320,25 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (shipController == null)
         {
             StartGameplay();
+            QueueStartupRestore();
             return;
         }
 
         lockInputs?.SetInputEnabled(false);
+        QueueStartupRestore();
+    }
+
+    private void QueueStartupRestore()
+    {
+        GameplaySaveManager.RestoreSceneObjectsForActiveScene();
+        _startupRestorePending = true;
+        _startupRestoreUntil = Time.unscaledTime + 2f;
     }
 
     private void Update()
     {
         EnforceLevel2CursorState();
+        ApplyPendingStartupRestore();
         float dt = Time.deltaTime;
 
         if (!_gameplayStarted)
@@ -357,6 +390,21 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         UpdateGate(dt);
         ApplyWaterVisual();
         lockUi?.Refresh();
+    }
+
+    private void ApplyPendingStartupRestore()
+    {
+        if (!_startupRestorePending)
+        {
+            return;
+        }
+
+        GameplaySaveManager.RestoreSceneObjectsForActiveScene();
+
+        if (Time.unscaledTime >= _startupRestoreUntil)
+        {
+            _startupRestorePending = false;
+        }
     }
 
     private void EnforceLevel2CursorState()
@@ -413,7 +461,11 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             incidentHint = _incidentHint,
             coolingRestartRequiresOff = _coolingRestartRequiresOff,
             coolingRestartRequiresOn = _coolingRestartRequiresOn,
-            previousCoolingState = _previousCoolingState
+            previousCoolingState = _previousCoolingState,
+            powerEnabled = lockInputs != null && lockInputs.PowerEnabled,
+            coolingEnabled = lockInputs != null && lockInputs.CoolingEnabled,
+            safeModeEnabled = lockInputs != null && lockInputs.SafeModeEnabled,
+            inputEnabled = lockInputs != null && lockInputs.InputEnabled
         };
 
         return new SceneObjectStateData
@@ -461,6 +513,18 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         _coolingRestartRequiresOff = state.coolingRestartRequiresOff;
         _coolingRestartRequiresOn = state.coolingRestartRequiresOn;
         _previousCoolingState = state.previousCoolingState;
+
+        bool restoredInputEnabled = _gameplayStarted && !_failureTriggered && _phase != LockPhase.Completed && _phase != LockPhase.Failed;
+        lockInputs?.RestoreState(state.powerEnabled, state.coolingEnabled, state.safeModeEnabled, restoredInputEnabled);
+        if (state.coolingEnabled != _previousCoolingState)
+        {
+            _previousCoolingState = state.coolingEnabled;
+        }
+
+        if (_gameplayStarted && shipController != null && !shipController.HasReachedStop && _phase != LockPhase.Completed)
+        {
+            shipController.ForceDocked();
+        }
 
         ClampCoreValues();
         ApplyWaterVisual();
@@ -649,6 +713,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             alarmAudio.Play();
 
         shipController?.SinkShip();
+        GameplaySaveManager.SaveCurrentGame();
 
         if (_failureRoutine != null)
             StopCoroutine(_failureRoutine);
@@ -715,6 +780,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         {
             _phase = LockPhase.WaterLeveling;
             ScheduleNextIncident(isFirst: false, immediateBias: true);
+            GameplaySaveManager.SaveCurrentGame();
         }
     }
 
@@ -735,6 +801,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         {
             _phase = LockPhase.LiftPreparation;
             ScheduleNextIncident(isFirst: false, immediateBias: true);
+            GameplaySaveManager.SaveCurrentGame();
         }
     }
 
@@ -821,6 +888,8 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
 
         if (completedAll)
             onCompleted?.Invoke();
+
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private void UpdateIncidentSystem(float dt)
@@ -1045,7 +1114,71 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
 
         lockInputs?.SetInputEnabled(false);
         shipController?.MoveToEnd();
+        GameplaySaveManager.SaveCurrentGame();
+    }
 
+    private void SubscribeShipControllerEvents()
+    {
+        if (shipController == null)
+            return;
+
+        shipController.ReachedEnd -= HandleShipReachedEnd;
+        shipController.ReachedEnd += HandleShipReachedEnd;
+    }
+
+    private void UnsubscribeShipControllerEvents()
+    {
+        if (shipController == null)
+            return;
+
+        shipController.ReachedEnd -= HandleShipReachedEnd;
+    }
+
+    private void HandleShipReachedEnd()
+    {
+        if (_phase != LockPhase.Completed || _failureTriggered)
+            return;
+
+        TryStartCompletionTransition();
+    }
+
+    private void TryStartCompletionTransition()
+    {
+        if (_completionTransitionStarted)
+            return;
+
+        bool started = SceneTransitionService.StartPortalTransition(
+            completionTargetSceneBuildIndex,
+            completedLevelIndex,
+            completionFadeInDuration,
+            completionFadeOutDuration,
+            completionLoadingStatus,
+            completionFinalStatus,
+            completionHintText,
+            completionLockCursorAfterLoad,
+            HandleCompletionTransitionCommitted,
+            HandleCompletionTransitionCancelled);
+
+        if (!started)
+        {
+            LevelProgressManager.CompleteLevel(completedLevelIndex);
+            SaveResetter.ResetGameplayProgress();
+            SceneManager.LoadScene(completionTargetSceneBuildIndex, LoadSceneMode.Single);
+            _completionTransitionStarted = true;
+            return;
+        }
+
+        _completionTransitionStarted = true;
+    }
+
+    private void HandleCompletionTransitionCommitted()
+    {
+        SaveResetter.ResetGameplayProgress();
+    }
+
+    private void HandleCompletionTransitionCancelled()
+    {
+        _completionTransitionStarted = false;
     }
 
     private bool IsWhileConditionTrue()
@@ -1231,10 +1364,15 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
                 outsideWaterTransform = outsideWaterObject.transform;
         }
 
-        if (shipController == null)
-            shipController = FindFirstObjectByType<ShipController>();
+        ShipController resolvedShipController = shipController != null ? shipController : FindFirstObjectByType<ShipController>();
+        if (shipController != resolvedShipController)
+        {
+            UnsubscribeShipControllerEvents();
+            shipController = resolvedShipController;
+        }
 
         shipController?.SetLockWaterTransform(lockWaterTransform);
+        SubscribeShipControllerEvents();
     }
 
     private void TryStartGameplayAfterShipDocked()

@@ -26,6 +26,7 @@ public class LevelProgressManager : MonoBehaviour
     private void Awake()
     {
         EnsureDefaults();
+        BootstrapMenuSaveSystem.ApplyRuntimeSettings();
     }
 
     public int GetConfiguredLevelCount()
@@ -180,6 +181,8 @@ internal static class BootstrapMenuSaveSystem
     private const string LegacyQualityKey = "BootstrapMenu.Settings.Quality";
     private const string LegacyFullscreenKey = "BootstrapMenu.Settings.Fullscreen";
     private const string LegacyResolutionKey = "BootstrapMenu.Settings.Resolution";
+    private const int DefaultWidth = 1920;
+    private const int DefaultHeight = 1080;
 
     private static readonly string SavePath = Path.Combine(Application.persistentDataPath, "bootstrap_menu.json");
     private static BootstrapMenuSaveData _cachedData;
@@ -204,6 +207,28 @@ internal static class BootstrapMenuSaveSystem
         EnsureLoaded();
         updateAction?.Invoke(_cachedData);
         SaveInternal();
+    }
+
+    public static void ApplyRuntimeSettings()
+    {
+        EnsureLoaded();
+        if (_cachedData == null)
+        {
+            return;
+        }
+
+        QualitySettings.SetQualityLevel(Mathf.Clamp(_cachedData.qualityIndex, 0, QualitySettings.names.Length - 1), true);
+        AudioListener.volume = Mathf.Clamp01(_cachedData.soundVolume);
+
+        FullScreenMode fullscreenMode = _cachedData.fullscreen
+            ? FullScreenMode.FullScreenWindow
+            : FullScreenMode.Windowed;
+
+        Screen.fullScreenMode = fullscreenMode;
+        Screen.fullScreen = _cachedData.fullscreen;
+
+        Vector2Int resolution = GetResolutionByIndex(_cachedData.resolutionIndex);
+        Screen.SetResolution(resolution.x, resolution.y, fullscreenMode);
     }
 
     public static void DeleteSave()
@@ -259,8 +284,8 @@ internal static class BootstrapMenuSaveSystem
             completedLevels = new List<int>(),
             soundVolume = 0.8f,
             qualityIndex = QualitySettings.GetQualityLevel(),
-            fullscreen = Screen.fullScreen,
-            resolutionIndex = 0
+            fullscreen = true,
+            resolutionIndex = GetPreferredResolutionIndex()
         };
     }
 
@@ -313,7 +338,7 @@ internal static class BootstrapMenuSaveSystem
 
         if (data.resolutionIndex < 0)
         {
-            data.resolutionIndex = 0;
+            data.resolutionIndex = GetPreferredResolutionIndex();
         }
     }
 
@@ -337,6 +362,63 @@ internal static class BootstrapMenuSaveSystem
         Directory.CreateDirectory(Path.GetDirectoryName(SavePath) ?? Application.persistentDataPath);
         string json = JsonConvert.SerializeObject(_cachedData, Formatting.Indented);
         File.WriteAllText(SavePath, json);
+    }
+
+    private static int GetPreferredResolutionIndex()
+    {
+        List<Vector2Int> resolutions = GetAvailableResolutions();
+        if (resolutions.Count == 0)
+        {
+            return 0;
+        }
+
+        for (int i = 0; i < resolutions.Count; i++)
+        {
+            if (resolutions[i].x == DefaultWidth && resolutions[i].y == DefaultHeight)
+            {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    private static Vector2Int GetResolutionByIndex(int index)
+    {
+        List<Vector2Int> resolutions = GetAvailableResolutions();
+        if (resolutions.Count == 0)
+        {
+            return new Vector2Int(DefaultWidth, DefaultHeight);
+        }
+
+        return resolutions[Mathf.Clamp(index, 0, resolutions.Count - 1)];
+    }
+
+    private static List<Vector2Int> GetAvailableResolutions()
+    {
+        List<Vector2Int> result = new List<Vector2Int>();
+        HashSet<string> added = new HashSet<string>();
+        Resolution[] modes = Screen.resolutions;
+
+        if (modes == null || modes.Length == 0)
+        {
+            result.Add(new Vector2Int(DefaultWidth, DefaultHeight));
+            return result;
+        }
+
+        for (int i = 0; i < modes.Length; i++)
+        {
+            Vector2Int resolution = new Vector2Int(modes[i].width, modes[i].height);
+            string key = $"{resolution.x}x{resolution.y}";
+            if (!added.Add(key))
+            {
+                continue;
+            }
+
+            result.Add(resolution);
+        }
+
+        return result;
     }
 
     private static void ClearLegacyPlayerPrefs()

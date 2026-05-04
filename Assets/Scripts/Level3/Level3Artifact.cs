@@ -75,6 +75,17 @@ public class Level3Artifact : MonoBehaviour, ISceneSaveable
         GameplaySaveManager.SaveCurrentGame();
     }
 
+    public void DebugCollect()
+    {
+        if (_isCollected)
+        {
+            return;
+        }
+
+        MarkAsCollected();
+        _artifactManager?.NotifyArtifactCollected(this);
+    }
+
     public SceneObjectStateData CaptureState()
     {
         return new SceneObjectStateData

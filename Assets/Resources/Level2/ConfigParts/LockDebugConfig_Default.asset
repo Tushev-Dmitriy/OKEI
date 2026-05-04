@@ -20,7 +20,7 @@ MonoBehaviour:
     y: 0
     width: 0
     height: 0
-  debugCompleteHotkey: 289
+  debugCompleteHotkey: 290
   debugCompleteButtonLabel: "DEBUG: \u041F\u0440\u043E\u0439\u0442\u0438 \u0443\u0440\u043E\u0432\u0435\u043D\u044C"
   debugCompletePressureBonus: 5
   debugCompleteTemperatureBuffer: 5

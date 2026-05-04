@@ -69,4 +69,21 @@ public class Level3ArtifactManager : MonoBehaviour
     {
         NotifyArtifactCollected(artifact);
     }
+
+    public void DebugCollectAllArtifacts()
+    {
+        if (_autoFindArtifactsIfListEmpty && _artifacts.Count == 0)
+        {
+            _artifacts.AddRange(FindObjectsByType<Level3Artifact>(FindObjectsSortMode.None));
+        }
+
+        _artifacts.RemoveAll(artifact => artifact == null);
+
+        foreach (Level3Artifact artifact in _artifacts)
+        {
+            artifact?.DebugCollect();
+        }
+
+        Debug.Log($"[{nameof(Level3ArtifactManager)}] Debug complete applied: collected {_collectedArtifacts.Count}/{_artifacts.Count} artifacts.");
+    }
 }

@@ -35,6 +35,11 @@ public class GravitySlider : MonoBehaviour, IChangeSlider
     {
         value = ClampGravity(value);
         UpdateValueLabel(value);
+        if (_signalBus == null)
+        {
+            return;
+        }
+
         _signalBus.Fire(new PlayerParamChangedSignal
         {
             ParamType = PlayerParamType.Gravity,
@@ -53,7 +58,14 @@ public class GravitySlider : MonoBehaviour, IChangeSlider
 
     float IChangeSlider.CurrentValue()
     {
-        return ClampGravity(_player.Gravity);
+        if (_player == null)
+        {
+            _player = FindFirstObjectByType<ThirdPersonController>();
+        }
+
+        return _player != null
+            ? ClampGravity(_player.Gravity)
+            : ClampGravity(_slider != null ? _slider.value : minGravity);
     }
 
     private void ApplySliderRange()

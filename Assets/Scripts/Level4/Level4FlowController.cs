@@ -10,6 +10,14 @@ public class Level4FlowController : MonoBehaviour
     private const string ProgressStagePrefsKey = "Level4RoomStage";
     private const string SquadUnlockedHintDefault = "Теперь доступен режим отряда: собери до 5 роботов и зачисти коридор.";
     private const string SquadReminderHintDefault = "Режим отряда активен: собери состав из 5 роботов и запускай штурм.";
+    private static readonly RobotType[] DebugFinalSquadComposition =
+    {
+        RobotType.Attacker,
+        RobotType.Attacker,
+        RobotType.Healer,
+        RobotType.Healer,
+        RobotType.Defender
+    };
 
     internal enum SectionId
     {
@@ -202,6 +210,94 @@ public class Level4FlowController : MonoBehaviour
     private void Start() => setupModule.RunStart(this);
     private void Update() => updateModule.RunUpdate(this);
     private void OnDisable() { if (eventsModule == null) return; eventsModule.RunOnDisable(this); }
+
+    public void DebugPrepareFinalSquad()
+    {
+        EnsureModules();
+        ResolveReferences();
+
+        _suppressProgressRefresh = true;
+        try
+        {
+            if (unlockManager != null)
+            {
+                unlockManager.ApplyProgress(new RobotProgressData
+                {
+                    unlockedRobotTypes = new List<int>
+                    {
+                        (int)RobotType.Base,
+                        (int)RobotType.Attacker,
+                        (int)RobotType.Healer,
+                        (int)RobotType.Defender
+                    }
+                });
+            }
+
+            _progressStage = 4;
+            _finalSectionUnlocked = true;
+            _levelCompleted = false;
+            _completionTransitionStarted = false;
+            _squadHintShownThisSession = true;
+
+            SectionDefinition finalSection = GetSection(SectionId.Final);
+            if (finalSection == null)
+            {
+                Debug.LogWarning($"[{nameof(Level4FlowController)}] Debug complete skipped: final section is not configured.", this);
+                return;
+            }
+
+            EnterSection(finalSection, "DEBUG: отряд собран автоматически.");
+            BeginFinalAssembly();
+            ShowSquadModeHint(showReminderOnly: false);
+            RefreshSquadHud();
+
+            if (selectionUI != null)
+            {
+                selectionUI.RefreshUnlockState();
+                selectionUI.SetSpawnOnSelectionEnabled(false);
+                selectionUI.SetSelectedRobot(RobotType.Attacker, false);
+                selectionUI.RefreshUnlockState();
+            }
+
+            if (spawner == null || spawner.SpawnPoint == null)
+            {
+                Debug.LogWarning($"[{nameof(Level4FlowController)}] Debug complete skipped: no spawner or spawn point.", this);
+                return;
+            }
+
+            _suppressSpawnedRobotHandling = true;
+            try
+            {
+                for (int i = 0; i < DebugFinalSquadComposition.Length; i++)
+                {
+                    Robot spawnedRobot = spawner.SpawnRobotOfType(
+                        DebugFinalSquadComposition[i],
+                        spawner.SpawnPoint.position,
+                        spawner.SpawnPoint.rotation,
+                        registerAsCurrent: false,
+                        bypassValidation: true);
+
+                    if (spawnedRobot != null)
+                        HandleFinalRobotSpawned(spawnedRobot);
+                }
+            }
+            finally
+            {
+                _suppressSpawnedRobotHandling = false;
+            }
+
+            if (!_finalRunStarted && _finalSquad.Count > 0)
+                StartFinalRun();
+
+            RefreshStatus();
+            RefreshSquadHud();
+            Debug.Log($"[{nameof(Level4FlowController)}] Debug complete applied: final squad deployed.");
+        }
+        finally
+        {
+            _suppressProgressRefresh = false;
+        }
+    }
 
     internal void TickCurrentSection()
     {

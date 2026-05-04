@@ -30,6 +30,11 @@ public class MoveSpeedSlider : MonoBehaviour, IChangeSlider
     private void OnValueChanged(float value)
     {
         UpdateValueLabel(value);
+        if (_signalBus == null)
+        {
+            return;
+        }
+
         _signalBus.Fire(new PlayerParamChangedSignal
         {
             ParamType = PlayerParamType.MoveSpeed,
@@ -48,6 +53,11 @@ public class MoveSpeedSlider : MonoBehaviour, IChangeSlider
 
     float IChangeSlider.CurrentValue()
     {
-        return _player.MoveSpeed;
+        if (_player == null)
+        {
+            _player = FindFirstObjectByType<ThirdPersonController>();
+        }
+
+        return _player != null ? _player.MoveSpeed : (_slider != null ? _slider.value : 0f);
     }
 }

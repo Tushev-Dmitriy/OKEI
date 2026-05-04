@@ -8,23 +8,38 @@ using UnityEngine.SceneManagement;
 [DefaultExecutionOrder(-900)]
 public sealed class GameplaySaveManager : MonoBehaviour
 {
-    private const float AutoSaveInterval = 3f;
+    private const float AutoSaveInterval = 10f;
+    private const float RestoreWaitTimeout = 2.5f;
 
     private SaveData _cachedSaveData;
+    private Coroutine _restoreRoutine;
     private bool _isRestoring;
-    private bool _isPrimaryInstance;
+    private float _restoreSaveBlockUntil;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void CreateRuntimeInstance()
+    {
+        EnsureRuntimeInstance();
+    }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void CreateRuntimeInstance()
+    private static void RestoreInitialScene()
+    {
+        GameplaySaveManager saveManager = EnsureRuntimeInstance();
+        saveManager.ReloadCachedSaveData();
+        saveManager.QueueRestoreActiveScene();
+    }
+
+    private static GameplaySaveManager EnsureRuntimeInstance()
     {
         if (FindFirstObjectByType<GameplaySaveManager>() != null)
         {
-            return;
+            return FindFirstObjectByType<GameplaySaveManager>();
         }
 
         GameObject root = new GameObject(nameof(GameplaySaveManager));
         DontDestroyOnLoad(root);
-        root.AddComponent<GameplaySaveManager>();
+        return root.AddComponent<GameplaySaveManager>();
     }
 
     private void Awake()
@@ -35,16 +50,14 @@ public sealed class GameplaySaveManager : MonoBehaviour
             return;
         }
 
-        _isPrimaryInstance = true;
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += HandleSceneLoaded;
-        PlayerSaveSystem.Load(out _cachedSaveData);
-        _cachedSaveData ??= CreateDefaultSaveData();
+        ReloadCachedSaveData();
     }
 
     private void Start()
     {
-        RestoreActiveScene();
+        QueueRestoreActiveScene();
         StartCoroutine(AutoSaveRoutine());
     }
 
@@ -59,32 +72,11 @@ public sealed class GameplaySaveManager : MonoBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
-
-        if (_isPrimaryInstance && Application.isPlaying)
-        {
-            SaveNow();
-        }
-    }
-
-    private void OnApplicationPause(bool pauseStatus)
-    {
-        if (pauseStatus)
-        {
-            SaveNow();
-        }
     }
 
     private void OnApplicationQuit()
     {
         SaveNow();
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if (!hasFocus)
-        {
-            SaveNow();
-        }
     }
 
     public static void SaveCurrentGame()
@@ -103,15 +95,56 @@ public sealed class GameplaySaveManager : MonoBehaviour
         }
     }
 
-    public void SaveNow()
+    public static void RestorePlayerForActiveScene()
     {
-        if (_isRestoring)
+        string sceneName = SceneManager.GetActiveScene().name;
+        GameplaySaveManager saveManager = FindFirstObjectByType<GameplaySaveManager>();
+        if (saveManager != null)
+        {
+            saveManager.ReloadCachedSaveData();
+            RestorePlayer(saveManager._cachedSaveData, sceneName);
+            return;
+        }
+
+        PlayerSaveSystem.Load(out SaveData data);
+        if (data != null)
+        {
+            RestorePlayer(data, sceneName);
+        }
+    }
+
+    public static void RestoreSceneObjectsForActiveScene()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        PlayerSaveSystem.Load(out SaveData data);
+        if (data == null)
         {
             return;
         }
 
+        RestoreSceneObjects(data, sceneName);
+        RestoreRobotProgress(data);
+    }
+
+    public void SaveNow()
+    {
+        if (_isRestoring && Time.unscaledTime < _restoreSaveBlockUntil)
+        {
+            return;
+        }
+
+        if (_isRestoring && Time.unscaledTime >= _restoreSaveBlockUntil)
+        {
+            _isRestoring = false;
+            _restoreRoutine = null;
+        }
+
         SaveData data = LoadOrCreate();
         string sceneName = SceneManager.GetActiveScene().name;
+        if (GameplayDebugHotkeys.IsTransientDebugActiveForScene(sceneName))
+        {
+            return;
+        }
 
         CapturePlayer(data, sceneName);
         CaptureLastPlayedLevel(sceneName);
@@ -142,15 +175,65 @@ public sealed class GameplaySaveManager : MonoBehaviour
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        PlayerSaveSystem.Load(out _cachedSaveData);
-        _cachedSaveData ??= CreateDefaultSaveData();
-        StartCoroutine(RestoreAfterFrame());
+        ReloadCachedSaveData();
+        QueueRestoreActiveScene();
     }
 
-    private IEnumerator RestoreAfterFrame()
+    private void ReloadCachedSaveData()
+    {
+        PlayerSaveSystem.Load(out _cachedSaveData);
+        _cachedSaveData ??= CreateDefaultSaveData();
+    }
+
+    private void QueueRestoreActiveScene()
+    {
+        if (_restoreRoutine != null)
+        {
+            StopCoroutine(_restoreRoutine);
+            _restoreRoutine = null;
+        }
+
+        _isRestoring = true;
+        _restoreSaveBlockUntil = Time.unscaledTime + RestoreWaitTimeout + 1f;
+        _restoreRoutine = StartCoroutine(RestoreActiveSceneWhenReady());
+    }
+
+    private IEnumerator RestoreActiveSceneWhenReady()
     {
         yield return null;
-        RestoreActiveScene();
+
+        ReloadCachedSaveData();
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        RestoreSceneObjects(_cachedSaveData, sceneName);
+        RestoreRobotProgress(_cachedSaveData);
+
+        float deadline = Time.unscaledTime + RestoreWaitTimeout;
+        while (FindPlayerTransform() == null && Time.unscaledTime < deadline)
+        {
+            yield return null;
+        }
+
+        RestorePlayer(_cachedSaveData, sceneName);
+        RestoreSceneObjects(_cachedSaveData, sceneName);
+        RestoreRobotProgress(_cachedSaveData);
+
+        yield return null;
+        RestorePlayer(_cachedSaveData, sceneName);
+        RestoreSceneObjects(_cachedSaveData, sceneName);
+        RestoreRobotProgress(_cachedSaveData);
+
+        if (sceneName == "Level2")
+        {
+            yield return new WaitForSeconds(0.25f);
+            ReloadCachedSaveData();
+            RestoreSceneObjects(_cachedSaveData, sceneName);
+        }
+
+        _isRestoring = false;
+        _restoreRoutine = null;
+        _restoreSaveBlockUntil = 0f;
+        GameplayCursorPolicy.ApplyForActiveScene(!GameplayCursorPolicy.ActiveSceneNeedsFreeCursor());
     }
 
     private void RestoreActiveScene()
@@ -161,6 +244,7 @@ public sealed class GameplaySaveManager : MonoBehaviour
         }
 
         _isRestoring = true;
+        ReloadCachedSaveData();
         string sceneName = SceneManager.GetActiveScene().name;
         RestorePlayer(_cachedSaveData, sceneName);
         RestoreSceneObjects(_cachedSaveData, sceneName);
@@ -190,17 +274,20 @@ public sealed class GameplaySaveManager : MonoBehaviour
 
     private static void CapturePlayer(SaveData data, string sceneName)
     {
-        Transform playerTransform = FindPlayerTransform();
-        if (playerTransform == null)
+        ThirdPersonController controller = FindPlayerController();
+        if (controller == null)
         {
             return;
         }
 
+        Vector3 playerPosition = GetPlayerWorldPosition(controller);
+        Vector3 playerRotation = GetPlayerWorldRotation(controller);
+
         PlayerLevelData levelData = new PlayerLevelData
         {
             level = sceneName,
-            position = ToVector3Data(playerTransform.position),
-            rotation = ToVector3Data(playerTransform.eulerAngles)
+            position = ToVector3Data(playerPosition),
+            rotation = ToVector3Data(playerRotation)
         };
 
         data.player = new PlayerData
@@ -217,8 +304,8 @@ public sealed class GameplaySaveManager : MonoBehaviour
 
     private static void RestorePlayer(SaveData data, string sceneName)
     {
-        Transform playerTransform = FindPlayerTransform();
-        if (playerTransform == null)
+        ThirdPersonController controller = FindPlayerController();
+        if (controller == null)
         {
             return;
         }
@@ -241,14 +328,18 @@ public sealed class GameplaySaveManager : MonoBehaviour
             return;
         }
 
-        CharacterController characterController = playerTransform.GetComponentInChildren<CharacterController>();
+        CharacterController characterController = controller.GetComponent<CharacterController>();
+        if (characterController == null)
+        {
+            characterController = controller.GetComponentInChildren<CharacterController>();
+        }
+
         if (characterController != null)
         {
             characterController.enabled = false;
         }
 
-        playerTransform.position = FromVector3Data(levelData.position);
-        playerTransform.eulerAngles = FromVector3Data(levelData.rotation);
+        ApplyPlayerWorldPose(controller, FromVector3Data(levelData.position), FromVector3Data(levelData.rotation));
 
         if (characterController != null)
         {
@@ -359,8 +450,46 @@ public sealed class GameplaySaveManager : MonoBehaviour
 
     private static Transform FindPlayerTransform()
     {
-        ThirdPersonController controller = Object.FindFirstObjectByType<ThirdPersonController>();
-        return controller != null ? controller.transform.root : null;
+        return FindPlayerController()?.transform;
+    }
+
+    private static ThirdPersonController FindPlayerController()
+    {
+        return Object.FindFirstObjectByType<ThirdPersonController>();
+    }
+
+    private static Vector3 GetPlayerWorldPosition(ThirdPersonController controller)
+    {
+        return controller != null ? controller.transform.position : Vector3.zero;
+    }
+
+    private static Vector3 GetPlayerWorldRotation(ThirdPersonController controller)
+    {
+        return controller != null ? controller.transform.eulerAngles : Vector3.zero;
+    }
+
+    private static void ApplyPlayerWorldPose(ThirdPersonController controller, Vector3 targetPosition, Vector3 targetEulerAngles)
+    {
+        if (controller == null)
+            return;
+
+        Transform playerTransform = controller.transform;
+        Transform rootTransform = playerTransform.root;
+        if (rootTransform == playerTransform)
+        {
+            playerTransform.SetPositionAndRotation(targetPosition, Quaternion.Euler(targetEulerAngles));
+            return;
+        }
+
+        Vector3 positionDelta = targetPosition - playerTransform.position;
+        rootTransform.position += positionDelta;
+
+        Vector3 currentEulerAngles = playerTransform.eulerAngles;
+        Vector3 rotationDelta = new Vector3(
+            Mathf.DeltaAngle(currentEulerAngles.x, targetEulerAngles.x),
+            Mathf.DeltaAngle(currentEulerAngles.y, targetEulerAngles.y),
+            Mathf.DeltaAngle(currentEulerAngles.z, targetEulerAngles.z));
+        rootTransform.eulerAngles += rotationDelta;
     }
 
     private static Vector3Data ToVector3Data(Vector3 value)

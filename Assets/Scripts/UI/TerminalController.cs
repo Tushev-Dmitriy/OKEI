@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections;
+using System.Linq;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,11 +17,12 @@ public class TerminalController : MonoBehaviour
 
     private void Awake()
     {
-        RefreshSliderReference();
-
-        _animator = transform.parent.GetComponent<Animator>();
+        ResolveReferences();
         _triggerCollider = GetComponent<Collider>();
-        _animator.SetTrigger("Close");
+        if (_animator != null)
+        {
+            _animator.SetTrigger("Close");
+        }
     }
 
     public void Configure(GameObject objToShow, MonoBehaviour sliderComponent)
@@ -35,15 +37,37 @@ public class TerminalController : MonoBehaviour
         _slider = _sliderComponent as IChangeSlider;
     }
 
+    private void ResolveReferences()
+    {
+        if (_animator == null && transform.parent != null)
+        {
+            _animator = transform.parent.GetComponent<Animator>();
+        }
+
+        if (_objToShow != null && _sliderComponent == null)
+        {
+            _sliderComponent = _objToShow.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(component => component is IChangeSlider);
+        }
+
+        RefreshSliderReference();
+    }
+
     private void OpenTerminal()
     {
+        ResolveReferences();
+
         if (_objToShow == null)
         {
             return;
         }
 
         SetTerminalInteractionMode(true);
-        _animator.SetTrigger("Open");
+        if (_animator != null)
+        {
+            _animator.SetTrigger("Open");
+        }
+        TerminalWindowStyler.Apply(_objToShow);
         _objToShow.transform.DOScale(Vector3.one, 1.25f).SetEase(Ease.OutBack);
 
         if (_slider != null)
@@ -65,13 +89,19 @@ public class TerminalController : MonoBehaviour
 
     private void CloseTerminal()
     {
+        ResolveReferences();
+
         if (_objToShow == null)
         {
             return;
         }
 
         SetTerminalInteractionMode(false);
-        _animator.SetTrigger("Close");
+        if (_animator != null)
+        {
+            _animator.SetTrigger("Close");
+        }
+        TerminalWindowStyler.Apply(_objToShow);
         _objToShow.transform.DOScale(Vector3.zero, 1.25f).SetEase(Ease.InBack);
     }
 

@@ -1,0 +1,162 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using StarterAssets;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
+[DisallowMultipleComponent]
+public sealed class GameplayDebugHotkeys : MonoBehaviour
+{
+    private const string RuntimeObjectName = nameof(GameplayDebugHotkeys);
+    private static readonly string[] SupportedScenes = { "Level1", "Level2", "Level3", "Level4" };
+    private static readonly HashSet<string> TransientDebugScenes = new(StringComparer.Ordinal);
+    private static readonly HashSet<string> ConsumedQuickCompleteScenes = new(StringComparer.Ordinal);
+
+    [SerializeField] private KeyCode quickCompleteHotkey = KeyCode.F9;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void EnsureInstance()
+    {
+        if (FindFirstObjectByType<GameplayDebugHotkeys>() != null)
+            return;
+
+        GameObject runtimeObject = new(RuntimeObjectName);
+        DontDestroyOnLoad(runtimeObject);
+        runtimeObject.AddComponent<GameplayDebugHotkeys>();
+    }
+
+    private void Update()
+    {
+        if (!Input.GetKeyDown(quickCompleteHotkey))
+            return;
+
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (ConsumedQuickCompleteScenes.Contains(sceneName))
+            return;
+
+        bool applied = sceneName switch
+        {
+            "Level1" => DebugCompleteLevel1(),
+            "Level2" => DebugCompleteLevel2(),
+            "Level3" => DebugCompleteLevel3(),
+            "Level4" => DebugCompleteLevel4(),
+            _ => false
+        };
+
+        if (applied)
+            ConsumedQuickCompleteScenes.Add(sceneName);
+    }
+
+    private static bool DebugCompleteLevel1()
+    {
+        MarkTransientForScene("Level1");
+        Door[] doors = FindObjectsByType<Door>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (Door door in doors.Where(door => door != null))
+            door.SetOpen(true);
+
+        Debug.Log($"[{nameof(GameplayDebugHotkeys)}] Level1 debug complete applied: opened {doors.Length} doors.");
+        return doors.Length > 0;
+    }
+
+    private static bool DebugCompleteLevel3()
+    {
+        MarkTransientForScene("Level3");
+        Level3ArtifactManager artifactManager = FindFirstObjectByType<Level3ArtifactManager>();
+        if (artifactManager == null)
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level3 debug complete skipped: no {nameof(Level3ArtifactManager)} found.");
+            return false;
+        }
+
+        artifactManager.DebugCollectAllArtifacts();
+        return TeleportLevel3PlayerToFinalPos();
+    }
+
+    private static bool DebugCompleteLevel2()
+    {
+        MarkTransientForScene("Level2");
+        LockControlSystem lockControlSystem = FindFirstObjectByType<LockControlSystem>();
+        if (lockControlSystem == null)
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level2 debug complete skipped: no {nameof(LockControlSystem)} found.");
+            return false;
+        }
+
+        lockControlSystem.DebugCompleteLevel();
+        return true;
+    }
+
+    private static bool DebugCompleteLevel4()
+    {
+        MarkTransientForScene("Level4");
+        Level4FlowController flowController = FindFirstObjectByType<Level4FlowController>();
+        if (flowController == null)
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level4 debug complete skipped: no {nameof(Level4FlowController)} found.");
+            return false;
+        }
+
+        flowController.DebugPrepareFinalSquad();
+        return true;
+    }
+
+    public static bool IsTransientDebugActiveForScene(string sceneName)
+    {
+        return !string.IsNullOrWhiteSpace(sceneName) && TransientDebugScenes.Contains(sceneName);
+    }
+
+    private static void MarkTransientForScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName) || !SupportedScenes.Contains(sceneName))
+            return;
+
+        TransientDebugScenes.Add(sceneName);
+    }
+
+    private static bool TeleportLevel3PlayerToFinalPos()
+    {
+        ThirdPersonController player = FindFirstObjectByType<ThirdPersonController>();
+        if (player == null)
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level3 debug teleport skipped: no {nameof(ThirdPersonController)} found.");
+            return false;
+        }
+
+        Transform finalPos = FindSceneTransform("FinalPos");
+        if (finalPos == null)
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level3 debug teleport skipped: no FinalPos found in active scene.");
+            return false;
+        }
+
+        CharacterController characterController = player.GetComponent<CharacterController>();
+        if (characterController != null)
+            characterController.enabled = false;
+
+        player.transform.SetPositionAndRotation(finalPos.position, finalPos.rotation);
+
+        if (characterController != null)
+            characterController.enabled = true;
+
+        return true;
+    }
+
+    private static Transform FindSceneTransform(string objectName)
+    {
+        if (string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        foreach (Transform candidate in FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (candidate == null || candidate.gameObject.scene != activeScene)
+                continue;
+
+            if (string.Equals(candidate.name, objectName, StringComparison.Ordinal))
+                return candidate;
+        }
+
+        return null;
+    }
+}

@@ -17,7 +17,7 @@ public class RobotUnlockManager : MonoBehaviour
 
     [Header("Debug/Reset")]
     [SerializeField] private bool enableResetHotkey = true;
-    [SerializeField] private KeyCode resetHotkey = KeyCode.F9;
+    [SerializeField] private KeyCode resetHotkey = KeyCode.F10;
     [SerializeField] private bool saveAfterReset = true;
 
     [Inject]
