@@ -118,10 +118,25 @@ public class ShipController : MonoBehaviour, ISceneSaveable
         if (posToEndObj == null)
             return;
 
+        if (lockWaterTransform != null)
+        {
+            if (!_floatOffsetCaptured)
+                _floatOffsetY = transform.position.y - lockWaterTransform.position.y;
+
+            Vector3 floatedPosition = transform.position;
+            floatedPosition.y = lockWaterTransform.position.y + _floatOffsetY;
+            transform.position = floatedPosition;
+            _floatOffsetCaptured = true;
+        }
+
         KillMovementTweens();
         _motionState = ShipMotionState.MovingToEnd;
         _hasReachedEnd = false;
-        _moveTween = transform.DOMove(_posToEnd, moveToEndDuration)
+        Vector3 endPosition = _posToEnd;
+        if (transform.position.y > endPosition.y)
+            endPosition.y = transform.position.y;
+
+        _moveTween = transform.DOMove(endPosition, moveToEndDuration)
             .SetEase(Ease.InOutSine)
             .OnComplete(HandleReachedEnd);
         _hasStopped = false;

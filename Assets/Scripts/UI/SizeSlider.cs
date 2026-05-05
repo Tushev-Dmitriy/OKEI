@@ -40,6 +40,8 @@ public class SizeSlider : MonoBehaviour, IChangeSlider
             ParamType = PlayerParamType.Size,
             Value = value
         });
+
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private void UpdateValueLabel(float value)

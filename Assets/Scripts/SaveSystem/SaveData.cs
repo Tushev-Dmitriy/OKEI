@@ -6,6 +6,7 @@ public class SaveData
 {
     public PlayerData player;
     public List<PlayerLevelData> playerLevels = new List<PlayerLevelData>();
+    public PlayerRuntimeData playerRuntime;
     public SettingsData settings;
     public SaveInfoData saveInfo;
     public RobotProgressData robotProgress;
@@ -28,6 +29,15 @@ public class PlayerLevelData
     public string level;
     public Vector3Data position;
     public Vector3Data rotation;
+}
+
+[Serializable]
+public class PlayerRuntimeData
+{
+    public float moveSpeed;
+    public float jumpHeight;
+    public float gravity;
+    public float size;
 }
 
 [Serializable]

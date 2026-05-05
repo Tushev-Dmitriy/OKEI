@@ -82506,7 +82506,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FinalPortal
   targetSceneBuildIndex: 0
-  completedLevelIndex: 0
+  completedLevelIndex: 3
   fadeInDuration: 0.8
   fadeOutDuration: 0.35
   triggerOnce: 0

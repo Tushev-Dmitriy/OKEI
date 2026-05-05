@@ -28,9 +28,15 @@ public class RobotUnlockManager : MonoBehaviour
 
     private void Awake()
     {
+        NormalizeResetHotkey();
         _unlockedRobots.Clear();
         _deathCounts.Clear();
         _unlockedRobots.Add(RobotType.Base);
+    }
+
+    private void OnValidate()
+    {
+        NormalizeResetHotkey();
     }
 
     private void Start()
@@ -226,5 +232,14 @@ public class RobotUnlockManager : MonoBehaviour
     private int GetDeathCount(RobotType robotType)
     {
         return _deathCounts.TryGetValue(robotType, out var count) ? count : 0;
+    }
+
+    private void NormalizeResetHotkey()
+    {
+        if (resetHotkey != KeyCode.F9)
+            return;
+
+        resetHotkey = KeyCode.F10;
+        Debug.LogWarning($"[{nameof(RobotUnlockManager)}] Reset hotkey was serialized as F9 and has been remapped to F10 to avoid Level debug conflicts.", this);
     }
 }

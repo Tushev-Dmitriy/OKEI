@@ -40,6 +40,8 @@ public class MoveSpeedSlider : MonoBehaviour, IChangeSlider
             ParamType = PlayerParamType.MoveSpeed,
             Value = value
         });
+
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private void UpdateValueLabel(float value)

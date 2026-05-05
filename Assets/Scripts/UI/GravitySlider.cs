@@ -45,6 +45,8 @@ public class GravitySlider : MonoBehaviour, IChangeSlider
             ParamType = PlayerParamType.Gravity,
             Value = value
         });
+
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private void UpdateValueLabel(float value)

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,7 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
     private static readonly HashSet<string> ConsumedQuickCompleteScenes = new(StringComparer.Ordinal);
 
     [SerializeField] private KeyCode quickCompleteHotkey = KeyCode.F9;
+    private Coroutine _level4DebugCoroutine;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void EnsureInstance()
@@ -35,12 +37,18 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
         if (ConsumedQuickCompleteScenes.Contains(sceneName))
             return;
 
+        if (sceneName == "Level4")
+        {
+            if (_level4DebugCoroutine == null)
+                _level4DebugCoroutine = StartCoroutine(DebugCompleteLevel4WhenReady(sceneName));
+            return;
+        }
+
         bool applied = sceneName switch
         {
             "Level1" => DebugCompleteLevel1(),
             "Level2" => DebugCompleteLevel2(),
             "Level3" => DebugCompleteLevel3(),
-            "Level4" => DebugCompleteLevel4(),
             _ => false
         };
 
@@ -54,6 +62,8 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
         Door[] doors = FindObjectsByType<Door>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (Door door in doors.Where(door => door != null))
             door.SetOpen(true);
+
+        CommitDebugProgress("Level1");
 
         Debug.Log($"[{nameof(GameplayDebugHotkeys)}] Level1 debug complete applied: opened {doors.Length} doors.");
         return doors.Length > 0;
@@ -70,7 +80,10 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
         }
 
         artifactManager.DebugCollectAllArtifacts();
-        return TeleportLevel3PlayerToFinalPos();
+        bool teleported = TeleportLevel3PlayerToFinalPos();
+        if (teleported)
+            CommitDebugProgress("Level3");
+        return teleported;
     }
 
     private static bool DebugCompleteLevel2()
@@ -84,6 +97,8 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
         }
 
         lockControlSystem.DebugCompleteLevel();
+        LevelProgressManager.CompleteLevel(2);
+        CommitDebugProgress("Level2");
         return true;
     }
 
@@ -98,12 +113,64 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
         }
 
         flowController.DebugPrepareFinalSquad();
+        CommitDebugProgress("Level4");
         return true;
+    }
+
+    private IEnumerator DebugCompleteLevel4WhenReady(string sceneName)
+    {
+        MarkTransientForScene(sceneName);
+
+        const int maxFrames = 120;
+        int waitedFrames = 0;
+
+        Level4FlowController flowController = null;
+        RobotSelectionUI selectionUI = null;
+
+        while (waitedFrames < maxFrames)
+        {
+            flowController = FindFirstObjectByType<Level4FlowController>();
+            selectionUI = FindFirstObjectByType<RobotSelectionUI>();
+
+            bool uiReady = selectionUI != null && selectionUI.GetEntryCount() > 0;
+            if (flowController != null && uiReady)
+                break;
+
+            waitedFrames++;
+            yield return null;
+        }
+
+        bool applied = false;
+        if (flowController != null)
+        {
+            selectionUI = selectionUI != null ? selectionUI : FindFirstObjectByType<RobotSelectionUI>();
+            if (selectionUI != null)
+                selectionUI.RefreshUnlockState();
+
+            applied = DebugCompleteLevel4();
+        }
+        else
+        {
+            Debug.LogWarning($"[{nameof(GameplayDebugHotkeys)}] Level4 debug complete skipped after wait: no {nameof(Level4FlowController)} found.");
+        }
+
+        if (applied)
+            ConsumedQuickCompleteScenes.Add(sceneName);
+
+        _level4DebugCoroutine = null;
     }
 
     public static bool IsTransientDebugActiveForScene(string sceneName)
     {
         return !string.IsNullOrWhiteSpace(sceneName) && TransientDebugScenes.Contains(sceneName);
+    }
+
+    public static void ClearTransientForScene(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+            return;
+
+        TransientDebugScenes.Remove(sceneName);
     }
 
     private static void MarkTransientForScene(string sceneName)
@@ -112,6 +179,12 @@ public sealed class GameplayDebugHotkeys : MonoBehaviour
             return;
 
         TransientDebugScenes.Add(sceneName);
+    }
+
+    private static void CommitDebugProgress(string sceneName)
+    {
+        ClearTransientForScene(sceneName);
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private static bool TeleportLevel3PlayerToFinalPos()

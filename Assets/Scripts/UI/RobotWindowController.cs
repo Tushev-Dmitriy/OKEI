@@ -116,7 +116,6 @@ public class RobotWindowController : MonoBehaviour
 
         bool isUnlocked = _unlockManager.IsRobotUnlocked(robotConfig.robotType);
         SetLocked(!isUnlocked);
-        
     }
 
     private void SetLocked(bool locked)
@@ -171,6 +170,24 @@ public class RobotWindowController : MonoBehaviour
         }
 
         UpdateLockState();
+    }
+
+    public void RefreshRuntimeState()
+    {
+        if (selectionUI == null)
+            selectionUI = FindFirstObjectByType<RobotSelectionUI>();
+
+        if (_unlockManager == null)
+            _unlockManager = FindFirstObjectByType<RobotUnlockManager>();
+
+        if (_unlockManager == null)
+            return;
+
+        RobotType selectedType = selectionUI != null
+            ? selectionUI.GetSelectedType()
+            : RobotType.Base;
+
+        OnSelectedRobotChanged(selectedType);
     }
 
     private void OnSelectedRobotChanged(RobotType type)

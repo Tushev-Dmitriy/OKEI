@@ -251,6 +251,11 @@ public class RobotSelectionUI : MonoBehaviour
         return _selectedType;
     }
 
+    public int GetEntryCount()
+    {
+        return _entries.Count;
+    }
+
     public void SetSelectedRobot(RobotType type, bool spawnNow = false)
     {
         if (type == RobotType.None)
@@ -277,6 +282,9 @@ public class RobotSelectionUI : MonoBehaviour
 
     public void RefreshUnlockState()
     {
+        if (_entries.Count == 0)
+            BuildEntries();
+
         if (spawner == null)
             spawner = FindFirstObjectByType<RobotSpawner>();
 
@@ -289,6 +297,7 @@ public class RobotSelectionUI : MonoBehaviour
         RebindButtons();
         EnsureValidSelection();
         UpdateVisuals();
+        OnSelectedRobotChanged?.Invoke(_selectedType);
     }
 
     private void UpdateVisuals()

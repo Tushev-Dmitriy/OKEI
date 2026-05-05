@@ -147,6 +147,7 @@ public sealed class GameplaySaveManager : MonoBehaviour
         }
 
         CapturePlayer(data, sceneName);
+        CapturePlayerRuntime(data);
         CaptureLastPlayedLevel(sceneName);
         CaptureInventory();
         CaptureSceneObjects(data, sceneName);
@@ -215,11 +216,13 @@ public sealed class GameplaySaveManager : MonoBehaviour
         }
 
         RestorePlayer(_cachedSaveData, sceneName);
+        RestorePlayerRuntime(_cachedSaveData);
         RestoreSceneObjects(_cachedSaveData, sceneName);
         RestoreRobotProgress(_cachedSaveData);
 
         yield return null;
         RestorePlayer(_cachedSaveData, sceneName);
+        RestorePlayerRuntime(_cachedSaveData);
         RestoreSceneObjects(_cachedSaveData, sceneName);
         RestoreRobotProgress(_cachedSaveData);
 
@@ -247,6 +250,7 @@ public sealed class GameplaySaveManager : MonoBehaviour
         ReloadCachedSaveData();
         string sceneName = SceneManager.GetActiveScene().name;
         RestorePlayer(_cachedSaveData, sceneName);
+        RestorePlayerRuntime(_cachedSaveData);
         RestoreSceneObjects(_cachedSaveData, sceneName);
         RestoreRobotProgress(_cachedSaveData);
         _isRestoring = false;
@@ -367,6 +371,36 @@ public sealed class GameplaySaveManager : MonoBehaviour
         data.sceneObjects ??= new List<SceneObjectStateData>();
         data.sceneObjects.RemoveAll(state => state == null || state.sceneName == sceneName || string.IsNullOrWhiteSpace(state.sceneName));
         data.sceneObjects.AddRange(currentStates);
+    }
+
+    private static void CapturePlayerRuntime(SaveData data)
+    {
+        ThirdPersonController controller = FindPlayerController();
+        if (controller == null)
+            return;
+
+        data.playerRuntime = new PlayerRuntimeData
+        {
+            moveSpeed = controller.MoveSpeed,
+            jumpHeight = controller.JumpHeight,
+            gravity = controller.Gravity,
+            size = controller.Size
+        };
+    }
+
+    private static void RestorePlayerRuntime(SaveData data)
+    {
+        if (data?.playerRuntime == null)
+            return;
+
+        ThirdPersonController controller = FindPlayerController();
+        if (controller == null)
+            return;
+
+        ApplyPlayerRuntimeParameter(controller, PlayerParamType.MoveSpeed, data.playerRuntime.moveSpeed);
+        ApplyPlayerRuntimeParameter(controller, PlayerParamType.JumpHeight, data.playerRuntime.jumpHeight);
+        ApplyPlayerRuntimeParameter(controller, PlayerParamType.Gravity, data.playerRuntime.gravity);
+        ApplyPlayerRuntimeParameter(controller, PlayerParamType.Size, data.playerRuntime.size);
     }
 
     private static void RestoreSceneObjects(SaveData data, string sceneName)
@@ -490,6 +524,35 @@ public sealed class GameplaySaveManager : MonoBehaviour
             Mathf.DeltaAngle(currentEulerAngles.y, targetEulerAngles.y),
             Mathf.DeltaAngle(currentEulerAngles.z, targetEulerAngles.z));
         rootTransform.eulerAngles += rotationDelta;
+    }
+
+    private static void ApplyPlayerRuntimeParameter(ThirdPersonController controller, PlayerParamType paramType, float value)
+    {
+        if (controller == null)
+            return;
+
+        switch (paramType)
+        {
+            case PlayerParamType.MoveSpeed:
+            case PlayerParamType.JumpHeight:
+            case PlayerParamType.Size:
+                if (value <= 0f)
+                    return;
+                break;
+            case PlayerParamType.Gravity:
+                if (value >= 0f)
+                    return;
+                break;
+        }
+
+        controller.SendMessage(
+            "OnParamChanged",
+            new PlayerParamChangedSignal
+            {
+                ParamType = paramType,
+                Value = value
+            },
+            SendMessageOptions.DontRequireReceiver);
     }
 
     private static Vector3Data ToVector3Data(Vector3 value)

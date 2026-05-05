@@ -40,6 +40,8 @@ public class JumpHeightSlider : MonoBehaviour, IChangeSlider
             ParamType = PlayerParamType.JumpHeight,
             Value = value
         });
+
+        GameplaySaveManager.SaveCurrentGame();
     }
 
     private void UpdateValueLabel(float value)

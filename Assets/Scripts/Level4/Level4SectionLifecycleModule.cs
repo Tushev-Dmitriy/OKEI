@@ -62,6 +62,7 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
             flow.FinalSectionUnlockedValue = true;
             flow.EnterSectionForModule(flow.GetSectionForModule(Level4FlowController.SectionId.Final), message);
             flow.ShowSquadModeHintForModule(showReminderOnly: false);
+            flow.TrySaveProgressForModule();
             return;
         }
 
