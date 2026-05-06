@@ -407,6 +407,12 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         }
     }
 
+    private void StopStartupRestore()
+    {
+        _startupRestorePending = false;
+        _startupRestoreUntil = 0f;
+    }
+
     private void EnforceLevel2CursorState()
     {
         if (!forceUnlockedCursorOnLevel2)
@@ -538,6 +544,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (_failureTriggered || _phase == LockPhase.Completed || _phase == LockPhase.Failed)
             return;
 
+        StopStartupRestore();
         _stabilizationTimer = stabilizationRequiredTime;
         pressure = Mathf.Max(pressure, minPressure + debugCompletePressureBonus);
         temperature = Mathf.Min(temperature, maxTemperature - debugCompleteTemperatureBuffer);
@@ -1099,6 +1106,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (_phase == LockPhase.Completed)
             return;
 
+        StopStartupRestore();
         AlignLockWaterWithOutside();
         _phase = LockPhase.Completed;
         _gateOpening = true;

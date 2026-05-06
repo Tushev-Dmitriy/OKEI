@@ -129,6 +129,10 @@
 - `Assets/Scripts/InheritanceLevel` - роботы, наследование, бой, разблокировка.
 - `Assets/Scripts/UI` - интерфейсные элементы.
 
+Подробная карта скриптов и архитектуры:
+
+- `Assets/Scripts/README.md`
+
 Основные сцены:
 
 - `Bootstrap.unity` - стартовая сцена и меню.
