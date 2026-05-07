@@ -98,6 +98,7 @@ public class HealerRobot : Robot
 
         if (_selfHealth.CurrentHealth < _selfHealth.MaxHealth)
         {
+            GameAudio.PlayOn(this, AudioCueIds.Level4RobotAttackHealer, 0.85f, 1f, 18f);
             _selfHealth.Heal(config.healAmount, transform.position);
         }
 
@@ -140,6 +141,8 @@ public class HealerRobot : Robot
         {
             healPosition = targetCollider.ClosestPoint(transform.position);
         }
+
+        GameAudio.PlayOn(this, AudioCueIds.Level4RobotAttackHealer, 0.85f, 1f, 18f);
         targetHealth.Heal(config.healAmount, healPosition);
         _healTimer = 0f;
     }

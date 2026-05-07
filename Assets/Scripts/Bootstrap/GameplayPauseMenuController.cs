@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using StarterAssets;
@@ -152,6 +152,20 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         {
             AudioListener.pause = true;
         }
+
+        CacheActivePlayerInputs();
+
+        if (_activePlayerInputs != null)
+        {
+            _activePlayerInputs.cursorLocked = false;
+            _activePlayerInputs.cursorInputForLook = false;
+            _activePlayerInputs.LookInput(Vector2.zero);
+            _activePlayerInputs.MoveInput(Vector2.zero);
+            _activePlayerInputs.JumpInput(false);
+            _activePlayerInputs.SprintInput(false);
+        }
+
+        GameplayCursorPolicy.ApplyFreeCursor();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -183,6 +197,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         ResolveReferences();
         RefreshSettingsUi();
 
+        GameAudio.PlayUi(AudioCueIds.UiOpenPanel);
         _isOpen = true;
         _isSettingsOpen = false;
         _isTutorialOpen = false;
@@ -205,6 +220,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
     private void ShowSettings(bool show)
     {
+        GameAudio.PlayUi(show ? AudioCueIds.UiOpenPanel : AudioCueIds.UiBack);
         _isSettingsOpen = show;
         RefreshSettingsUi();
         AnimatePanel(pausePanelGroup, pausePanel, !show);
@@ -218,6 +234,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.UiClosePanel);
         CancelPendingTutorialOpen();
         _isOpen = false;
         _isSettingsOpen = false;
@@ -233,6 +250,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
     private void ExitToMenu()
     {
+        GameAudio.PlayUi(AudioCueIds.UiTransitionWhoosh);
         CancelPendingTutorialOpen();
         _isOpen = false;
         _isSettingsOpen = false;
@@ -291,7 +309,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         _isRefreshingUi = true;
 
         BootstrapMenuSaveData saveData = BootstrapMenuSaveSystem.Load();
-        float volume = saveData.soundVolume;
+        float volume = BootstrapMenuSaveSystem.GetSoundVolume();
         int qualityIndex = Mathf.Clamp(saveData.qualityIndex, 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
         bool isFullscreen = saveData.fullscreen;
         int resolutionIndex = Mathf.Clamp(saveData.resolutionIndex, 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
@@ -413,6 +431,8 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
             resolutionDropdown.onValueChanged.AddListener(HandleResolutionChanged);
         }
 
+        EnsureUiAudioBindings();
+
         _isBound = true;
     }
 
@@ -487,6 +507,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
     private void OpenTutorialPressed()
     {
+        GameAudio.PlayUi(AudioCueIds.UiOpenPanel);
         TryOpenTutorialForScene(SceneManager.GetActiveScene().name, true);
     }
 
@@ -507,6 +528,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.UiBack);
         _isTutorialOpen = false;
         _tutorialOpenedFromPauseMenu = false;
         _isSettingsOpen = false;
@@ -543,8 +565,8 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.UiSliderTick, 0.55f);
         ApplyVolume(value);
-        BootstrapMenuSaveSystem.Update(data => data.soundVolume = value);
     }
 
     private void HandleGraphicsChanged(int value)
@@ -555,6 +577,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         ApplyQuality(value);
+        GameAudio.PlayUi(AudioCueIds.UiDropdownSelect, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.qualityIndex = value);
     }
 
@@ -567,6 +590,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
         ApplyFullscreen(isFullscreen);
         UpdateFullscreenVisuals(isFullscreen);
+        GameAudio.PlayUi(isFullscreen ? AudioCueIds.UiToggleOn : AudioCueIds.UiToggleOff, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.fullscreen = isFullscreen);
     }
 
@@ -578,6 +602,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
         }
 
         ApplyResolution(value);
+        GameAudio.PlayUi(AudioCueIds.UiDropdownSelect, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.resolutionIndex = value);
     }
 
@@ -623,7 +648,7 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
     private static void ApplyVolume(float value)
     {
-        AudioListener.volume = Mathf.Clamp01(value);
+        BootstrapMenuSaveSystem.SetSoundVolume(value);
     }
 
     private static void ApplyQuality(int value)
@@ -828,6 +853,32 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
 
         ApplyPauseLayout();
         EnsureTutorialUi();
+    }
+
+    private void EnsureUiAudioBindings()
+    {
+        AttachPointerAudio(continueButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(settingsButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(tutorialButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(exitToMenuButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(backButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(tutorialContinueButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(tutorialBackButton, AudioCueIds.UiHover, 0.85f, null, 0f);
+        AttachPointerAudio(graphicsDropdown, AudioCueIds.UiHover, 0.8f, AudioCueIds.UiDropdownOpen, 0.8f);
+        AttachPointerAudio(resolutionDropdown, AudioCueIds.UiHover, 0.8f, AudioCueIds.UiDropdownOpen, 0.8f);
+        AttachPointerAudio(fullscreenToggle, AudioCueIds.UiHover, 0.8f, null, 0f);
+    }
+
+    private static void AttachPointerAudio(Component target, string hoverCueId, float hoverVolume, string clickCueId, float clickVolume)
+    {
+        if (target == null)
+            return;
+
+        GameAudioPointerBridge bridge = target.GetComponent<GameAudioPointerBridge>();
+        if (bridge == null)
+            bridge = target.gameObject.AddComponent<GameAudioPointerBridge>();
+
+        bridge.Configure(hoverCueId, hoverVolume, clickCueId, clickVolume);
     }
 
     private void HandleGameplaySceneReady(string sceneName)
@@ -1242,66 +1293,3 @@ public sealed class GameplayPauseMenuController : MonoBehaviour
     }
 }
 
-internal readonly struct GameplayTutorialContent
-{
-    public GameplayTutorialContent(string title, string summary, string actions, string reminder)
-    {
-        Title = title;
-        Summary = summary;
-        Actions = actions;
-        Reminder = reminder;
-    }
-
-    public string Title { get; }
-    public string Summary { get; }
-    public string Actions { get; }
-    public string Reminder { get; }
-}
-
-internal static class GameplayTutorialLibrary
-{
-    public static bool TryGetForScene(string sceneName, out GameplayTutorialContent content)
-    {
-        switch (sceneName)
-        {
-            case "Level1":
-                content = new GameplayTutorialContent(
-                    "Обучение: Уровень 1",
-                    "Первый уровень знакомит с условиями, значениями и дверями. Игрок перемещается по сцене, ищет нужные объекты и открывает проходы, выполняя правильные условия.",
-                    "Управление:\n• WASD — движение;\n• Space — прыжок;\n• Shift — ускорение;\n• Q — инвентарь.\n\nЧто делать:\n• исследуй уровень и читай подсказки у дверей;\n• подбирай нужные предметы и значения;\n• используй инвентарь, если нужно вставить объект в слот;\n• открывай двери правильными комбинациями и иди к следующей зоне.",
-                    "Если не понимаешь, куда идти дальше, ориентируйся на ближайшую закрытую дверь и ее условие."
-                );
-                return true;
-
-            case "Level2":
-                content = new GameplayTutorialContent(
-                    "Обучение: Уровень 2",
-                    "Этот уровень показывает циклы через управление шлюзом. Здесь основная работа идет не перемещением по сцене, а через UI системы шлюза.",
-                    "Управление:\n• работа идет через UI;\n• нажимай кнопки и переключатели в интерфейсе шлюза;\n• следи за подсказками и состоянием систем.\n\nЧто делать:\n• управляй питанием, охлаждением, давлением, уровнем воды и воротами;\n• повторяй действия нужное число раз или удерживай процесс, когда этого требует задача;\n• проведи корабль через шлюз и доведи сценарий до завершения.",
-                    "Подсказка по следующему шагу должна читаться прямо в интерфейсе уровня."
-                );
-                return true;
-
-            case "Level3":
-                content = new GameplayTutorialContent(
-                    "Обучение: Уровень 3",
-                    "Третий уровень посвящен артефактам и параметрам игрока. Нужно исследовать сцену, собирать артефакты и при необходимости менять характеристики героя через терминалы.",
-                    "Управление:\n• WASD — движение;\n• Space — прыжок;\n• Shift — ускорение.\n\nЧто делать:\n• ищи и собирай все артефакты на уровне;\n• используй терминалы, чтобы менять параметры персонажа;\n• если проход кажется слишком высоким или дальним, попробуй сначала изменить характеристики героя;\n• после сбора всех артефактов откроется финальный путь.",
-                    "Если застрял, проверь, не пропущен ли артефакт или терминал рядом."
-                );
-                return true;
-
-            case "Level4":
-                content = new GameplayTutorialContent(
-                    "Обучение: Уровень 4",
-                    "Четвертый уровень объясняет наследование через разные типы роботов. Здесь игра также идет через UI выбора и управления роботами, а не через обычное передвижение персонажа.",
-                    "Управление:\n• работа идет через UI;\n• выбирай нужный тип робота кнопками интерфейса;\n• следи за статусом, подсказками и составом отряда.\n\nЧто делать:\n• проходи секции подходящим типом робота;\n• открывай новые специализации: атака, лечение и защита;\n• в финале собери отряд из 5 роботов и проведи его через последнюю секцию.",
-                    "Текст статуса и подсказки на экране показывают, какой робот нужен прямо сейчас."
-                );
-                return true;
-        }
-
-        content = default;
-        return false;
-    }
-}

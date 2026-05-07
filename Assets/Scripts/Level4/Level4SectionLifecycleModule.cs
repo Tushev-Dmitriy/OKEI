@@ -58,6 +58,8 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
 
         if (completedSection == Level4FlowController.SectionId.Defender)
         {
+            GameAudio.PlayUi(AudioCueIds.Level4SectionSuccess, 1f);
+            GameAudio.PlayUi(AudioCueIds.Level4SquadModeUnlocked, 1f);
             flow.SetProgressStageForModule(4);
             flow.FinalSectionUnlockedValue = true;
             flow.EnterSectionForModule(flow.GetSectionForModule(Level4FlowController.SectionId.Final), message);
@@ -91,6 +93,8 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
             flow.TrySaveProgressForModule();
             flow.StatusOverride = flow.CurrentSectionDef.SuccessText;
             flow.RefreshStatus();
+            GameAudio.PlayUi(AudioCueIds.UiLevelComplete, 1f);
+            GameAudio.PlayUi(AudioCueIds.Level4LevelComplete, 1f);
 
             bool transitionStarted = flow.TryStartCompletionTransitionForModule();
             if (!transitionStarted)
@@ -106,6 +110,7 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.Level4SectionSuccess, 1f);
         AdvanceAfterRequiredRobotTest(flow, flow.CurrentSectionDef.SuccessText, openGate: true);
     }
 
@@ -114,6 +119,7 @@ public sealed class Level4SectionLifecycleModule : MonoBehaviour
         if (flow == null)
             return;
 
+        GameAudio.PlayUi(AudioCueIds.Level4SectionFail, 1f);
         CleanupAttempt(flow, destroyPlayerRobot: true);
         flow.EnterSectionForModule(flow.CurrentSectionDef, message);
     }

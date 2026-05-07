@@ -34,6 +34,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
             flow.BeginFinalAssemblyFromModule();
 
         flow.PlannedFinalSquad.Add(selectedType);
+        GameAudio.PlayUi(AudioCueIds.Level4SquadAddMember, 0.9f);
         flow.StatusOverride = $"Добавлен: {flow.GetRobotDisplayName(selectedType)} ({flow.PlannedFinalSquad.Count}/{limit})";
         flow.RefreshStatus();
 
@@ -49,6 +50,7 @@ public sealed class Level4SquadDeploymentModule : MonoBehaviour
         if (flow.PlannedFinalSquad.Count == 0 || flow.IsFinalDeploying || flow.FinalRunStarted)
             return;
 
+        GameAudio.PlayUi(AudioCueIds.Level4SquadDeploy, 0.95f);
         CancelDeployment();
         _deployCoroutine = StartCoroutine(DeployPlannedFinalSquadRoutine(flow));
     }

@@ -83,6 +83,7 @@ public class RobotUnlockManager : MonoBehaviour
         _unlockedRobots.Add(robotType);
         _deathCounts.Clear();
 
+        GameAudio.PlayUi(GetUnlockCueId(robotType), 1f);
         OnRobotUnlocked?.Invoke(robotType);
         _events?.NotifyUnlocked(robotType);
     }
@@ -241,5 +242,20 @@ public class RobotUnlockManager : MonoBehaviour
 
         resetHotkey = KeyCode.F10;
         Debug.LogWarning($"[{nameof(RobotUnlockManager)}] Reset hotkey was serialized as F9 and has been remapped to F10 to avoid Level debug conflicts.", this);
+    }
+
+    private static string GetUnlockCueId(RobotType robotType)
+    {
+        switch (robotType)
+        {
+            case RobotType.Attacker:
+                return AudioCueIds.Level4RobotUnlockAttacker;
+            case RobotType.Healer:
+                return AudioCueIds.Level4RobotUnlockHealer;
+            case RobotType.Defender:
+                return AudioCueIds.Level4RobotUnlockDefender;
+            default:
+                return AudioCueIds.UiConfirm;
+        }
     }
 }

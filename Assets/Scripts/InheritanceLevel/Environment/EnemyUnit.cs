@@ -123,6 +123,10 @@ public class EnemyUnit : MonoBehaviour
                 hitPosition = targetCollider.ClosestPoint(transform.position);
             }
 
+            GameAudio.PlayAtPoint(AudioCueIds.Level4EnemyAttack, transform.position, 0.9f, 1f, 20f);
+            GameAudio.PlayAtPoint(AudioCueIds.Level4LaserFire, transform.position, 0.65f, 1f, 22f);
+            GameAudio.PlayGlobal(AudioCueIds.Level4EnemyAttack, 0.22f);
+            GameAudio.PlayGlobal(AudioCueIds.Level4LaserFire, 0.16f);
             OrientAttackEffect(hitPosition);
 
             currentRobotTarget.TakeDamage(appliedDamage, hitPosition);

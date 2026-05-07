@@ -105,18 +105,21 @@ public class MainMenuController : MonoBehaviour
 
     public void OpenLevelSelect()
     {
+        GameAudio.PlayUi(AudioCueIds.UiOpenPanel);
         levelSelectController?.RefreshCards();
         ShowOnly(levelSelectPanel);
     }
 
     public void OpenSettings()
     {
+        GameAudio.PlayUi(AudioCueIds.UiOpenPanel);
         settingsController?.RefreshUI();
         ShowOnly(settingsPanel);
     }
 
     public void ReturnToMainMenu()
     {
+        GameAudio.PlayUi(AudioCueIds.UiBack);
         ShowOnly(mainMenuPanel);
     }
 
@@ -154,6 +157,7 @@ public class MainMenuController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.UiLevelStart);
         _isLoadingLevel = true;
         LevelProgressManager.SetLastPlayedLevel(levelIndex);
     }

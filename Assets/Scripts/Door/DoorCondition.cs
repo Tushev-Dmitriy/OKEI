@@ -27,19 +27,23 @@ public class DoorCondition : MonoBehaviour
     private bool _isOpen;
     private bool _slotEventsSubscribed;
     private bool _isDestroyingRuntimeUi;
+    private Collider _triggerCollider;
 
     private void Awake()
     {
         EnsureDoorUiRootReady();
         CacheTemplates();
         HideTemplateUi();
+        _triggerCollider = GetComponent<Collider>();
         SyncOpenState();
+        ApplyOpenInteractionState();
     }
 
     private void OnEnable()
     {
         EnsureDoorUiRootReady();
         SyncOpenState();
+        ApplyOpenInteractionState();
 
         if (_isOpen)
         {
@@ -275,11 +279,13 @@ public class DoorCondition : MonoBehaviour
 
     public void OnItemAddedToSlot()
     {
+        GameAudio.PlayUi(AudioCueIds.DoorSlotInsert, 0.9f);
         TryOpenDoorFromCondition(true);
     }
 
     private void OnItemRemovedFromSlot()
     {
+        GameAudio.PlayUi(AudioCueIds.DoorSlotRemove, 0.9f);
         var textController = GetDoorTextController();
         if (textController != null)
         {
@@ -499,6 +505,7 @@ public class DoorCondition : MonoBehaviour
         ApplySlotVisibility();
         SubscribeToSlotEvents();
         ShowRuntimeUi();
+        GameAudio.PlayUi(AudioCueIds.DoorUiOpenBeep, 0.8f);
 
         var textController = GetDoorTextController();
         if (textController != null)
@@ -518,6 +525,7 @@ public class DoorCondition : MonoBehaviour
         }
 
         HideRuntimeUi(true);
+        GameAudio.PlayUi(AudioCueIds.DoorUiCloseBeep, 0.75f);
 
         var textController = GetDoorTextController();
         if (textController != null)
@@ -673,6 +681,8 @@ public class DoorCondition : MonoBehaviour
         {
             if (showErrorOnFail)
             {
+                GameAudio.PlayUi(AudioCueIds.DoorCheckFail, 0.9f);
+                GameAudio.PlayUi(AudioCueIds.DoorLocked, 0.8f);
                 var textController = GetDoorTextController();
                 if (textController != null)
                 {
@@ -684,10 +694,12 @@ public class DoorCondition : MonoBehaviour
 
         if (_door != null)
         {
+            GameAudio.PlayUi(AudioCueIds.DoorCheckSuccess, 0.95f);
             _door.SetOpen(true);
         }
 
         _isOpen = true;
+        ApplyOpenInteractionState();
         ConsumeItemsInSlots();
 
         var successController = GetDoorTextController();
@@ -699,6 +711,14 @@ public class DoorCondition : MonoBehaviour
         SaveDoorOpenProgress();
         HideRuntimeUiAndDestroyAfterAnimation();
         return true;
+    }
+
+    private void ApplyOpenInteractionState()
+    {
+        if (_triggerCollider != null)
+        {
+            _triggerCollider.enabled = !_isOpen;
+        }
     }
 
     private void ConsumeItemsInSlots()

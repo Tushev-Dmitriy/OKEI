@@ -29,6 +29,8 @@ public class MoveSpeedSlider : MonoBehaviour, IChangeSlider
 
     private void OnValueChanged(float value)
     {
+        GameAudio.PlayUi(AudioCueIds.Level3TerminalAdjust, 0.05f);
+        GameAudio.PlayUi(AudioCueIds.Level3ParamSpeed, 0.22f);
         UpdateValueLabel(value);
         if (_signalBus == null)
         {

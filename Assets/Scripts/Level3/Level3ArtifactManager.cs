@@ -29,6 +29,16 @@ public class Level3ArtifactManager : MonoBehaviour
 
     public void NotifyArtifactCollected(Level3Artifact artifact)
     {
+        NotifyArtifactCollectedInternal(artifact, playSound: true);
+    }
+
+    public void NotifyArtifactRestored(Level3Artifact artifact)
+    {
+        NotifyArtifactCollectedInternal(artifact, playSound: false);
+    }
+
+    private void NotifyArtifactCollectedInternal(Level3Artifact artifact, bool playSound)
+    {
         if (artifact == null)
         {
             return;
@@ -42,6 +52,20 @@ public class Level3ArtifactManager : MonoBehaviour
         if (!_collectedArtifacts.Add(artifact))
         {
             return;
+        }
+
+        bool isLastArtifact = _artifacts.Count > 0 && _collectedArtifacts.Count >= _artifacts.Count;
+        if (playSound)
+        {
+            Vector3 soundPosition = artifact.transform.position;
+            if (isLastArtifact)
+            {
+                GameAudio.PlayAtPoint(AudioCueIds.Level3ArtifactLastPickup, soundPosition, 1f, 1f, 18f);
+            }
+            else
+            {
+                GameAudio.PlayRandomAtPoint(soundPosition, 0.95f, AudioCueIds.Level3ArtifactPickupVariants);
+            }
         }
 
         if (_finalDoorOpened)
@@ -58,16 +82,11 @@ public class Level3ArtifactManager : MonoBehaviour
 
         if (_finalDoorController != null)
         {
-            _finalDoorController.Open();
+            _finalDoorController.Open(playSound);
             return;
         }
 
         Debug.LogWarning($"{nameof(Level3ArtifactManager)}: FinalDoorController is not assigned.", this);
-    }
-
-    public void NotifyArtifactRestored(Level3Artifact artifact)
-    {
-        NotifyArtifactCollected(artifact);
     }
 
     public void DebugCollectAllArtifacts()

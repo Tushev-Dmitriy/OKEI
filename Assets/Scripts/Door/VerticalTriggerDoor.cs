@@ -1,5 +1,7 @@
 using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider))]
@@ -17,11 +19,16 @@ public class VerticalTriggerDoor : MonoBehaviour
     [SerializeField] private float _duration = 1f;
     [SerializeField] private Ease _ease = Ease.InOutSine;
     [SerializeField] private bool _startOpened;
+    [SerializeField, Min(0f)] private float _minSoundMovementY = 2f;
+    [SerializeField, Min(0f)] private float _soundCooldown = 0.35f;
 
     private Vector3 _closedLocalPosition;
     private Vector3 _openedLocalPosition;
     private Tween _moveTween;
     private bool _isOpen;
+    private readonly HashSet<int> _activeActors = new();
+    private Collider _triggerCollider;
+    private float _lastSoundTime = -999f;
 
     public bool IsOpen => _isOpen;
 
@@ -33,6 +40,7 @@ public class VerticalTriggerDoor : MonoBehaviour
         }
 
         ValidateConfiguration();
+        _triggerCollider = GetComponent<Collider>();
         _closedLocalPosition = _doorTransform.localPosition;
         _openedLocalPosition = _closedLocalPosition + Vector3.down * _openDistance;
         _isOpen = _startOpened;
@@ -60,7 +68,16 @@ public class VerticalTriggerDoor : MonoBehaviour
             return;
         }
 
-        OpenDoor();
+        int actorId = ResolveActorId(other);
+        if (!_activeActors.Add(actorId))
+        {
+            return;
+        }
+
+        if (_activeActors.Count == 1)
+        {
+            OpenDoor();
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -70,7 +87,13 @@ public class VerticalTriggerDoor : MonoBehaviour
             return;
         }
 
-        CloseDoor();
+        int actorId = ResolveActorId(other);
+        _activeActors.Remove(actorId);
+
+        if (_activeActors.Count == 0)
+        {
+            CloseDoor();
+        }
     }
 
     public void OpenDoor()
@@ -81,7 +104,13 @@ public class VerticalTriggerDoor : MonoBehaviour
         }
 
         _isOpen = true;
+        PlayDoorSound(open: true, _openedLocalPosition);
         AnimateDoor(_openedLocalPosition);
+
+        if (!_closeOnExit && _triggerCollider != null)
+        {
+            _triggerCollider.enabled = false;
+        }
     }
 
     public void CloseDoor()
@@ -92,7 +121,17 @@ public class VerticalTriggerDoor : MonoBehaviour
         }
 
         _isOpen = false;
+        PlayDoorSound(open: false, _closedLocalPosition);
         AnimateDoor(_closedLocalPosition);
+    }
+
+    private static string GetDoorCueId(bool open)
+    {
+        bool isLevel3 = SceneManager.GetActiveScene().name == "Level3";
+        if (isLevel3)
+            return open ? AudioCueIds.Level3DoorOpenLight : AudioCueIds.Level3DoorCloseLight;
+
+        return open ? AudioCueIds.DoorOpenHeavy : AudioCueIds.DoorCloseHeavy;
     }
 
     private void AnimateDoor(Vector3 targetLocalPosition)
@@ -148,5 +187,34 @@ public class VerticalTriggerDoor : MonoBehaviour
         }
 
         _doorTransform.localPosition = _isOpen ? _openedLocalPosition : _closedLocalPosition;
+    }
+
+    private void PlayDoorSound(bool open, Vector3 targetLocalPosition)
+    {
+        if (Time.time < _lastSoundTime + _soundCooldown)
+        {
+            return;
+        }
+
+        if (_doorTransform != null)
+        {
+            float yDelta = Mathf.Abs(targetLocalPosition.y - _doorTransform.localPosition.y);
+            if (yDelta < _minSoundMovementY)
+            {
+                return;
+            }
+        }
+
+        _lastSoundTime = Time.time;
+        GameAudio.PlayAtPoint(GetDoorCueId(open), transform.position, 0.95f, 1.5f, 22f);
+    }
+
+    private static int ResolveActorId(Collider other)
+    {
+        if (other == null)
+            return 0;
+
+        Transform root = other.transform.root;
+        return root != null ? root.GetInstanceID() : other.GetInstanceID();
     }
 }

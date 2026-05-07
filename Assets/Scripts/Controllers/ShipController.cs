@@ -108,6 +108,7 @@ public class ShipController : MonoBehaviour, ISceneSaveable
         _hasStopped = true;
         _motionState = ShipMotionState.Idle;
         _hasReachedEnd = false;
+        GameAudio.PlayAtPoint(AudioCueIds.Level2ShipArrive, transform.position, 0.9f, 2f, 30f);
     }
 
     public void MoveToEnd()
@@ -130,6 +131,7 @@ public class ShipController : MonoBehaviour, ISceneSaveable
         }
 
         KillMovementTweens();
+        GameAudio.PlayAtPoint(AudioCueIds.Level2ShipDepart, transform.position, 0.9f, 2f, 30f);
         _motionState = ShipMotionState.MovingToEnd;
         _hasReachedEnd = false;
         Vector3 endPosition = _posToEnd;

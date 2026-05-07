@@ -62,6 +62,8 @@ public class TerminalController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayAtPoint(AudioCueIds.Level3TerminalOpen, transform.position, 0.9f, 1f, 16f);
+        GameAudio.SetLoop(this, "terminal", AudioCueIds.AmbTerminalHum, true, 0.22f, 1f, 14f);
         SetTerminalInteractionMode(true);
         if (_animator != null)
         {
@@ -96,6 +98,9 @@ public class TerminalController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.Level3TerminalApply, 0.7f);
+        GameAudio.PlayAtPoint(AudioCueIds.Level3TerminalClose, transform.position, 0.9f, 1f, 16f);
+        GameAudio.SetLoop(this, "terminal", AudioCueIds.AmbTerminalHum, false);
         SetTerminalInteractionMode(false);
         if (_animator != null)
         {
@@ -158,6 +163,7 @@ public class TerminalController : MonoBehaviour
 
     private void OnDisable()
     {
+        GameAudio.SetLoop(this, "terminal", AudioCueIds.AmbTerminalHum, false);
         SetTerminalInteractionMode(false);
         _activePlayer = null;
         _activePlayerInputs = null;

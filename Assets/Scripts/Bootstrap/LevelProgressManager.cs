@@ -209,6 +209,26 @@ internal static class BootstrapMenuSaveSystem
         SaveInternal();
     }
 
+    public static float GetSoundVolume()
+    {
+        EnsureLoaded();
+        return _cachedData != null ? Mathf.Clamp01(_cachedData.soundVolume) : 1f;
+    }
+
+    public static void SetSoundVolume(float value)
+    {
+        float sanitized = Mathf.Clamp01(value);
+        EnsureLoaded();
+
+        if (_cachedData != null)
+        {
+            _cachedData.soundVolume = sanitized;
+            SaveInternal();
+        }
+
+        BootstrapRuntimeSettings.ApplyVolume(sanitized);
+    }
+
     public static void ApplyRuntimeSettings()
     {
         EnsureLoaded();
@@ -218,7 +238,7 @@ internal static class BootstrapMenuSaveSystem
         }
 
         QualitySettings.SetQualityLevel(Mathf.Clamp(_cachedData.qualityIndex, 0, QualitySettings.names.Length - 1), true);
-        AudioListener.volume = Mathf.Clamp01(_cachedData.soundVolume);
+        BootstrapRuntimeSettings.ApplyVolume(_cachedData.soundVolume);
 
         FullScreenMode fullscreenMode = _cachedData.fullscreen
             ? FullScreenMode.FullScreenWindow
@@ -430,5 +450,13 @@ internal static class BootstrapMenuSaveSystem
         PlayerPrefs.DeleteKey(LegacyFullscreenKey);
         PlayerPrefs.DeleteKey(LegacyResolutionKey);
         PlayerPrefs.Save();
+    }
+}
+
+internal static class BootstrapRuntimeSettings
+{
+    public static void ApplyVolume(float value)
+    {
+        AudioListener.volume = Mathf.Clamp01(value);
     }
 }

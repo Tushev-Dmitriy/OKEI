@@ -60,6 +60,7 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void OnPointerEnter(PointerEventData eventData)
     {
         _isPointerInside = true;
+        GameAudio.PlayUi(AudioCueIds.UiHover, 0.85f);
         AnimateTo(_baseScale * hoverScale, _hoverBackgroundColor);
     }
 
@@ -71,6 +72,7 @@ public class SimpleMenuAnimator : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        GameAudio.PlayUi(AudioCueIds.UiClick, 0.9f);
         AnimateTo(_baseScale * pressedScale, _pressedBackgroundColor);
     }
 

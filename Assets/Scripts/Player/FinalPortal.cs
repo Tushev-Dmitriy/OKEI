@@ -38,6 +38,8 @@ public class FinalPortal : MonoBehaviour
 
         _currentPlayer = player;
         _isTransitionRunning = true;
+        GameAudio.PlayAtPoint(AudioCueIds.PlayerPortalEnter, transform.position, 1f, 1f, 18f);
+        GameAudio.PlayUi(AudioCueIds.PlayerPortalCharge, 0.95f);
 
         bool started = SceneTransitionService.StartPortalTransition(
             targetSceneBuildIndex,
@@ -76,6 +78,21 @@ public class FinalPortal : MonoBehaviour
 
     private void HandleTransitionCommitted()
     {
+        GameAudio.PlayUi(AudioCueIds.UiLevelComplete, 1f);
+
+        switch (completedLevelIndex)
+        {
+            case 2:
+                GameAudio.PlayGlobal(AudioCueIds.Level2LevelComplete, 1f);
+                break;
+            case 3:
+                GameAudio.PlayGlobal(AudioCueIds.Level3LevelComplete, 1f);
+                break;
+            case 4:
+                GameAudio.PlayGlobal(AudioCueIds.Level4LevelComplete, 1f);
+                break;
+        }
+
         SaveResetter.ResetGameplayProgress();
 
         if (triggerOnce)
@@ -89,6 +106,7 @@ public class FinalPortal : MonoBehaviour
 
     private void HandleTransitionCancelled()
     {
+        GameAudio.PlayUi(AudioCueIds.UiBack, 0.8f);
         _isTransitionRunning = false;
         _currentPlayer = null;
     }

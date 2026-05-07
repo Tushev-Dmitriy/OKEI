@@ -82,7 +82,7 @@ public class SettingsPanelController : MonoBehaviour
         _isRefreshingUi = true;
 
         BootstrapMenuSaveData saveData = BootstrapMenuSaveSystem.Load();
-        float volume = saveData.soundVolume;
+        float volume = BootstrapMenuSaveSystem.GetSoundVolume();
         int qualityIndex = Mathf.Clamp(saveData.qualityIndex, 0, Mathf.Max(0, graphicsDropdown.options.Count - 1));
         bool isFullscreen = saveData.fullscreen;
         int resolutionIndex = Mathf.Clamp(saveData.resolutionIndex, 0, Mathf.Max(0, resolutionDropdown.options.Count - 1));
@@ -184,6 +184,8 @@ public class SettingsPanelController : MonoBehaviour
         {
             resolutionDropdown.onValueChanged.AddListener(HandleResolutionChanged);
         }
+
+        EnsureUiAudioBindings();
     }
 
     private void UnwireControls()
@@ -226,8 +228,8 @@ public class SettingsPanelController : MonoBehaviour
             return;
         }
 
+        GameAudio.PlayUi(AudioCueIds.UiSliderTick, 0.55f);
         ApplyVolume(value);
-        BootstrapMenuSaveSystem.Update(data => data.soundVolume = value);
     }
 
     private void HandleGraphicsChanged(int value)
@@ -238,6 +240,7 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         ApplyQuality(value);
+        GameAudio.PlayUi(AudioCueIds.UiDropdownSelect, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.qualityIndex = value);
     }
 
@@ -250,6 +253,7 @@ public class SettingsPanelController : MonoBehaviour
 
         ApplyFullscreen(isFullscreen);
         UpdateFullscreenVisuals(isFullscreen);
+        GameAudio.PlayUi(isFullscreen ? AudioCueIds.UiToggleOn : AudioCueIds.UiToggleOff, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.fullscreen = isFullscreen);
     }
 
@@ -261,12 +265,13 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         ApplyResolution(value);
+        GameAudio.PlayUi(AudioCueIds.UiDropdownSelect, 0.8f);
         BootstrapMenuSaveSystem.Update(data => data.resolutionIndex = value);
     }
 
     private static void ApplyVolume(float value)
     {
-        AudioListener.volume = Mathf.Clamp01(value);
+        BootstrapMenuSaveSystem.SetSoundVolume(value);
     }
 
     private static void ApplyQuality(int value)
@@ -337,5 +342,24 @@ public class SettingsPanelController : MonoBehaviour
         }
 
         return 0;
+    }
+
+    private void EnsureUiAudioBindings()
+    {
+        AttachPointerAudio(graphicsDropdown, AudioCueIds.UiHover, 0.8f, AudioCueIds.UiDropdownOpen, 0.8f);
+        AttachPointerAudio(resolutionDropdown, AudioCueIds.UiHover, 0.8f, AudioCueIds.UiDropdownOpen, 0.8f);
+        AttachPointerAudio(fullscreenToggle, AudioCueIds.UiHover, 0.8f, null, 0f);
+    }
+
+    private static void AttachPointerAudio(Component target, string hoverCueId, float hoverVolume, string clickCueId, float clickVolume)
+    {
+        if (target == null)
+            return;
+
+        GameAudioPointerBridge bridge = target.GetComponent<GameAudioPointerBridge>();
+        if (bridge == null)
+            bridge = target.gameObject.AddComponent<GameAudioPointerBridge>();
+
+        bridge.Configure(hoverCueId, hoverVolume, clickCueId, clickVolume);
     }
 }

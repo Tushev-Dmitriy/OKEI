@@ -94,6 +94,7 @@ public class CombatSystem : MonoBehaviour
     {
         if (targetHealth != null && targetHealth.IsAlive)
         {
+            PlayAttackSound();
             PlayAttackEffect();
 
             Vector3 hitPosition = targetHealth.transform.position;
@@ -114,6 +115,25 @@ public class CombatSystem : MonoBehaviour
 
             targetHealth.TakeDamage(finalDamage, hitPosition);
         }
+    }
+
+    private void PlayAttackSound()
+    {
+        Robot ownerRobot = GetComponent<Robot>();
+        string cueId = ownerRobot != null
+            ? ownerRobot.RobotType switch
+            {
+                RobotType.Attacker => AudioCueIds.Level4RobotAttackAttacker,
+                RobotType.Healer => AudioCueIds.Level4RobotAttackHealer,
+                RobotType.Defender => AudioCueIds.Level4RobotAttackDefender,
+                _ => AudioCueIds.Level4RobotAttackBase
+            }
+            : AudioCueIds.Level4LaserFire;
+
+        GameAudio.PlayAtPoint(cueId, transform.position, 0.9f, 1f, 20f);
+        GameAudio.PlayAtPoint(AudioCueIds.Level4LaserFire, transform.position, 0.7f, 1f, 22f);
+        GameAudio.PlayGlobal(cueId, 0.22f);
+        GameAudio.PlayGlobal(AudioCueIds.Level4LaserFire, 0.18f);
     }
 
     protected virtual void OnTargetDefeated()

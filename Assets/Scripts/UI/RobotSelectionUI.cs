@@ -200,8 +200,12 @@ public class RobotSelectionUI : MonoBehaviour
     private void OnButtonClicked(RobotType type)
     {
         if (unlockManager != null && !unlockManager.IsRobotUnlocked(type))
+        {
+            GameAudio.PlayUi(AudioCueIds.UiLocked, 0.9f);
             return;
+        }
 
+        GameAudio.PlayUi(AudioCueIds.Level4RobotSelect, 0.85f);
         OnRobotButtonClicked?.Invoke(type);
         OnAnyRobotButtonClicked?.Invoke(type);
 

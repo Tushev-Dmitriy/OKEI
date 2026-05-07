@@ -29,7 +29,7 @@ public class FinalDoorController : MonoBehaviour
         _closedLocalRotation = _doorTransform.localRotation;
     }
 
-    public void Open()
+    public void Open(bool playSound = true)
     {
         if (_isOpen)
         {
@@ -37,6 +37,11 @@ public class FinalDoorController : MonoBehaviour
         }
 
         _isOpen = true;
+        if (playSound)
+        {
+            GameAudio.PlayAtPoint(AudioCueIds.Level3DoorOpenLight, transform.position, 1f, 2f, 24f);
+            GameAudio.PlayAtPoint(AudioCueIds.Level3DoorOpenFinal, transform.position, 0.55f, 2f, 24f);
+        }
 
         if (_openRoutine != null)
         {

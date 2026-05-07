@@ -53,6 +53,8 @@ public sealed class Level4SpawnFlowModule : MonoBehaviour
         if (flow == null)
             return;
 
+        bool isCooldown = !string.IsNullOrWhiteSpace(reason) && reason.IndexOf("cooldown", System.StringComparison.OrdinalIgnoreCase) >= 0;
+        GameAudio.PlayUi(isCooldown ? AudioCueIds.Level4RobotCooldownDenied : AudioCueIds.Level4RobotSpawnDenied, 0.95f);
         flow.StatusOverride = string.IsNullOrWhiteSpace(reason)
             ? $"Сейчас нельзя запустить {flow.GetRobotDisplayName(robotType)}."
             : reason;

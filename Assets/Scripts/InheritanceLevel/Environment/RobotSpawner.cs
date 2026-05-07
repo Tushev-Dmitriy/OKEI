@@ -163,6 +163,7 @@ public class RobotSpawner : MonoBehaviour
             SetCurrentRobot(robotLogic, instance);
         }
 
+        GameAudio.PlayAtPoint(GetSpawnCueId(robotType), position, 0.95f, 1.5f, 20f);
         OnRobotSpawned?.Invoke(robotLogic);
         _nextAllowedSpawnTime = Time.unscaledTime + Mathf.Max(0f, spawnCooldownSeconds);
         return robotLogic;
@@ -243,6 +244,21 @@ public class RobotSpawner : MonoBehaviour
 
         denyReason = string.Empty;
         return true;
+    }
+
+    private static string GetSpawnCueId(RobotType robotType)
+    {
+        switch (robotType)
+        {
+            case RobotType.Attacker:
+                return AudioCueIds.Level4RobotSpawnAttacker;
+            case RobotType.Healer:
+                return AudioCueIds.Level4RobotSpawnHealer;
+            case RobotType.Defender:
+                return AudioCueIds.Level4RobotSpawnDefender;
+            default:
+                return AudioCueIds.Level4RobotSpawnBase;
+        }
     }
 
     private void SetCurrentRobot(Robot robot, GameObject instance)

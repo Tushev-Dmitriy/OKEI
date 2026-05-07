@@ -309,6 +309,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
 
     private void OnDestroy()
     {
+        StopLevelAudioLoops();
         UnsubscribeShipControllerEvents();
     }
 
@@ -363,6 +364,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         HandleInputStateChanges();
         UpdateBaseSimulation(dt);
         ApplyActiveIncidentEffects(dt);
+        UpdateLevelAudioLoops();
 
         switch (_phase)
         {
@@ -390,6 +392,24 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         UpdateGate(dt);
         ApplyWaterVisual();
         lockUi?.Refresh();
+    }
+
+    private void UpdateLevelAudioLoops()
+    {
+        GameAudio.SetGlobalLoop("level2_power", AudioCueIds.Level2PowerCoreLoop, _gameplayStarted && PowerEnabled && !_failureTriggered, 0.3f);
+        GameAudio.SetGlobalLoop("level2_cooling", AudioCueIds.Level2CoolingLoop, _gameplayStarted && CoolingEnabled && !_failureTriggered, 0.24f);
+        GameAudio.SetGlobalLoop("level2_pump", AudioCueIds.Level2PumpLoop, _forRunning && _phase == LockPhase.Stabilization && !_failureTriggered, 0.34f);
+        GameAudio.SetGlobalLoop("level2_water", AudioCueIds.Level2WaterMoveLoop, _forRunning && _phase == LockPhase.WaterLeveling && !_failureTriggered, 0.3f);
+        GameAudio.SetGlobalLoop("level2_lift", AudioCueIds.Level2LiftMoveLoop, _forRunning && _phase == LockPhase.LiftPreparation && !_failureTriggered, 0.32f);
+    }
+
+    private void StopLevelAudioLoops()
+    {
+        GameAudio.SetGlobalLoop("level2_power", AudioCueIds.Level2PowerCoreLoop, false);
+        GameAudio.SetGlobalLoop("level2_cooling", AudioCueIds.Level2CoolingLoop, false);
+        GameAudio.SetGlobalLoop("level2_pump", AudioCueIds.Level2PumpLoop, false);
+        GameAudio.SetGlobalLoop("level2_water", AudioCueIds.Level2WaterMoveLoop, false);
+        GameAudio.SetGlobalLoop("level2_lift", AudioCueIds.Level2LiftMoveLoop, false);
     }
 
     private void ApplyPendingStartupRestore()
@@ -715,6 +735,9 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         ClearIncidentState();
 
         lockInputs?.SetInputEnabled(false);
+        GameAudio.PlayGlobal(AudioCueIds.Level2SystemFail, 1f);
+        GameAudio.PlayGlobal(AudioCueIds.Level2AlarmCritical, 1f);
+        GameAudio.PlayLoop(GameAudioLoopChannel.Alarm, AudioCueIds.AmbAlarmLoop, 0.9f);
 
         if (alarmAudio != null)
             alarmAudio.Play();
@@ -786,6 +809,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (_stabilizationTimer >= stabilizationRequiredTime && systemIntegrity >= requiredIntegrityForPhase2)
         {
             _phase = LockPhase.WaterLeveling;
+            GameAudio.PlayGlobal(AudioCueIds.Level2PhaseSuccess, 0.95f);
             ScheduleNextIncident(isFirst: false, immediateBias: true);
             GameplaySaveManager.SaveCurrentGame();
         }
@@ -807,6 +831,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (Mathf.Abs(waterLevelTarget - waterLevel) <= waterTargetTolerance)
         {
             _phase = LockPhase.LiftPreparation;
+            GameAudio.PlayGlobal(AudioCueIds.Level2PhaseSuccess, 0.95f);
             ScheduleNextIncident(isFirst: false, immediateBias: true);
             GameplaySaveManager.SaveCurrentGame();
         }
@@ -945,6 +970,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         if (incidentType == IncidentType.None)
             return;
 
+        GameAudio.PlayGlobal(AudioCueIds.Level2IncidentStart, 0.95f);
         _activeIncident = incidentType;
         _incidentDuration = incidentBaseDuration + (_threatTier - 1) * incidentDurationPerThreatTier;
         _incidentTimer = _incidentDuration;
@@ -957,21 +983,27 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             case IncidentType.PressureLeak:
                 _incidentLabel = pressureLeakIncidentLabel;
                 _incidentHint = pressureLeakIncidentHint;
+                GameAudio.PlayGlobal(AudioCueIds.Level2IncidentPressureLeak, 0.95f);
                 break;
             case IncidentType.CoolingFault:
                 _incidentLabel = coolingFaultIncidentLabel;
                 _incidentHint = coolingFaultIncidentHint;
                 _coolingRestartRequiresOff = true;
+                GameAudio.PlayGlobal(AudioCueIds.Level2IncidentCoolingFault, 0.95f);
                 break;
             case IncidentType.FlowSurge:
                 _incidentLabel = flowSurgeIncidentLabel;
                 _incidentHint = string.Format(flowSurgeIncidentHintTemplate, flowSurgeStabilizeTime);
+                GameAudio.PlayGlobal(AudioCueIds.Level2IncidentFlowSurge, 0.95f);
                 break;
             case IncidentType.LiftJam:
                 _incidentLabel = liftJamIncidentLabel;
                 _incidentHint = liftJamIncidentHint;
+                GameAudio.PlayGlobal(AudioCueIds.Level2IncidentLiftJam, 0.95f);
                 break;
         }
+
+        GameAudio.PlayLoop(GameAudioLoopChannel.Alarm, AudioCueIds.AmbAlarmLoop, 0.75f);
     }
 
     private void ResolveIncident(string message)
@@ -980,6 +1012,8 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             return;
 
         systemIntegrity = Mathf.Clamp(systemIntegrity + incidentResolveIntegrityBonus, 0f, 100f);
+        GameAudio.PlayGlobal(AudioCueIds.Level2IncidentResolved, 0.95f);
+        GameAudio.StopLoop(GameAudioLoopChannel.Alarm);
         ClearIncidentState();
         _incidentHint = message;
         _nextIncidentTimer = Mathf.Min(_nextIncidentTimer, UnityEngine.Random.Range(incidentResolvedDelayMin, incidentResolvedDelayMax));
@@ -987,6 +1021,8 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
 
     private void HandleIncidentTimeout()
     {
+        GameAudio.PlayGlobal(AudioCueIds.Level2IncidentFailed, 1f);
+        GameAudio.StopLoop(GameAudioLoopChannel.Alarm);
         float strength = GetIncidentStrengthMultiplier();
         systemIntegrity = Mathf.Clamp(systemIntegrity - incidentTimeoutIntegrityHit * strength, 0f, 100f);
 
@@ -1121,6 +1157,10 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
         ClearIncidentState();
 
         lockInputs?.SetInputEnabled(false);
+        GameAudio.StopLoop(GameAudioLoopChannel.Alarm);
+        GameAudio.PlayUi(AudioCueIds.UiLevelComplete, 1f);
+        GameAudio.PlayGlobal(AudioCueIds.Level2LevelComplete, 1f);
+        GameAudio.PlayAtPoint(AudioCueIds.Level2GateOpen, gateTransform != null ? gateTransform.position : transform.position, 1f, 2f, 28f);
         shipController?.MoveToEnd();
         GameplaySaveManager.SaveCurrentGame();
     }

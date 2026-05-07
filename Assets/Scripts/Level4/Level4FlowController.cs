@@ -197,10 +197,20 @@ public class Level4FlowController : MonoBehaviour
     internal bool TryStartCompletionTransitionForModule() => TryStartCompletionTransition();
 
     private void Awake() { EnsureModules(); setupModule.RunAwake(this); }
-    private void OnEnable() { EnsureModules(); eventsModule.RunOnEnable(this); }
+    private void OnEnable()
+    {
+        EnsureModules();
+        eventsModule.RunOnEnable(this);
+    }
     private void Start() => setupModule.RunStart(this);
     private void Update() => updateModule.RunUpdate(this);
-    private void OnDisable() { if (eventsModule == null) return; eventsModule.RunOnDisable(this); }
+    private void OnDisable()
+    {
+        if (eventsModule == null)
+            return;
+
+        eventsModule.RunOnDisable(this);
+    }
 
     public void DebugPrepareFinalSquad()
     {
@@ -674,6 +684,7 @@ public sealed class Level4FinalSquadCoreModule : MonoBehaviour
         if (flow == null || !flow.CurrentSectionIsFinal)
             return;
 
+        GameAudio.PlayUi(AudioCueIds.Level4SquadRun, 1f);
         flow.FinalRunStartedMutable = true;
         flow.SquadPulseTimer = 0f;
         flow.StageIndexMutable = 1;
@@ -730,6 +741,8 @@ public sealed class Level4FinalSquadCoreModule : MonoBehaviour
             flow.RefreshStatus();
             return;
         }
+
+        GameAudio.PlayUi(AudioCueIds.Level4SquadClear, 0.95f);
 
         flow.CleanupAttemptForModule(destroyPlayerRobot: true);
         BeginFinalAssembly(flow);

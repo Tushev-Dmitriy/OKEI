@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour, ISceneSaveable
 {
@@ -6,6 +7,9 @@ public class Door : MonoBehaviour, ISceneSaveable
     [SerializeField] private string saveId;
     [SerializeField] SceneObjectType objectType;
     [SerializeField] private bool isOpen;
+    [SerializeField, Min(0f)] private float soundCooldown = 0.35f;
+
+    private float _lastSoundTime = -999f;
 
 
     public bool OpenChange() => isOpen = !isOpen;
@@ -19,6 +23,15 @@ public class Door : MonoBehaviour, ISceneSaveable
         }
 
         isOpen = open;
+        bool isLevel3 = SceneManager.GetActiveScene().name == "Level3";
+        string cueId = open
+            ? (isLevel3 ? AudioCueIds.Level3DoorOpenLight : AudioCueIds.DoorOpenHeavy)
+            : (isLevel3 ? AudioCueIds.Level3DoorCloseLight : AudioCueIds.DoorCloseHeavy);
+        if (Time.time >= _lastSoundTime + soundCooldown)
+        {
+            _lastSoundTime = Time.time;
+            GameAudio.PlayAtPoint(cueId, transform.position, 0.95f, 1.5f, 22f);
+        }
         ApplyInstant();
     }
 

@@ -71,10 +71,17 @@ public class Health : MonoBehaviour
         if (appliedDamage > 0f)
         {
             PlayDamageEffect();
+            GameAudio.PlayAtPoint(isEnemyUnit ? AudioCueIds.Level4EnemyHit : AudioCueIds.Level4RobotHit, hitPosition, 0.9f, 1f, 16f);
+            GameAudio.PlayAtPoint(AudioCueIds.Level4LaserHitMetal, hitPosition, 0.7f, 1f, 18f);
+            GameAudio.PlayAtPoint(AudioCueIds.Level4SparkImpact, hitPosition, 0.65f, 1f, 18f);
         }
 
         if (currentHealth <= 0)
         {
+            GameAudio.PlayAtPoint(isEnemyUnit ? AudioCueIds.Level4EnemyDeathClean : AudioCueIds.Level4RobotDeathClean, transform.position, 1f, 1f, 20f);
+            GameAudio.PlayAtPoint(isEnemyUnit ? AudioCueIds.Level4ExplosionSmallEnemy : AudioCueIds.Level4ExplosionSmallRobot, transform.position, 0.9f, 1f, 20f);
+            GameAudio.PlayGlobal(isEnemyUnit ? AudioCueIds.Level4EnemyDeathClean : AudioCueIds.Level4RobotDeathClean, 0.9f);
+            GameAudio.PlayGlobal(isEnemyUnit ? AudioCueIds.Level4ExplosionSmallEnemy : AudioCueIds.Level4ExplosionSmallRobot, 0.75f);
             OnDeath?.Invoke();
         }
     }

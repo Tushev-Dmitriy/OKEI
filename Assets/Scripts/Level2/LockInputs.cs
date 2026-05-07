@@ -40,6 +40,7 @@ public class LockInputs : MonoBehaviour
             return;
 
         powerEnabled = enabled;
+        GameAudio.PlayGlobal(enabled ? AudioCueIds.Level2SwitchPowerOn : AudioCueIds.Level2SwitchPowerOff, 0.9f);
         GameplaySaveManager.SaveCurrentGame();
     }
 
@@ -52,6 +53,7 @@ public class LockInputs : MonoBehaviour
             return;
 
         coolingEnabled = enabled;
+        GameAudio.PlayGlobal(enabled ? AudioCueIds.Level2SwitchCoolingOn : AudioCueIds.Level2SwitchCoolingOff, 0.9f);
         GameplaySaveManager.SaveCurrentGame();
     }
 
@@ -64,6 +66,7 @@ public class LockInputs : MonoBehaviour
             return;
 
         safeModeEnabled = enabled;
+        GameAudio.PlayGlobal(enabled ? AudioCueIds.Level2SwitchSafeModeOn : AudioCueIds.Level2SwitchSafeModeOff, 0.9f);
         GameplaySaveManager.SaveCurrentGame();
     }
 
@@ -88,7 +91,10 @@ public class LockInputs : MonoBehaviour
             return;
 
         if (lockControlSystem.TryStartPumpFor5())
+        {
+            GameAudio.PlayGlobal(AudioCueIds.Level2ButtonPump, 0.95f);
             GameplaySaveManager.SaveCurrentGame();
+        }
     }
 
     public void WaterForTen()
@@ -97,7 +103,10 @@ public class LockInputs : MonoBehaviour
             return;
 
         if (lockControlSystem.TryStartWaterPrimaryFor())
+        {
+            GameAudio.PlayGlobal(AudioCueIds.Level2ButtonWater, 0.95f);
             GameplaySaveManager.SaveCurrentGame();
+        }
     }
 
     public void WaterForFive()
@@ -106,7 +115,10 @@ public class LockInputs : MonoBehaviour
             return;
 
         if (lockControlSystem.TryStartWaterSecondaryFor())
+        {
+            GameAudio.PlayGlobal(AudioCueIds.Level2ButtonWater, 0.95f);
             GameplaySaveManager.SaveCurrentGame();
+        }
     }
 
     public void LiftForTen()
@@ -115,7 +127,10 @@ public class LockInputs : MonoBehaviour
             return;
 
         if (lockControlSystem.TryStartLiftSecondaryFor())
+        {
+            GameAudio.PlayGlobal(AudioCueIds.Level2ButtonLift, 0.95f);
             GameplaySaveManager.SaveCurrentGame();
+        }
     }
 
     public void LiftForTwentyFive()
@@ -124,7 +139,10 @@ public class LockInputs : MonoBehaviour
             return;
 
         if (lockControlSystem.TryStartLiftPrimaryFor())
+        {
+            GameAudio.PlayGlobal(AudioCueIds.Level2ButtonLift, 0.95f);
             GameplaySaveManager.SaveCurrentGame();
+        }
     }
 
     private bool CanChangeSwitchState()

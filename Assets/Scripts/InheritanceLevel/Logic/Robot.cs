@@ -23,6 +23,7 @@ public class Robot : MonoBehaviour
     private bool isDying;
     [SerializeField, Min(0.1f)] private float minRobotSpacing = 1.1f;
     [SerializeField] private LayerMask robotSpacingMask = ~0;
+    private Vector3 _lastAudioPosition;
 
     protected virtual void Awake()
     {
@@ -35,6 +36,8 @@ public class Robot : MonoBehaviour
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             rb.interpolation = RigidbodyInterpolation.Interpolate;
         }
+
+        _lastAudioPosition = transform.position;
     }
 
     protected virtual void OnEnable()
@@ -53,6 +56,8 @@ public class Robot : MonoBehaviour
 
     protected virtual void OnDisable()
     {
+        StopMovementLoop();
+
         if (health != null)
         {
             health.OnDeath -= OnDeath;
@@ -125,6 +130,8 @@ public class Robot : MonoBehaviour
 
             Move();
         }
+
+        UpdateMovementLoop();
     }
 
     protected virtual void Move()
@@ -197,12 +204,46 @@ public class Robot : MonoBehaviour
         if (isDying)
             return;
 
+        StopMovementLoop();
         StartCoroutine(DeathFadeRoutine());
     }
 
     protected virtual void OnDestroy()
     {
         OnDisable();
+    }
+
+    private void UpdateMovementLoop()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        bool shouldPlay = IsAlive && (transform.position - _lastAudioPosition).sqrMagnitude > 0.0004f;
+        _lastAudioPosition = transform.position;
+
+        if (!shouldPlay)
+        {
+            StopMovementLoop();
+            return;
+        }
+
+        GameAudio.SetLoop(this, "movement", GetMovementLoopCueId(), true, 0.28f, 1.5f, 16f);
+    }
+
+    private void StopMovementLoop()
+    {
+        GameAudio.SetLoop(this, "movement", GetMovementLoopCueId(), false);
+    }
+
+    private string GetMovementLoopCueId()
+    {
+        return RobotType switch
+        {
+            RobotType.Attacker => AudioCueIds.Level4RobotMoveAttackerLoop,
+            RobotType.Healer => AudioCueIds.Level4RobotMoveHealerLoop,
+            RobotType.Defender => AudioCueIds.Level4RobotMoveDefenderLoop,
+            _ => AudioCueIds.Level4RobotMoveBaseLoop
+        };
     }
 
     private bool TryGetActiveEnemyTarget(out EnemyUnit enemy)
