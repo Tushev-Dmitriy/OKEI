@@ -126,6 +126,55 @@ public sealed class GameplaySaveManager : MonoBehaviour
         RestoreRobotProgress(data);
     }
 
+    public static void ClearSceneProgress(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            return;
+        }
+
+        PlayerSaveSystem.Load(out SaveData data);
+        if (data == null)
+        {
+            return;
+        }
+
+        bool changed = false;
+
+        if (data.player != null && string.Equals(data.player.level, sceneName, System.StringComparison.Ordinal))
+        {
+            data.player = null;
+            changed = true;
+        }
+
+        if (data.playerLevels != null)
+        {
+            int removedCount = data.playerLevels.RemoveAll(levelData =>
+                levelData == null || string.Equals(levelData.level, sceneName, System.StringComparison.Ordinal));
+            changed |= removedCount > 0;
+        }
+
+        if (data.sceneObjects != null)
+        {
+            int removedCount = data.sceneObjects.RemoveAll(state =>
+                state != null && string.Equals(state.sceneName, sceneName, System.StringComparison.Ordinal));
+            changed |= removedCount > 0;
+        }
+
+        if (!changed)
+        {
+            return;
+        }
+
+        PlayerSaveSystem.Save(data);
+
+        GameplaySaveManager saveManager = FindFirstObjectByType<GameplaySaveManager>();
+        if (saveManager != null)
+        {
+            saveManager._cachedSaveData = data;
+        }
+    }
+
     public void SaveNow()
     {
         if (_isRestoring && Time.unscaledTime < _restoreSaveBlockUntil)

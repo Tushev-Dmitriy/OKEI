@@ -30,7 +30,14 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
     [SerializeField] private string completionHintText = "Сохраняем прогресс и открываем следующий уровень";
     [SerializeField] private bool completionLockCursorAfterLoad = false;
 
-    private string reloadSceneName = "Level2";
+    [Header("Failure Transition")]
+    [SerializeField] private int failureTargetSceneBuildIndex = 0;
+    [SerializeField, Min(0.01f)] private float failureFadeInDuration = 0.8f;
+    [SerializeField, Min(0.01f)] private float failureFadeOutDuration = 0.35f;
+    [SerializeField] private string failureLoadingStatus = "Авария системы";
+    [SerializeField] private string failureFinalStatus = "Возвращаемся в главное меню";
+    [SerializeField] private string failureHintText = "Сбрасываем прогресс только этого уровня и возвращаемся на старт.";
+    [SerializeField] private bool failureLockCursorAfterLoad = false;
 
     private float systemIntegrity = 74f;
     private float pressure = 72f;
@@ -174,6 +181,7 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
     private float _phase2EmergencyTimer;
 
     private bool _failureTriggered;
+    private bool _failureTransitionStarted;
     private bool _gateOpening;
     private bool _gatePoseInitialized;
     private bool _gameplayStarted;
@@ -743,7 +751,6 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             alarmAudio.Play();
 
         shipController?.SinkShip();
-        GameplaySaveManager.SaveCurrentGame();
 
         if (_failureRoutine != null)
             StopCoroutine(_failureRoutine);
@@ -1352,19 +1359,45 @@ public class LockControlSystem : MonoBehaviour, ISceneSaveable
             yield return null;
         }
 
-        ReloadCurrentLevel();
+        TryStartFailureTransition();
     }
 
-    private void ReloadCurrentLevel()
+    private void TryStartFailureTransition()
     {
-        if (!string.IsNullOrWhiteSpace(reloadSceneName) && Application.CanStreamedLevelBeLoaded(reloadSceneName))
+        if (_failureTransitionStarted)
+            return;
+
+        bool started = SceneTransitionService.StartPortalTransition(
+            failureTargetSceneBuildIndex,
+            0,
+            failureFadeInDuration,
+            failureFadeOutDuration,
+            failureLoadingStatus,
+            failureFinalStatus,
+            failureHintText,
+            failureLockCursorAfterLoad,
+            HandleFailureTransitionCommitted,
+            HandleFailureTransitionCancelled);
+
+        if (!started)
         {
-            SceneManager.LoadScene(reloadSceneName);
+            SaveResetter.ResetSceneGameplayProgress(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene(failureTargetSceneBuildIndex, LoadSceneMode.Single);
+            _failureTransitionStarted = true;
             return;
         }
 
-        Scene activeScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(activeScene.name);
+        _failureTransitionStarted = true;
+    }
+
+    private void HandleFailureTransitionCommitted()
+    {
+        SaveResetter.ResetSceneGameplayProgress(SceneManager.GetActiveScene().name);
+    }
+
+    private void HandleFailureTransitionCancelled()
+    {
+        _failureTransitionStarted = false;
     }
 
     private void ResolveAndApplyConfig()

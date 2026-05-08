@@ -19,6 +19,11 @@ public class SaveResetter : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public static void ResetSceneGameplayProgress(string sceneName)
+    {
+        GameplaySaveManager.ClearSceneProgress(sceneName);
+    }
+
     public void ResetSaves()
     {
         ResetGameplayProgress();
