@@ -11,6 +11,7 @@
   <Project Path="Zenject-Editor.csproj" />
   <Project Path="DevionGames.Graphs.csproj" />
   <Project Path="Zenject-IntegrationTests.csproj" />
+  <Project Path="OKEI.PlayModeTests.csproj" />
   <Project Path="DevionGames.InventorySystem.csproj" />
   <Project Path="DevionGames.ThirdPersonController.csproj" />
   <Project Path="DevionGames.Utilities.csproj" />
@@ -18,4 +19,5 @@
   <Project Path="Zenject-TestFramework.csproj" />
   <Project Path="MainInputSystem.csproj" />
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />
+  <Project Path="OKEI.EditModeTests.csproj" />
 </Solution>

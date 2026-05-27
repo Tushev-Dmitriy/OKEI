@@ -68,6 +68,14 @@ public class RobotSelectionUI : MonoBehaviour
         UpdateVisuals();
     }
 
+    private void LateUpdate()
+    {
+        if (!HasVisualStateDesync())
+            return;
+
+        UpdateVisuals();
+    }
+
     private void OnDestroy()
     {
         if (unlockManager != null)
@@ -125,7 +133,7 @@ public class RobotSelectionUI : MonoBehaviour
                 button = button,
                 image = image,
                 type = typedRoot.robotType,
-                root = button.transform,
+                root = typedRoot.transform,
                 lockOverlay = FindLockOverlay(typedRoot.transform)
             };
 
@@ -162,7 +170,7 @@ public class RobotSelectionUI : MonoBehaviour
                 button = button,
                 image = image,
                 type = resolvedType,
-                root = button.transform,
+                root = root,
                 lockOverlay = FindLockOverlay(root)
             };
 
@@ -341,10 +349,17 @@ public class RobotSelectionUI : MonoBehaviour
         if (rootTransform == null)
             return null;
 
+        for (int i = 0; i < rootTransform.childCount; i++)
+        {
+            Transform child = rootTransform.GetChild(i);
+            if (child != null && child.name == "CloseIcon")
+                return child.gameObject;
+        }
+
         var overlays = rootTransform.GetComponentsInChildren<Transform>(true);
         foreach (var overlay in overlays)
         {
-            if (overlay.name == "CloseIcon")
+            if (overlay != null && overlay != rootTransform && overlay.name == "CloseIcon")
                 return overlay.gameObject;
         }
 
@@ -371,6 +386,29 @@ public class RobotSelectionUI : MonoBehaviour
             bool unlocked = unlockManager.IsRobotUnlocked(typedRoot.robotType);
             closeIcon.SetActive(!unlocked);
         }
+    }
+
+    private bool HasVisualStateDesync()
+    {
+        if (_entries.Count == 0)
+            return false;
+
+        for (int i = 0; i < _entries.Count; i++)
+        {
+            ButtonEntry entry = _entries[i];
+            if (entry == null)
+                continue;
+
+            bool unlocked = unlockManager == null || unlockManager.IsRobotUnlocked(entry.type);
+
+            if (entry.button != null && entry.button.interactable != unlocked)
+                return true;
+
+            if (entry.lockOverlay != null && entry.lockOverlay.activeSelf == unlocked)
+                return true;
+        }
+
+        return false;
     }
 
     private class ButtonEntry

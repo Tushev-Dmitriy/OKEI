@@ -1537,7 +1537,7 @@ MonoBehaviour:
     displayName: LEVEL 4
     description: "\u041A\u041B\u0410\u0421\u0421\u042B"
     previewIcon: {fileID: 4168520, guid: a2e8271eac31e72448bd285ab174e169, type: 3}
-  defaultUnlockedLevel: 4
+  defaultUnlockedLevel: 1
 --- !u!1 &178194582
 GameObject:
   m_ObjectHideFlags: 0

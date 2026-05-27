@@ -392,8 +392,20 @@ public sealed class GameAudio : MonoBehaviour
         ResolveMixerGroups();
         ApplyMixerGroupsToExistingSources();
         ApplyRuntimeOverrides();
-        ApplySceneAudio(scene.name);
+        ApplySceneAudio(GetSceneAudioTargetName(scene, mode));
         BindInventoryAudio();
+    }
+
+    private static string GetSceneAudioTargetName(Scene loadedScene, LoadSceneMode mode)
+    {
+        if (mode == LoadSceneMode.Single)
+            return loadedScene.name;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (activeScene.IsValid() && activeScene.isLoaded && !string.IsNullOrWhiteSpace(activeScene.name))
+            return activeScene.name;
+
+        return loadedScene.name;
     }
 
     private void ResolveMixerGroups()
